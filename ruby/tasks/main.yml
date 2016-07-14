@@ -1,0 +1,19 @@
+---
+- name: Clone ruby-build
+  git: repo=https://github.com/rbenv/ruby-build.git dest={{ ansible_env.HOME }}/.rbenv/plugins/ruby-build update=no
+
+- name: Copy default-gems for .rbenv
+  copy: src=default-gems dest={{ ansible_env.HOME }}/.rbenv/default-gems
+
+- name: Check if ruby version is installed
+  stat: path={{ ansible_env.HOME }}/.rbenv/versions/{{ ruby.version }}
+  register: ruby_dir
+
+- name: Install ruby
+  shell: . /etc/profile && rbenv install {{ ruby.version }}
+  when: ruby_dir.stat.isdir is not defined
+
+- name: Set global rbenv version
+  shell: . /etc/profile && rbenv global {{ ruby.version }}
+  when: ruby_dir.stat.isdir is not defined
+
