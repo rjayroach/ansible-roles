@@ -2,6 +2,9 @@
 - name: Clone ruby-build
   git: repo=https://github.com/rbenv/ruby-build.git dest={{ ansible_env.HOME }}/.rbenv/plugins/ruby-build update=no
 
+- name: Clone ruby-default-gems
+  git: repo=https://github.com/rbenv/rbenv-default-gems.git dest={{ ansible_env.HOME }}/.rbenv/plugins/rbenv-default-gems update=no
+
 - name: Copy default-gems for .rbenv
   copy: src=default-gems dest={{ ansible_env.HOME }}/.rbenv/default-gems
 

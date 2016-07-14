@@ -47,6 +47,7 @@ alias gsu='git submodule update --remote --merge'
 alias pss='ps -ef|grep spring'
 
 alias rc='spring rails console'
+alias rg='spring rails generate'
 alias rk='spring rake'
 alias rkd='RAILS_ENV=test spring rake docs:generate'
 alias rs='spring rspec'
