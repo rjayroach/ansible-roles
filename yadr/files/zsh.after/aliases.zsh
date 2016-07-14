@@ -42,6 +42,8 @@ alias fs='foreman start -e <()'
 alias ggpl='spring stop; git checkout Gemfile.lock; git pull'
 alias gwdsc='bin/seed'
 
+alias gsu='git submodule update --remote --merge'
+
 alias pss='ps -ef|grep spring'
 
 alias rc='spring rails console'
@@ -71,6 +73,7 @@ alias vp='vagrant provision'
 alias vs='vagrant ssh'
 alias vst='vagrant status'
 alias vu='vagrant up'
+alias vup='vagrant up --provision'
 
 
 # NOTE: bes() only works if there is one line in the Procfile
