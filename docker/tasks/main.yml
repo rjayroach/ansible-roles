@@ -1,0 +1,33 @@
+---
+- name: Install docker APT key
+  apt_key: keyserver=p80.pool.sks-keyservers.net id=58118E89F3A912897C070ADBF76221572C52609D
+  when: ansible_pkg_mgr == 'apt'
+
+- name: Add docker repository into sources list.
+  apt_repository: repo='deb https://apt.dockerproject.org/repo debian-jessie main' state=present
+  when: ansible_pkg_mgr == 'apt'
+
+- name: Install docker
+  apt: name=docker-engine state=present
+  when: ansible_pkg_mgr == 'apt'
+  notify:
+    - Start docker
+
+# NOTE: Once docker-* is installed these commands continuously fail
+- name: Install docker-compose
+  pip: name=docker-compose state=latest
+  ignore_errors: yes
+
+- name: Install docker-py
+  pip: name=docker-py state=latest
+  ignore_errors: yes
+
+- name: 'Add user {{ ansible_ssh_user }} to docker group'
+  user: name={{ ansible_ssh_user }} groups=docker append=yes
+
+# NOTE: Will run consul via a docker container rather than from the machine istelf
+# - name: Get consul source
+#   get_url: url=https://releases.hashicorp.com/consul/0.6.4/consul_0.6.4_linux_amd64.zip dest=/tmp/consul_0.6.4_linux_amd64.zip
+# 
+# - name: Install consul
+#   unarchive: src=/tmp/consul_0.6.4_linux_amd64.zip dest=/usr/local/bin copy=no creates=/usr/local/bin/consul

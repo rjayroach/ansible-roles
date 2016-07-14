@@ -1,0 +1,45 @@
+---
+- name: install packages (Debian)
+  apt: name={{ item }} state=present
+  with_items:
+    - rake
+    - git
+    - zsh
+    - vim-nox
+  become: true
+  when: ansible_pkg_mgr == 'apt'
+
+- name: Check if YADR is installed
+  stat: path=~/.yadr
+  register: yadr_dir
+
+- name: download YADR
+  get_url: url=https://raw.githubusercontent.com/skwp/dotfiles/master/install.sh dest=/tmp/yadr_install.sh mode=0755
+  when: yadr_dir.stat.exists == false
+
+- name: install YADR
+  command: bash -c 'echo yes | /tmp/yadr_install.sh' #creates=~/.yadr
+  when: yadr_dir.stat.exists == false
+
+- name: Set the user shell to zsh
+  user: name={{ ansible_ssh_user }} shell=/bin/zsh
+  become: yes
+  when: ansible_distribution == 'Debian'
+
+- name: Remove bogus line from .vimrc
+  lineinfile: dest=~/.vimrc state=absent regexp="^set list listchars"
+
+- lineinfile: dest=~/.zprofile line="export LC_CTYPE='en_US.UTF-8'"
+  when: ansible_distribution == 'Debian'
+
+- lineinfile: dest=~/.zprofile line="export LANG='en_US.UTF-8'"
+  when: ansible_distribution == 'Debian'
+
+- lineinfile: dest=~/.zprofile line="export LANGUAGE='en_US.UTF-8'"
+  when: ansible_distribution == 'Debian'
+
+- name: copy files to home directory
+  copy: src=home/ dest=~/
+
+- name: copy files to .zsh.after
+  copy: src=zsh.after/ dest=~/.zsh.after/

@@ -1,0 +1,12 @@
+---
+- homebrew: name={{ item }} state=present
+  with_items: '{{ extras.common_packages }}'
+
+- homebrew_tap: tap={{ item }} state=present
+  with_items: '{{ extras.homebrew_taps }}'
+
+- homebrew: name={{ item }} state=present
+  with_items: '{{ extras.homebrew_installed_packages }}'
+
+- homebrew_cask: name={{ item }} state=present
+  with_items: '{{ extras.homebrew_cask_apps }}'

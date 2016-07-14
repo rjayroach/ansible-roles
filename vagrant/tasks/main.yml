@@ -1,0 +1,39 @@
+---
+- name: include env vars
+  include_vars: "{{ ansible_os_family }}.yml"
+
+- name: install vagrant and related packages
+  homebrew_cask: name={{ item }} state=present
+  with_items: homebrew_cask_apps
+  when: ansible_os_family == 'Darwin'
+ 
+- name: See if zsh is installed
+  shell: "[ -d ~/.yadr ] && echo 'Found' || echo ''"
+  register: zsh_installed
+
+# - name: Add shell aliases
+#   #lineinfile: dest=~/.bash_profile line="{{ item }}"
+#   lineinfile: dest=~/.zsh.after/aliases line="{{ item }}"
+#   with_items:
+#     - "alias v='vagrant'"
+#     - "alias vd='vagrant destroy'"
+#     - "alias vh='vagrant halt'"
+#     - "alias vp='vagrant provision'"
+#     - "alias vs='vagrant ssh'"
+#     - "alias vu='vagrant up'"
+# #  when: (not zsh_installed.stdout)
+
+#- set_fact:
+#   another_fact: "{{ zsh_installed.stdout | 'zsh' | 'bash' }}"
+
+- debug: var=zsh_installed
+
+#- name: Add shell aliases
+#  lineinfile: dest=~/.bash_profile line="{{ item }}"
+#  with_items:
+#    - "alias v='vagrant'"
+#    - "alias vd='vagrant destroy'"
+#    - "alias vh='vagrant halt'"
+#    - "alias vp='vagrant provision'"
+#    - "alias vs='vagrant ssh'"
+#    - "alias vu='vagrant up'"

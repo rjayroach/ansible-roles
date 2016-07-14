@@ -1,0 +1,62 @@
+---
+# 1. Retrieve the git repositories (fail if any of the repos are not found)
+# 2. Create any necessary databases (currently only mysql - postgresql in future)
+# 3. Determine if the project directory and ruby-version file exists
+# 4. Create a .ruby-version file (if the project exists but the version file is missing)
+# 5. Create a .env file with db settings (if the project exists but the env file is missing)
+- name: Download git repos
+  git: repo={{ item.repo }}.git dest={{ item.project_dir }} accept_hostkey=yes update=no
+  with_items: git_repos
+  ignore_errors: yes
+
+
+- name: add mysql user
+  mysql_user: name={{ database_username }} password={{ database_password }} host=% priv=*.*:ALL state=present
+
+- name: add mysql databases
+  mysql_db: name={{ item }} state=present
+  with_items: mysql_databases
+
+
+- name: Does the project directory exist
+  stat: path={{ project_dir }}
+  register: project_directory
+
+- name: Does the project ruby-version file exist
+  stat: path={{ project_dir }}/.ruby-version
+  register: ruby_version_file
+
+
+- name: Get ruby version
+  fetch: src={{ project_dir }}/.ruby-version dest=/tmp/.ruby-version flat=yes
+  when: ruby_version_file.stat.exists
+
+- name: Set ruby version
+  set_fact:
+    ruby_version: "{{ lookup('file', '/tmp/.ruby-version') }}"
+  when: ruby_version_file.stat.exists
+
+- name: Set project ruby version to the default version
+  template: src=ruby-version.j2 dest="{{ project_dir }}/.ruby-version"
+  when: project_directory.stat.exists and (ruby_version_file.stat.exists == False)
+
+- name: Set ruby version
+  set_fact:
+    ruby_version: "{{ default_ruby_version }}"
+  when: ruby_version_file.stat.exists == False
+
+#- debug: var=ruby_version
+#- debug: msg="the value of ruby version is {{ ruby_version }}"
+
+- name: Does the project ruby version exit on the system
+  stat: path=~/.rbenv/versions/{{ ruby_version }}
+  register: ruby_dir
+
+- name: Check for project dotenv file
+  stat: path="{{ rails_root }}/.env"
+  register: dotenv_file
+
+- name: Create base .env file for project
+  template: src=dotenv.j2 dest="{{ rails_root }}/.env"
+  when: project_directory.stat.exists and (dotenv_file.stat.exists == False)
+

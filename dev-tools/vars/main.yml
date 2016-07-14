@@ -1,0 +1,4 @@
+---
+developer:
+  common_packages:
+    - rake

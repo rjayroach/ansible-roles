@@ -1,0 +1,20 @@
+---
+# 1. run bundle
+# 2. run any bundle configs
+# 3. run rake db:migrate
+#- name: install gems
+#  gem: name={{item}}
+#  with_items: [awesome_print, bundler, foreman, pry, rails, tmuxinator]
+#  #command: bash -lc 'gem install awesome_print bundler foreman pry rails tmuxinator'
+
+- name: Run bundler
+  command: bash -lc 'bundle install'
+  args:
+    chdir: "{{ project_dir }}"
+  when: project_directory.stat.exists
+
+- name: Migrate the database
+  command: bash -lc 'bundle exec rake db:migrate'
+  args:
+    chdir: "{{ project_dir }}"
+  when: project_directory.stat.exists

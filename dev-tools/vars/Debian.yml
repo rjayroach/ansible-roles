@@ -1,0 +1,22 @@
+---
+developer:
+  packages:
+    - apache2-utils
+    - exuberant-ctags
+    - libcurl4-openssl-dev
+    - libmysqlclient-dev
+    - libpq-dev
+    - libsqlite3-dev
+    - mysql-client
+    - mysql-server
+    - nginx
+    - postgresql
+    - postgresql-client
+    - postgresql-contrib
+    - python-mysqldb
+    - python-psycopg2
+    - rabbitmq-server
+    - redis-server
+    - ruby-dev
+    - sqlite3
+    - rbenv
