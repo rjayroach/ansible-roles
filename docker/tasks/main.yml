@@ -22,8 +22,8 @@
   pip: name=docker-py state=latest
   ignore_errors: yes
 
-- name: 'Add user {{ ansible_ssh_user }} to docker group'
-  user: name={{ ansible_ssh_user }} groups=docker append=yes
+- name: 'Add user {{ ansible_user }} to docker group'
+  user: name={{ ansible_user }} groups=docker append=yes
 
 # NOTE: Will run consul via a docker container rather than from the machine istelf
 # - name: Get consul source
