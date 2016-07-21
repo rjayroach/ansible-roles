@@ -9,16 +9,3 @@
 - name: Install OS specific packages
   apt: name={{ item }} state=present
   with_items: '{{ developer.packages }}'
-
-- name: copy .inputrc to postgres home
-  copy: src=.inputrc dest=/var/lib/postgresql
-  become_user: postgres
-
-# TODO: Test this one
-# NOTE: The location of the my.cnf can be operating system dependent, e.g. ubuntu is diff from debian
-# - name: update MySQL configuration to use per table inno db
-#   lineinfile: dest=/etc/mysql/my.cnf regexp='mysqld\]' insertafter='innodb_buffer_pool_size=4G'
-# 
-# - lineinfile: dest=/etc/mysql/my.conf regexp='mysqld\]' insertafter='innodb_log_file_size=1G'
-# - lineinfile: dest=/etc/mysql/my.conf regexp='mysqld\]' insertafter='innodb_flush_method=O_DIRECT'
-# - lineinfile: dest=/etc/mysql/my.conf regexp='mysqld\]' insertafter='innodb_file_per_table'

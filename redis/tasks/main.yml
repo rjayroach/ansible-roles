@@ -1,4 +1,10 @@
 ---
+- name: Install Debian packages
+  apt: name={{ item }} state=present
+  become: yes
+  with_items: [redis-server]
+  when: ansible_distribution == 'Debian'
+
 - name: Connect to Redis on localhost form Docker Container
   lineinfile:
     dest: /etc/redis/redis.conf

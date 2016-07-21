@@ -1,0 +1,4 @@
+---
+mysql:
+  username: '{{ ansible_user }}'
+  password: '{{ ansible_user }}'

@@ -5,7 +5,7 @@
 - name: Install Debian packages
   apt: name={{ item }} state=present
   become: yes
-  with_items: [libreadline-dev]
+  with_items: [libreadline-dev, ruby-dev, rbenv]
   when: ansible_distribution == 'Debian'
 
 - name: Clone ruby-build

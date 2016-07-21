@@ -8,6 +8,11 @@
   with_items: [libpq-dev, postgresql, postgresql-client, postgresql-contrib, python-psycopg2]
   when: ansible_distribution == 'Debian'
 
+- name: copy .inputrc to postgres home
+  copy: src=.inputrc dest=/var/lib/postgresql
+  become: yes
+  become_user: postgres
+
 # NOTE: The location of config can be operating system dependent, e.g. ubuntu is diff from debian
 - name: 'Listen on all interfaces to allow connection from docker'
   lineinfile:

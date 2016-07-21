@@ -2,6 +2,12 @@
 - set_fact:
     role: "{{ nginx|combine(project.nginx|default({})) }}"
 
+- name: Install Debian packages
+  apt: name={{ item }} state=present
+  become: yes
+  with_items: [nginx]
+  when: ansible_distribution == 'Debian'
+
 - name: Ensure /srv/www directory exists
   file: path=/srv/www state=directory owner=www-data
   become: yes

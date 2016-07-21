@@ -4,14 +4,6 @@ developer:
     - apache2-utils
     - exuberant-ctags
     - libcurl4-openssl-dev
-    - libmysqlclient-dev
+    - libreadline-dev
     - libsqlite3-dev
-    - mysql-client
-    - mysql-server
-    - nginx
-    - python-mysqldb
-    - rabbitmq-server
-    - redis-server
-    - ruby-dev
     - sqlite3
-    - rbenv

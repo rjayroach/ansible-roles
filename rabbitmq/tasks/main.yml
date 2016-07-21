@@ -2,6 +2,12 @@
 - set_fact:
     role: "{{ rabbitmq|combine(project.rabbitmq|default({})) }}"
 
+- name: Install Debian packages
+  apt: name={{ item }} state=present
+  become: yes
+  with_items: [rabbitmq-server]
+  when: ansible_distribution == 'Debian'
+
 - name: Configure rabbitmq vhosts
   rabbitmq_vhost:
     name: '{{ item }}'
