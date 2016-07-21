@@ -1,0 +1,16 @@
+---
+- set_fact:
+    role: "{{ nginx|combine(project.nginx|default({})) }}"
+
+- name: Ensure /srv/www directory exists
+  file: path=/srv/www state=directory owner=www-data
+  become: yes
+
+- name: Configure nginx to respond to ELB health checks
+  copy: src=index.html dest=/srv/www/index.html mode=0644 owner=www-data
+  become: yes
+
+- name: Configure nginx to forward requests to app server and dashboard
+  template: 'src=nginx-default dest=/etc/nginx/sites-enabled/default mode=0644'
+  become: yes
+  notify: Restart Nginx

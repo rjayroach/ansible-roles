@@ -1,0 +1,26 @@
+---
+- name: 'Development databases {{ role.state }}'
+  postgresql_db:
+    name: '{{ item.db_name|default(item.name) }}_development'
+    owner: '{{ role.username }}'
+    login_host: '{{ role.login_host }}'
+    login_user: '{{ role.login_user }}'
+    login_password: '{{ role.login_password }}'
+    state: '{{ role.state }}'
+  become: yes
+  become_user: postgres
+  with_items: '{{ group.projects }}'
+  when: item.build is defined
+
+- name: 'Test databases {{ role.state }}'
+  postgresql_db:
+    name: '{{ item.db_name|default(item.name) }}_test'
+    owner: '{{ role.username }}'
+    login_host: '{{ role.login_host }}'
+    login_user: '{{ role.login_user }}'
+    login_password: '{{ role.login_password }}'
+    state: '{{ role.state }}'
+  become: yes
+  become_user: postgres
+  with_items: '{{ group.projects }}'
+  when: item.build is defined

@@ -1,0 +1,77 @@
+upstream api_gateway {
+  # Path to Puma SOCK file, as defined previously
+  # server unix:/tmp/sockets/api-gateway/puma.sock fail_timeout=0;
+  server 127.0.0.1:3000;
+}
+
+upstream dashboard {
+  # Path to Puma SOCK file, as defined previously
+  # server unix:/tmp/sockets/api-gateway/puma.sock fail_timeout=0;
+  server 127.0.0.1:4200;
+}
+
+# Respond to ELB Health Check
+server {
+  listen 80;
+
+  access_log  /var/log/nginx/default.access.log;
+
+  location / {
+    root   /srv/www/;
+    index  index.html;
+  }
+}
+
+server {
+  listen 80;
+  server_name  api.{{ role.domain }} live-cache.{{ role.domain }} testing-cache.{{ role.domain }};
+
+  location / {
+    proxy_pass http://api_gateway;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+    proxy_redirect off;
+  }
+}
+
+server {
+  listen 80;
+  server_name  live.{{ role.domain }};
+
+  location / {
+    proxy_pass http://127.0.0.1:3001;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+    proxy_redirect off;
+  }
+}
+
+server {
+  listen 80;
+  server_name  testing.{{ role.domain }};
+
+  location / {
+    proxy_pass http://127.0.0.1:3002;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+    proxy_redirect off;
+  }
+}
+
+server {
+  listen 80;
+  server_name dashboard.{{ role.domain }};
+#  root /home/vagrant/dev/play/platform/perx-dashboard/dist;
+#  index index.html;
+
+#  location / {
+#    try_files $uri $uri/ /index.html?/$request_uri;
+#  }
+
+   location / {
+     proxy_pass http://dashboard;
+     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+     proxy_set_header Host $http_host;
+     proxy_redirect off;
+   }
+}

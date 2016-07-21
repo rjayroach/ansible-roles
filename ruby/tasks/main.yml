@@ -1,5 +1,12 @@
 ---
-- include: '{{ ansible_os_family }}.yml'
+- set_fact:
+    role: "{{ ruby|combine(project.ruby|default({})) }}"
+
+- name: Install Debian packages
+  apt: name={{ item }} state=present
+  become: yes
+  with_items: [libreadline-dev]
+  when: ansible_distribution == 'Debian'
 
 - name: Clone ruby-build
   git: repo=https://github.com/rbenv/ruby-build.git dest={{ ansible_env.HOME }}/.rbenv/plugins/ruby-build update=no
@@ -11,14 +18,13 @@
   copy: src=default-gems dest={{ ansible_env.HOME }}/.rbenv/default-gems
 
 - name: Check if ruby version is installed
-  stat: path={{ ansible_env.HOME }}/.rbenv/versions/{{ ruby.version }}
+  stat: path={{ ansible_env.HOME }}/.rbenv/versions/{{ role.version }}
   register: ruby_dir
 
-- name: Install ruby
-  shell: . /etc/profile && rbenv install {{ ruby.version }}
+- name: 'Install ruby {{ role.version }}'
+  shell: . /etc/profile && rbenv install {{ role.version }}
   when: ruby_dir.stat.isdir is not defined
 
 - name: Set global rbenv version
-  shell: . /etc/profile && rbenv global {{ ruby.version }}
+  shell: . /etc/profile && rbenv global {{ role.version }}
   when: ruby_dir.stat.isdir is not defined
-

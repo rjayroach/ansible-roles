@@ -1,0 +1,47 @@
+---
+- set_fact:
+    source_directory: '{{ proj.group.source_directory }}'
+    image_directory: '{{ proj.group.image_directory }}'
+    image_directory_suffix: '{{ proj.group.image_directory_suffix }}'
+  tags: always
+
+- name: Add project to bundle/config
+  lineinfile:
+    dest: ~/.bundle/config
+    state: present
+    line: 'BUNDLE_LOCAL__{{ item.local }}: "{{ source_directory }}/{{ item.name }}"'
+  with_items: '{{ proj.group.projects }}'
+  when: item.local is defined
+
+# - name: Run bundle on build projects
+#   shell: . /etc/profile && ~/.rbenv/shims/bundle # --without production
+#   args:
+#     chdir: '{{ source_directory }}/{{ item.name }}'
+#   with_items: '{{ proj.group.projects }}'
+#   when: item.build is defined
+
+# - debug: "msg='{{ image_directory }}/{{ item.name }}{{ image_directory_suffix }}'"
+#   with_items: '{{ proj.group.projects }}'
+#   tags: always
+
+          # NOTE: For some reason, updated gems from git are not included unless this is run twice
+          #     system_run('bundle package --all')
+          #         system_run('bundle package --all')
+          #             system_run("docker build -t quay.io/getperx/#{project} .")
+          #               end
+- name: 'Prepare {{ image_directory }} projects for building docker images'
+  # shell: . /etc/profile && /home/admin/bin/dkr build > /tmp/prepared_{{ item.image }}
+  shell: . /etc/profile && rm -f Gemfile.lock && ~/.rbenv/shims/bundle package --all && ~/.rbenv/shims/bundle package --all > /tmp/prepared_{{ item.name }}
+  args:
+    chdir: '{{ image_directory }}/{{ item.name }}{{ image_directory_suffix }}'
+    creates: '/tmp/prepare_{{ item.name }}'
+  with_items: '{{ proj.group.projects }}'
+  when: item.image is defined
+  tags: build-images
+
+- name: Run database migrations on engine build projects
+  shell: . /etc/profile && ~/.rbenv/shims/bundle exec rake {{ 'app:' if item.engine is defined else '' }}db:migrate {{ 'app:' if item.engine is defined else '' }}db:test:prepare
+  args:
+    chdir: '{{ source_directory }}/{{ item.name }}'
+  with_items: '{{ proj.group.projects }}'
+  when: item.build is defined

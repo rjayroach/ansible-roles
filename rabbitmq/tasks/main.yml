@@ -1,0 +1,19 @@
+---
+- set_fact:
+    role: "{{ rabbitmq|combine(project.rabbitmq|default({})) }}"
+
+- name: Configure rabbitmq vhosts
+  rabbitmq_vhost:
+    name: '{{ item }}'
+  with_items: '{{ project.environments }}'
+  become: yes
+
+- name: Configure rabbitmq user and vhosts
+  rabbitmq_user: user={{ role.username }}
+                 password={{ role.password }}
+                 vhost={{ item }}
+                 read_priv=.*
+                 write_priv=.*
+                 configure_priv=.*
+  with_items: '{{ project.environments }}'
+  become: yes
