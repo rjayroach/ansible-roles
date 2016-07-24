@@ -1,6 +1,7 @@
 ---
 # NOTE: Update the package cache before installing packages
 - apt: update_cache=yes
+  become: yes
 
 - name: Install common packages
   apt: name={{ item }} state=present

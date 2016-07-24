@@ -1,0 +1,30 @@
+---
+- set_fact:
+    source_directory: '{{ proj.group.source_directory }}'
+    image_directory: '{{ proj.group.image_directory }}'
+    image_directory_suffix: '{{ proj.group.image_directory_suffix }}'
+
+- name: 'Prepare {{ image_directory }} projects for building docker images'
+  shell: . /etc/profile && rm -f Gemfile.lock && ~/.rbenv/shims/bundle package --all && ~/.rbenv/shims/bundle package --all > /tmp/prepared_{{ item.name }}
+  args:
+    chdir: '{{ image_directory }}/{{ item.name }}{{ image_directory_suffix }}'
+    creates: '/tmp/prepare_{{ item.name }}'
+  with_items: '{{ proj.group.projects }}'
+  # when: item.image is defined
+  when: item.image is defined and item.name == 'device'
+
+- name: Log into private registry
+  docker_login:
+    registry: '{{ role.registry }}'
+    username: '{{ role.username }}'
+    password: '{{ role.password }}'
+
+# See: http://docs.ansible.com/ansible/docker_image_module.html
+- name: 'Build {{ image_directory }} docker images'
+  docker_image:
+    path: '{{ image_directory }}/{{ item.name }}{{ image_directory_suffix }}'
+    name: '{{ project.docker.repository }}/{{ item.name }}'
+    state: present
+  with_items: '{{ proj.group.projects }}'
+  # when: item.image is defined
+  when: item.image is defined and item.name == 'device'

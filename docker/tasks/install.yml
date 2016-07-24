@@ -10,6 +10,12 @@
 - name: Install docker
   apt: name=docker-engine state=present
   when: ansible_pkg_mgr == 'apt'
+
+- name: Update docker daemon config
+  lineinfile:
+    dest: /lib/systemd/system/docker.service
+    regexp: '^ExecStart=/usr/bin/docker'
+    line: 'ExecStart=/usr/bin/docker daemon -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock'
   notify:
     - Start docker
 

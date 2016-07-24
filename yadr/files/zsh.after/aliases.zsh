@@ -7,6 +7,11 @@ alias adsc='spring rake app:db:seed:clean'
 alias adsct='SEED_TENANT=true spring rake app:db:seed:clean'
 alias adtp='spring rake app:db:test:prepare'
 
+alias ap='ansible-playbook'
+alias apa='ansible-playbook /vagrant/ansible/provision.yml --tags alias && source ~/.zsh.after/aliases.zsh'
+alias app='ansible-playbook provision.yml -U vagrant -i hosts'
+alias apdb='ansible-playbook /vagrant/ansible/docker-build.yml --tags alias'
+
 alias beg='bundle exec guard'
 
 alias cv='cordova'
@@ -78,6 +83,7 @@ alias vs='vagrant ssh'
 alias vst='vagrant status'
 alias vu='vagrant up'
 alias vup='vagrant up --provision'
+alias vun='vagrant up /swarm-node-0[0-9]/'
 
 
 # NOTE: bes() only works if there is one line in the Procfile

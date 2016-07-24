@@ -43,3 +43,4 @@
 
 - name: copy files to .zsh.after
   copy: src=zsh.after/ dest={{ ansible_env.HOME }}/.zsh.after/
+  tags: alias

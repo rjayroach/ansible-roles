@@ -4,14 +4,7 @@
 
 - include: 'install.yml'
 
-- include: images.yml proj={{ outer_item }}
-  with_items: '{{ project_groups }}'
-  loop_control:
-    loop_var: outer_item
-
-# NOTE: Will run consul via a docker container rather than from the machine istelf
-# - name: Get consul source
-#   get_url: url=https://releases.hashicorp.com/consul/0.6.4/consul_0.6.4_linux_amd64.zip dest=/tmp/consul_0.6.4_linux_amd64.zip
-# 
-# - name: Install consul
-#   unarchive: src=/tmp/consul_0.6.4_linux_amd64.zip dest=/usr/local/bin copy=no creates=/usr/local/bin/consul
+# - include: images.yml proj={{ outer_item }}
+#   with_items: '{{ project_groups }}'
+#   loop_control:
+#     loop_var: outer_item
