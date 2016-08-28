@@ -6,7 +6,8 @@
 - debug: var=source_directory
 
 - name: Checkout/Update repository
-  git: repo=git@github.com:{{ project.github.account }}/{{ item.repo|default(item.name) }}.git
+  # git: repo=git@github.com:{{ project.github.account }}/{{ item.repo|default(item.name) }}.git
+  git: repo={{ project.git.account }}/{{ item.repo|default(item.name) }}.git
        dest={{ source_directory }}/{{ item.name }}
        accept_hostkey=yes
        update=no

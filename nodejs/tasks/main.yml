@@ -1,0 +1,32 @@
+---
+- name: Create ~/src and ~/bin directories
+  file:
+    path: '{{ ansible_env.HOME }}/{{ item }}'
+    state: directory
+  with_items:
+    - src
+    - bin
+
+- name: Get nodejs
+  get_url:
+    url: https://nodejs.org/dist/v4.4.7/node-v4.4.7-linux-x64.tar.xz
+    dest: '{{ ansible_env.HOME }}/src/node-v4.4.7-linux-x64.tar.gz'
+  register: new_archive
+
+- name: install nodesjs
+  unarchive:
+    src: '{{ ansible_env.HOME }}/src/node-v4.4.7-linux-x64.tar.gz'
+    dest: '{{ ansible_env.HOME }}/src'
+    copy: no
+  when: new_archive|changed
+
+- name: create file for zsh path
+  file:
+    path: '{{ ansible_env.HOME }}/.yadr/zsh/path.zsh'
+    state: touch
+
+- name: add nodejs to zsh path
+  lineinfile:
+    dest: "~/.yadr/zsh/path.zsh"
+    line: 'export PATH=$PATH:~/src/node-v4.4.7-linux-x64/bin'
+
