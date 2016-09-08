@@ -1,2 +1,2 @@
-locale:
-  timezone: 'Asia/Singapore'
+---
+common_debian_value: hello

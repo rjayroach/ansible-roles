@@ -1,12 +1,9 @@
 ---
-# NOTE: Update the package cache before installing packages
-# - apt: update_cache=yes
-
 - name: Install common packages
-  apt: name={{ item }} state=present
-  with_items: '{{ common.packages }}'
+  apt: 'name={{ item }} state=present update_cache=yes cache_valid_time={{ cache_valid_time|default(86400) }}'
+  with_items: '{{ common_packages }}'
 
-- name: set shell edit mode to vi
+- name: Set shell mode to vi
   copy:
     src: inputrc
     dest: '{{ ansible_env.HOME }}/.inputrc'
@@ -19,7 +16,7 @@
 #    locale: en_US.UTF-8
 #    timezone: Asia/Singapore
 
-- debug: var=locale.timezone
+- debug: var=machine_env.timezone
 
 - name: Set timezone
 # template: src=../templates/debian/timezone.j2 dest=/etc/timezone

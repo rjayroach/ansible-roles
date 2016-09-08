@@ -1,6 +1,9 @@
 ---
-developer:
-  packages:
+dev_tools:
+  common_packages:
+    - rake
+    - git
+  debian_packages:
     - apache2-utils
     - exuberant-ctags
     - libcurl4-openssl-dev

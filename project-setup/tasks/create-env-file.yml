@@ -1,0 +1,10 @@
+---
+- name: Create the project directory
+  file:
+    path: '{{ project.directory }}'
+    state: directory
+
+- name: 'Write app envs to {{ project.directory }}/.env'
+  template:
+    src: app_env.j2
+    dest: '{{ project.directory }}/.env'

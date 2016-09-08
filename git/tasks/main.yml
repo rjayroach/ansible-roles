@@ -1,7 +1,0 @@
----
-# Git checkout all the projects and configure local repos in bunde/config
-# - include: get-source.yml group={{ outer_item.item }}
-- include: get-source.yml proj={{ outer_item }}
-  with_items: '{{ project_groups }}'
-  loop_control:
-    loop_var: outer_item

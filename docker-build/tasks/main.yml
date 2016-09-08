@@ -1,8 +1,0 @@
----
-- set_fact:
-    role: "{{ docker|combine(project.docker|default({})) }}"
-
-- include: build.yml proj={{ outer_item }}
-  with_items: '{{ project_groups }}'
-  loop_control:
-    loop_var: outer_item

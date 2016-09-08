@@ -1,20 +1,19 @@
 ---
-common:
-  homebrew_install_path: /usr/local
+common_homebrew_install_path: /usr/local
 
-  homebrew_installed_packages:
-    - brew-cask
-    - fleetctl
+common_homebrew_installed_packages:
+  - brew-cask
+  # - fleetctl
 
-  homebrew_taps:
-    - caskroom/cask
-    - homebrew/binary
+common_homebrew_taps:
+  - caskroom/cask
+  - homebrew/binary
 
-  homebrew_cask_appdir: /Applications
+common_homebrew_cask_appdir: /Applications
 
-  homebrew_cask_apps:
-    - boot2docker
-    - insomniax
-    - iterm2
-    - vagrant
-    - virtualbox
+common_homebrew_cask_apps:
+  # - boot2docker
+  # - insomniax
+  - iterm2
+  - vagrant
+  - virtualbox

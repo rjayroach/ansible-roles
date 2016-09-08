@@ -1,18 +1,14 @@
 ---
-- name: Check for .gitconfig.user
-  stat: path=~/.gitconfig.user
-  register: git_config_user
+- name: Write git user info to ~/.gitconfig.user
+  template:
+    src: gitconfig.user.j2
+    dest: '{{ ansible_env.HOME }}/.gitconfig.user'
 
-- name: Create .gitconfig.user
-  template: src=gitconfig.user.j2 dest=~/.gitconfig.user
-  when: git_config_user.stat.exists == false
-
-- name: Check for .dockercfg
-  stat: path=~/.dockercfg
-  register: dockercfg
-
-- set_fact: 'docker_hash={{ docker_username }}:{{ docker_password }}'
-
-- name: Create .dockercfg
-  template: src=dockercfg.j2 dest=~/.dockercfg
-  when: dockercfg.stat.exists == false
+- name: Log in to docker registries
+  docker_login:
+    registry: '{{ item.registry }}'
+    username: '{{ item.username }}'
+    password: '{{ item.password }}'
+    email: '{{ item.email }}'
+    # reauthorize: yes
+  with_items: '{{ docker_creds }}'

@@ -1,0 +1,10 @@
+---
+- name: Install common packages
+  apt: 'name={{ item }} state=present update_cache=yes cache_valid_time={{ cache_valid_time|default(86400) }}'
+  with_items: '{{ dev_tools.common_packages }}'
+  when: ansible_distribution == 'Debian'
+
+- name: Install OS specific packages
+  apt: 'name={{ item }} state=present update_cache=yes cache_valid_time={{ cache_valid_time|default(86400) }}'
+  with_items: '{{ dev_tools.debian_packages }}'
+  when: ansible_distribution == 'Debian'

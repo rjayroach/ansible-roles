@@ -1,30 +1,70 @@
 ---
-- set_fact:
-    role: "{{ ruby|combine(project.ruby|default({})) }}"
-
-- name: Install Debian packages
-  apt: name={{ item }} state=present
+- name: Install package dependencies for debian 
+  apt:
+    name: '{{ item }}'
+    state: present
   become: yes
   with_items: [libreadline-dev, ruby-dev, rbenv, graphviz]
   when: ansible_distribution == 'Debian'
 
 - name: Clone ruby-build
-  git: repo=https://github.com/rbenv/ruby-build.git dest={{ ansible_env.HOME }}/.rbenv/plugins/ruby-build update=no
+  git:
+    repo: https://github.com/rbenv/ruby-build.git
+    dest: '{{ ansible_env.HOME }}/.rbenv/plugins/ruby-build'
+    update: no
 
 - name: Clone ruby-default-gems
-  git: repo=https://github.com/rbenv/rbenv-default-gems.git dest={{ ansible_env.HOME }}/.rbenv/plugins/rbenv-default-gems update=no
+  git:
+    repo: https://github.com/rbenv/rbenv-default-gems.git
+    dest: '{{ ansible_env.HOME }}/.rbenv/plugins/rbenv-default-gems'
+    update: no
 
-- name: Copy default-gems for .rbenv
-  copy: src=default-gems dest={{ ansible_env.HOME }}/.rbenv/default-gems
+- name: Copy rbenv default-gems
+  copy:
+    src: default-gems
+    dest: '{{ ansible_env.HOME }}/.rbenv/default-gems'
 
-- name: Check if ruby version is installed
-  stat: path={{ ansible_env.HOME }}/.rbenv/versions/{{ role.version }}
+- name: Check if the requested ruby version is already installed
+  stat:
+    path: '{{ ansible_env.HOME }}/.rbenv/versions/{{ ruby_version }}'
   register: ruby_dir
 
-- name: 'Install ruby {{ role.version }}'
-  shell: . /etc/profile && rbenv install {{ role.version }}
+- name: 'Install ruby {{ ruby_version }}'
+  shell: '. /etc/profile && rbenv install {{ ruby_version }}'
   when: ruby_dir.stat.isdir is not defined
 
 - name: Set global rbenv version
-  shell: . /etc/profile && rbenv global {{ role.version }}
+  shell: '. /etc/profile && rbenv global {{ ruby_version }}'
   when: ruby_dir.stat.isdir is not defined
+
+
+- name: Ensure the ~/.bundle directory exists
+  file:
+    path: '{{ ansible_env.HOME }}/.bundle'
+    state: directory
+
+- name: Ensure ~/.bundle/config exists
+  file:
+    path: '{{ ansible_env.HOME }}/.bundle/config'
+    state: touch
+
+# NOTE: lineinfile must use ~ for home; ansible_env.HOME will fail
+- lineinfile:
+    dest: ~/.bundle/config
+    state: present
+    line: 'BUNDLE_JOBS: {{ ansible_processor_cores }}'
+
+- lineinfile:
+    dest: ~/.bundle/config
+    state: present
+    line: 'BUNDLE_GEM__COC: false'
+
+- lineinfile:
+    dest: ~/.bundle/config
+    state: present
+    line: 'BUNDLE_GEM__MIT: false'
+
+- lineinfile:
+    dest: ~/.bundle/config
+    state: present
+    line: 'BUNDLE_GEM__TEST: rspec'

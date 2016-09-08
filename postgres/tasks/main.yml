@@ -1,9 +1,9 @@
 ---
-- set_fact:
-    role: "{{ postgres|combine(project.postgres|default({})) }}"
+# - set_fact:
+#     role: "{{ postgres|combine(project.postgres|default({})) }}"
 
 - name: Install Debian packages
-  apt: name={{ item }} state=present
+  apt: name={{ item }} state=present update_cache=yes cache_valid_time=86400
   become: yes
   with_items: [libpq-dev, postgresql, postgresql-client, postgresql-contrib, python-psycopg2]
   when: ansible_distribution == 'Debian'
@@ -12,6 +12,7 @@
   copy: src=.inputrc dest=/var/lib/postgresql
   become: yes
   become_user: postgres
+  when: ansible_distribution == 'Debian'
 
 # NOTE: The location of config can be operating system dependent, e.g. ubuntu is diff from debian
 - name: 'Listen on all interfaces to allow connection from docker'
@@ -21,22 +22,38 @@
   become: yes
   notify: Restart PostgreSQL
 
-- name: 'Trust connections from docker IP'
-  lineinfile:
-    dest: /etc/postgresql/9.4/main/pg_hba.conf
-    line: 'host    all         all         {{ role.docker_network }}    trust'
-  become: yes
-  notify: Restart PostgreSQL
-
-- name: 'Create ROLE {{ role.username }} and grant dbcreate and superuser privileges'
+- name: 'Create ROLE {{ database_username }} and grant dbcreate and superuser privileges'
   postgresql_user:
-    name: '{{ role.username }}'
-    password: '{{ role.password }}'
+    name: '{{ database_username }}'
+    password: '{{ database_password }}'
     role_attr_flags: 'SUPERUSER,CREATEDB'
   become: yes
   become_user: postgres
 
-- include: project-database.yml group={{ outer_item.group }}
-  with_items: '{{ project_groups }}'
-  loop_control:
-    loop_var: outer_item
+- name: 'Trust connections from docker IP'
+  lineinfile:
+    dest: /etc/postgresql/9.4/main/pg_hba.conf
+    line: 'host    all         all         {{ postgres_permitted_network }}    trust'
+  become: yes
+  notify: Restart PostgreSQL
+
+
+# - name: 'Trust connections from docker IP'
+#   lineinfile:
+#     dest: /etc/postgresql/9.4/main/pg_hba.conf
+#     line: 'host    all         all         {{ role.docker_network }}    trust'
+#   become: yes
+#   notify: Restart PostgreSQL
+
+# - name: 'Create ROLE {{ role.username }} and grant dbcreate and superuser privileges'
+#   postgresql_user:
+#     name: '{{ role.username }}'
+#     password: '{{ role.password }}'
+#     role_attr_flags: 'SUPERUSER,CREATEDB'
+#   become: yes
+#   become_user: postgres
+
+# - include: project-database.yml group={{ outer_item.group }}
+#   with_items: '{{ project_groups }}'
+#   loop_control:
+#     loop_var: outer_item

@@ -1,0 +1,15 @@
+---
+- name: 'Prepare projects for building docker images'
+  shell: . /etc/profile && rm -f Gemfile.lock && ~/.rbenv/shims/bundle package --all && ~/.rbenv/shims/bundle package --all > /tmp/prepared_{{ item.name }}
+  args:
+    chdir: '{{ project.directory }}/{{ item.name }}'
+    creates: '/tmp/prepare_{{ item.name }}'
+  with_items: '{{ project.docker_images }}'
+
+# See: http://docs.ansible.com/ansible/docker_image_module.html
+- name: 'Build {{ image_directory }} docker images'
+  docker_image:
+    path: '{{ project.directory }}/{{ item.name }}'
+    name: '{{ project.docker_registry }}/{{ item.name }}'
+    state: present
+  with_items: '{{ project.docker_images }}'
