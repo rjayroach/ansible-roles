@@ -43,28 +43,8 @@
     path: '{{ ansible_env.HOME }}/.bundle'
     state: directory
 
-- name: Ensure ~/.bundle/config exists
-  file:
-    path: '{{ ansible_env.HOME }}/.bundle/config'
-    state: touch
-
-# NOTE: lineinfile must use ~ for home; ansible_env.HOME will fail
-- lineinfile:
-    dest: ~/.bundle/config
-    state: present
-    line: 'BUNDLE_JOBS: {{ ansible_processor_cores }}'
-
-- lineinfile:
-    dest: ~/.bundle/config
-    state: present
-    line: 'BUNDLE_GEM__COC: false'
-
-- lineinfile:
-    dest: ~/.bundle/config
-    state: present
-    line: 'BUNDLE_GEM__MIT: false'
-
-- lineinfile:
-    dest: ~/.bundle/config
-    state: present
-    line: 'BUNDLE_GEM__TEST: rspec'
+- name: Create ~/.bundle/config unless it already exists
+  template:
+    src: bundle_config.j2
+    dest: '{{ ansible_env.HOME }}/.bundle/config'
+    force: no
