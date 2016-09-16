@@ -41,6 +41,6 @@
 - name: copy files to home directory
   copy: src=home/ dest={{ ansible_env.HOME }}/
 
-- name: copy files to .zsh.after
-  copy: src=zsh.after/ dest={{ ansible_env.HOME }}/.zsh.after/
-  tags: alias
+# - name: copy files to .zsh.after
+#   copy: src=zsh.after/ dest={{ ansible_env.HOME }}/.zsh.after/
+#   tags: alias

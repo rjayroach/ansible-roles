@@ -3,12 +3,3 @@
   template:
     src: gitconfig.user.j2
     dest: '{{ ansible_env.HOME }}/.gitconfig.user'
-
-- name: Log in to docker registries
-  docker_login:
-    registry: '{{ item.registry }}'
-    username: '{{ item.username }}'
-    password: '{{ item.password }}'
-    email: '{{ item.email }}'
-    # reauthorize: yes
-  with_items: '{{ docker_creds }}'

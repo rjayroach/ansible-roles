@@ -1,10 +1,28 @@
 ---
-# - set_fact:
-#     role: "{{ docker|combine(project.docker|default({})) }}"
-
 - include: 'install.yml'
+  become: yes
 
-# - include: images.yml proj={{ outer_item }}
-#   with_items: '{{ project_groups }}'
-#   loop_control:
-#     loop_var: outer_item
+- name: Check if ~/.zsh.after exists
+  stat:
+    path: ~/.zsh.after
+  register: zsh_after
+
+- name: Insert aliases
+  blockinfile:
+    create: yes
+    dest: ~/.zsh.after/aliases.zsh
+    marker: '# {mark} ANSIBLE MANAGED BLOCK (docker)'
+    block: |
+      alias di='docker images'
+      alias dps='docker ps'
+  when: zsh_after.stat.exists
+
+- name: Log in to docker registries
+  docker_login:
+    registry: '{{ item.registry }}'
+    username: '{{ item.username }}'
+    password: '{{ item.password }}'
+    email: '{{ item.email }}'
+    # reauthorize: yes
+  with_items: '{{ docker_creds }}'
+  when: docker_creds is defined

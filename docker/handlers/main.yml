@@ -1,3 +1,6 @@
 ---
+- name: Reload docker service
+  shell: 'systemctl daemon-reload'
+
 - name: Start docker
   service: name=docker state=started

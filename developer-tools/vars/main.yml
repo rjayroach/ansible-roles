@@ -1,8 +1,16 @@
 ---
 dev_tools:
   common_packages:
-    - rake
+    - curl
     - git
+    - nmap
+    - rake
+    - tcpdump
+    - tmux
+    - tree
+    - unzip
+    - vim
+    - wget
   debian_packages:
     - apache2-utils
     - exuberant-ctags

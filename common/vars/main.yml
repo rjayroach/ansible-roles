@@ -1,14 +1,5 @@
 ---
 common_packages:
-  - curl
   - htop
   - lsof
-  - nmap
   - ntp
-  - tcpdump
-  - tmux
-  - tree
-  - vim
-  - wget
-  - python-pip
-  - unzip

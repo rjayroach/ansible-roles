@@ -11,22 +11,31 @@
   apt: name=docker-engine state=present
   when: ansible_pkg_mgr == 'apt'
 
-- name: Update docker daemon config
-  lineinfile:
-    dest: /lib/systemd/system/docker.service
-    regexp: '^ExecStart=/usr/bin/docker'
-    line: 'ExecStart=/usr/bin/docker daemon -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock'
-  notify:
-    - Start docker
-
-# NOTE: Once docker-* is installed these commands continuously fail
-- name: Install docker-compose
-  pip: name=docker-compose state=latest
-  ignore_errors: yes
-
+# NOTE: Get new docker-swarm mode working and see about any modifications to docker service config
+# NOTE: Including writing images out to a system partition rather than inside the VM directly
+# - name: Update docker daemon config
+#   lineinfile:
+#     dest: /lib/systemd/system/docker.service
+#     regexp: '^ExecStart=/usr/bin/docker'
+#     line: 'ExecStart=/usr/bin/docker daemon -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock'
+#   notify:
+#     - Reload docker service
+#     - Start docker
+ 
 - name: Install docker-py
-  pip: name=docker-py state=latest
-  ignore_errors: yes
+  pip:
+    name: docker-py
+    state: present
+    # NOTE: See: https://github.com/ansible/ansible/issues/17495
+    version: 1.9.0
+
+- name: Install docker-compose
+  pip:
+    name: docker-compose
+    state: present
 
 - name: 'Add user {{ ansible_user }} to docker group'
-  user: name={{ ansible_user }} groups=docker append=yes
+  user:
+    name: '{{ ansible_user }}'
+    groups: docker
+    append: yes

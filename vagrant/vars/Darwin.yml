@@ -1,9 +1,0 @@
----
-#homebrew_taps:
-#  - caskroom/cask
-#  - homebrew/binary
-#
-homebrew_cask_apps:
-  - vagrant
-  - vagrant-manager
-  - virtualbox
