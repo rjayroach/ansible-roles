@@ -1,0 +1,32 @@
+---
+- name: Check if terraform binary exists
+  stat:
+    path: /usr/local/bin/terraform
+  register: terraform_binary
+
+- name: Get terraform binary
+  get_url:
+    url: 'https://releases.hashicorp.com/terraform/{{ terraform_version }}/{{ terraform_file }}.zip'
+    dest: '{{ ansible_env.HOME }}/{{ terraform_file }}.zip'
+  when: terraform_binary.stat.exists == false
+  register: new_archive
+
+- name: install terraform
+  unarchive:
+    src: '{{ ansible_env.HOME }}/{{ terraform_file }}.zip'
+    dest: /usr/local/bin
+    copy: no
+  when: new_archive|changed
+  become: yes
+
+- name: Insert aliases
+  blockinfile:
+    create: yes
+    dest: ~/.zsh.after/aliases.zsh
+    marker: '# {mark} ANSIBLE MANAGED BLOCK (terraform)'
+    block: |
+      alias tfa='terraform apply'
+      alias tfd='terraform destroy'
+      alias tfg='terraform graph'
+      alias tfp='terraform plan'
+      alias tfs='terraform show'
