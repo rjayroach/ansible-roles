@@ -1,0 +1,26 @@
+---
+- name: Gather facts on the Load Balancer
+  ec2_elb_facts:
+    region: '{{ c.region }}'
+    names:
+      - 'public-elb-{{ c.env }}'
+  register: public_elb
+
+- debug: var=public_elb
+
+- name: Remove DNS reocrds
+  route53:
+    command: delete
+    zone: '{{ c.domain }}.'
+    record: '{{ item }}.{{ c.domain }}.'
+    type: CNAME
+    ttl: 60
+    value: '{{ public_elb.elbs[0].dns_name }}'
+  with_items: '{{ c.hosts }}'
+
+# Remove the ELB and wait for check with timeout value
+- name: Remove ELB
+  ec2_elb_lb:
+    region: '{{ c.region }}'
+    name: 'public-elb-{{ c.env }}'
+    state: absent

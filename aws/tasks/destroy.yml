@@ -1,0 +1,7 @@
+# NOTE: Resources must be destroyed in a specific (opposite from create) order
+# ./cloud-cluster.yml -e action=destroy
+---
+- include: destroy-ec2.yml
+# - include: destroy-resources.yml
+# - include: destroy-elb.yml
+# - include: destroy-vpc.yml

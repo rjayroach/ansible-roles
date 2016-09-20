@@ -1,0 +1,39 @@
+---
+- name: List volumes for an instance
+  ec2_vol:
+    region: '{{ region }}'
+    instance: '{{ instance_ids[0] }}'
+    state: list
+  tags:
+    - attach-ebs
+
+- name: Create new volume using SSD storage
+  ec2_vol:
+    region: '{{ region }}'
+    instance: '{{ instance_ids[0] }}'
+    volume_size: 50
+    volume_type: gp2
+    device_name: /dev/xvdf
+  tags:
+    - attach-ebs
+# NOTE: Only when it does not already exist
+
+
+- name: Create an ext4 filesystem on /dev/xvdf
+  filesystem: fstype=ext4 dev=/dev/xvdf
+  tags:
+    - create-ebs
+
+- name: Mount filesystem on /dev/xvdf
+  mount: name=/mnt/xvdf src=/dev/xvdf fstype=ext4 state=mounted
+  tags:
+    - create-ebs
+
+# - name: Attach an existing volume to instance. The volume will be deleted upon instance termination.
+#   ec2_vol:
+#     instance: '{{ instance_ids[0] }}'
+#     id: XXXXXX
+#     device_name: /dev/sdf
+#     delete_on_termination: yes
+#   tags:
+#     - attach-ebs

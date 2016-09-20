@@ -1,0 +1,174 @@
+# TODO: Provision a VPN server, then remove any access to EC2s
+---
+- debug: 'msg=Platform Networking {{ c.env }} ({{ c.domain }}) - Create VPC with multi-az subnets'
+
+- name: 'Create VPC with multi-az subnets'
+  ec2_vpc:
+    state: present
+    region: '{{ c.region }}'
+    cidr_block: 172.22.0.0/16
+    resource_tags: '{{ aws.vpc_resource_tags }}'
+    subnets:
+      - cidr: 172.22.1.0/24
+        az: '{{ c.region }}a'
+        resource_tags: { 'Name':'{{ c.env }} Web A Tier', 'env':'{{ c.env }}', 'tier':'web_a' }
+      - cidr: 172.22.2.0/24
+        az: '{{ c.region }}b'
+        resource_tags: { 'Name':'{{ c.env }} Web B Tier', 'env':'{{ c.env }}', 'tier':'web_b' }
+    internet_gateway: yes
+    route_tables:
+      - subnets:
+        - 172.22.1.0/24
+        - 172.22.2.0/24
+        routes:
+        - dest: 0.0.0.0/0
+          gw: igw
+  register: vpc_details
+
+- name: 'VPC Info'
+  debug: var=vpc_details
+ 
+- name: Check if VPC file exists
+  stat:
+    path: '{{ aws.vpc_info_file }}'
+  register: vpc_file
+
+- name: Create VPC file
+  file:
+    path: '{{ aws.vpc_info_file }}'
+    state: touch
+  when: vpc_file.stat.exists == False
+
+- name: 'Write VPC info to {{ aws.vpc_info_file }}'
+  blockinfile:
+    dest: '{{ aws.vpc_info_file }}'
+    block: |
+      vpc:
+        vpc_id: {{ vpc_details.vpc_id }}
+        subnet_ids:
+
+- name: 'Write subnet ids to {{ aws.vpc_info_file }}'
+  lineinfile:
+    dest: '{{ aws.vpc_info_file }}'
+    line: '    - {{ item.id }}'
+  with_items: '{{ vpc_details.subnets }}'
+
+- name: 'Write subnets to {{ aws.vpc_info_file }}'
+  lineinfile:
+    dest: '{{ aws.vpc_info_file }}'
+    line: '  subnets:'
+
+- name: 'Write subnets to {{ aws.vpc_info_file }}'
+  lineinfile:
+    dest: '{{ aws.vpc_info_file }}'
+    line: '    {{ item.resource_tags.tier }}: {{ item.id }}'
+  with_items: '{{ vpc_details.subnets }}'
+
+- name: 'Get VPC info'
+  include_vars: '{{ aws.vpc_info_file }}'
+
+#- name: 'Value of vpd'
+#  debug: var=vpc
+
+- name: 'Add rules to Web Tier Security Group'
+  ec2_group:
+    region: '{{ c.region }}'
+    vpc_id: '{{ vpc.vpc_id|default(vpc_id) }}'
+    name: '{{ c.env }}-sg-web'
+    description: Security group for web tier
+    rules:
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 443
+        to_port: 443
+        cidr_ip: 0.0.0.0/0
+  register: sg_web
+
+- name: Tag the security group with a name
+  ec2_tag:
+    resource: '{{ sg_web.group_id}}'
+    region: '{{ c.region }}'
+    state: present
+    tags:
+      Name: '{{ c.env }}_sg_web'
+      Environment: '{{ c.env }}'
+
+- name: Write Web Tier Security Group info
+  lineinfile:
+    dest: '{{ aws.vpc_info_file }}'
+    line: '  security_group_ids:'
+
+- name: Write Web Tier Security Group info
+  lineinfile:
+    dest: '{{ aws.vpc_info_file }}'
+    line: '    - {{ sg_web.group_id }}'
+
+#
+# - name: 'Write Web Tier Security Group to {{ aws.vpc_info_file }}'
+#   lineinfile:
+#     dest: '{{ aws.vpc_info_file }}'
+#     line: 'sg_web:'
+# 
+# - name: 'Write Web Tier Security Group to {{ aws.vpc_info_file }}'
+#   lineinfile:
+#     dest: '{{ aws.vpc_info_file }}'
+#     line: '  group_id: {{ sg_web.group_id }}'
+
+
+- name: 'Add rules to the NAT Security Group'
+  ec2_group:
+    region: '{{ c.region }}'
+    vpc_id: '{{ vpc.vpc_id }}'
+    name: '{{ c.env }}-sg-nat'
+    description: Security group for NAT
+    rules:
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 443
+        to_port: 443
+        cidr_ip: 0.0.0.0/0
+    rules_egress:
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 443
+        to_port: 443
+        cidr_ip: 0.0.0.0/0
+  register: sg_nat
+
+- name: Tag the security group with a name
+  ec2_tag:
+    resource: '{{ sg_nat.group_id}}'
+    region: '{{ c.region }}'
+    state: present
+    tags:
+      Name: '{{ c.env }}_sg_nat'
+      Environment: '{{ c.env }}'
+
+  # - name: "Write security group ids to {{ vpc_info_file }}"
+  #   connection: local
+  #   lineinfile:
+  #     dest: "{{ vpc_info_file }}"
+  #     line: "{{ item.item.name }}: {{ item.group_id }}" 
+  #   with_items: aws_cache_sg.results
+
+#- include_vars: '{{ aws.vpc_info_file }}'
+#- debug: var=vpc.subnets
+#- debug: var=vpc.security_group_ids
+# - debug: var=vpc.security_groups

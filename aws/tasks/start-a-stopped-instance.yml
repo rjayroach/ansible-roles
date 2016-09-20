@@ -1,0 +1,33 @@
+---
+
+- name: Gather facts about all stopped ec2 instances with a tag of Name:test ezlink reference implementation
+  ec2_remote_facts:
+    region: '{{ region }}'
+    filters:
+      instance-state-name: running # stopped
+      "tag:Name": test ezlink reference implementation
+  register: stopped_ec2s
+  tags:
+    - start_ec2
+    - attach-ebs
+
+- set_fact:
+    instance_ids: "{{stopped_ec2s['instances']|map(attribute='id')|list}}"
+  tags:
+    - start_ec2
+    - attach-ebs
+
+- debug: var=instance_ids
+  tags:
+    - start_ec2
+    - attach-ebs
+
+- name: Start the sandbox instance
+  ec2:
+    instance_ids: '{{ instance_ids }}'
+    region: '{{ region }}'
+    state: running
+    wait: True
+    assign_public_ip: yes
+  tags:
+    - start_ec2

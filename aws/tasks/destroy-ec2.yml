@@ -1,0 +1,21 @@
+---
+- name: List running instances
+  ec2_remote_facts:
+    region: '{{ c.region }}'
+    filters:
+      instance-state-name: running # stopped
+      "tag:env": '{{ c.env }}'
+  register: running_ec2s
+
+- set_fact:
+    instance_ids: "{{running_ec2s['instances']|map(attribute='id')|list}}"
+
+- debug: var=running_ec2s
+- debug: var=instance_ids
+
+- name: Terminate running instances
+  ec2:
+    instance_ids: '{{ instance_ids }}'
+    region: '{{ c.region }}'
+    state: absent
+    wait: yes

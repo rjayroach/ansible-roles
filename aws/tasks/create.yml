@@ -1,0 +1,6 @@
+# NOTE: Resources must be created in a specific order
+---
+# - include: create-vpc.yml
+- include: create-ec2.yml
+# - include: create-elb.yml
+# - include: create-resources.yml

@@ -1,0 +1,4 @@
+---
+aws:
+  vpc_resource_tags: { 'env':'{{ c.env }}', 'Name':'{{ c.env }} platform' }
+  vpc_info_file: '{{ c.env }}-vpc-info'

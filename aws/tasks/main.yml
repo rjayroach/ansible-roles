@@ -1,0 +1,6 @@
+---
+# - debug: 'msg={{ context }}'
+# - debug: var=context
+# - debug: var=mode
+# - debug: var=aws.vpc_info_file
+- include: '{{ mode }}.yml'
