@@ -1,39 +1,39 @@
 ---
-- name: Create softlinks to the project's source .env file
+- name: "Create softlinks to the application's source .env file"
   file:
-    path: '{{ project.directory }}/{{ item.name }}/.env'
-    src: '{{ project.directory }}/.env'
+    path: '{{ config.directory }}/{{ item.name }}/.env'
+    src: '{{ config.directory }}/.env'
     state: link
-  with_items: '{{ project.rails_projects }}'
+  with_items: '{{ config.ruby.rails_apps }}'
 
 - name: Create softlinks to .env file in spec/dummy for engines
   file:
-    path: '{{ project.directory }}/{{ item.name }}/spec/dummy/.env'
-    src: '{{ project.directory }}/.env'
+    path: '{{ config.directory }}/{{ item.name }}/spec/dummy/.env'
+    src: '{{ config.directory }}/.env'
     state: link
-  with_items: '{{ project.rails_projects }}'
+  with_items: '{{ config.ruby.rails_apps }}'
   when: item.engine is defined and item.engine
 
 - name: Configure repo as a local source in ~/.bundle/config
   lineinfile:
     dest: ~/.bundle/config
     state: present
-    line: 'BUNDLE_LOCAL__{{ item.local }}: "{{ project.directory }}/{{ item.name }}"'
-  with_items: '{{ project.source_repos }}'
+    line: 'BUNDLE_LOCAL__{{ item.name.replace("-", "_").upper() }}: "{{ config.directory }}/{{ item.name }}"'
+  with_items: '{{ config.source_repos }}'
   when: item.local is defined and item.local
 
-- name: Run bundle on rails projects
+- name: Run bundle on rails applications
   shell: . /etc/profile && ~/.rbenv/shims/bundle
   args:
-    chdir: '{{ project.directory }}/{{ item.name }}'
-  with_items: '{{ project.rails_projects }}'
+    chdir: '{{ config.directory }}/{{ item.name }}'
+  with_items: '{{ config.ruby.rails_apps }}'
   when: item.build is defined and item.build
 
-# - name: Run database migrations on engine build projects
+# - name: Run database migrations on engine build applications
 #   shell: . /etc/profile && ~/.rbenv/shims/bundle exec rake {{ 'app:' if item.engine is defined else '' }}db:migrate {{ 'app:' if item.engine is defined else '' }}db:test:prepare
 #   args:
-#     chdir: '{{ project.directory }}/{{ item.name }}'
-#   with_items: '{{ project.rails_projects }}'
+#     chdir: '{{ config.directory }}/{{ item.name }}'
+#   with_items: '{{ config.ruby.rails_apps }}'
 #   when: item.build is defined
 
 - name: Insert aliases

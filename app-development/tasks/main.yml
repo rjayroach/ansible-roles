@@ -1,0 +1,12 @@
+---
+- name: Ensure the application directory exists
+  file:
+    path: '{{ config.directory }}'
+    state: directory
+
+- name: "Ensure the application's data directory exists"
+  file:
+    path: '{{ config.data_directory }}'
+    state: directory
+
+- include: '{{ action }}.yml'

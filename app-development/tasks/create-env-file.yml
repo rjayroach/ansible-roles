@@ -1,0 +1,5 @@
+---
+- name: 'Write envs to {{ config.directory }}/.env'
+  template:
+    src: envs.j2
+    dest: '{{ config.directory }}/.env'
