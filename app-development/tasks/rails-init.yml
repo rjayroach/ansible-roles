@@ -1,15 +1,15 @@
 ---
 - name: "Create softlinks to the application's source .env file"
   file:
-    path: '{{ config.directory }}/{{ item.name }}/.env'
-    src: '{{ config.directory }}/.env'
+    path: '{{ app_directory }}/{{ item.name }}/.env'
+    src: '{{ app_directory }}/.env'
     state: link
   with_items: '{{ config.ruby.rails_apps }}'
 
 - name: Create softlinks to .env file in spec/dummy for engines
   file:
-    path: '{{ config.directory }}/{{ item.name }}/spec/dummy/.env'
-    src: '{{ config.directory }}/.env'
+    path: '{{ app_directory }}/{{ item.name }}/spec/dummy/.env'
+    src: '{{ app_directory }}/.env'
     state: link
   with_items: '{{ config.ruby.rails_apps }}'
   when: item.engine is defined and item.engine
@@ -18,21 +18,21 @@
   lineinfile:
     dest: ~/.bundle/config
     state: present
-    line: 'BUNDLE_LOCAL__{{ item.name.replace("-", "_").upper() }}: "{{ config.directory }}/{{ item.name }}"'
+    line: 'BUNDLE_LOCAL__{{ item.name.replace("-", "_").upper() }}: "{{ app_directory }}/{{ item.name }}"'
   with_items: '{{ config.source_repos }}'
   when: item.local is defined and item.local
 
 - name: Run bundle on rails applications
   shell: . /etc/profile && ~/.rbenv/shims/bundle
   args:
-    chdir: '{{ config.directory }}/{{ item.name }}'
+    chdir: '{{ app_directory }}/{{ item.name }}'
   with_items: '{{ config.ruby.rails_apps }}'
   when: item.build is defined and item.build
 
 # - name: Run database migrations on engine build applications
 #   shell: . /etc/profile && ~/.rbenv/shims/bundle exec rake {{ 'app:' if item.engine is defined else '' }}db:migrate {{ 'app:' if item.engine is defined else '' }}db:test:prepare
 #   args:
-#     chdir: '{{ config.directory }}/{{ item.name }}'
+#     chdir: '{{ app_directory }}/{{ item.name }}'
 #   with_items: '{{ config.ruby.rails_apps }}'
 #   when: item.build is defined
 
