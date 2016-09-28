@@ -32,5 +32,11 @@ Code changed in the submodule can be [committed and pushed]
 - move boot2docker to the 'docker' role
 
 ### Laptop provisioning
-In prepd add playbook that provisions a mac or ubuntu laptop with
-- android, packer, extras, etc
+In prepd:
+- create a bootstrap.sh script that installs Ansible and dependencies, e.g. Homebrew, python, etc
+- add a playbook that provisions a mac or ubuntu laptop with android, packer, extras, etc
+- update README to document provisioning a mac from brand new:
+1. git clone prepd
+2. run bootstrap.sh
+3. run ./laptop.yml
+4. bin/console to create a client and project OR git clone a project created with prepd
