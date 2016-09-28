@@ -21,22 +21,3 @@ git submodule update --remote --merge
 
 Code changed in the submodule can be [committed and pushed]
 (https://chrisjean.com/git-submodules-adding-using-removing-and-updating) like any other repo.
-
-
-## TODO
-
-### Extras role
-- move the android-sdk, android-studio and java to it's own role 'android'
-- keep the 'cordova' role separate but create a playbook that includes both roles
-- move go and packer homebrew packages to the 'packer' role
-- move boot2docker to the 'docker' role
-
-### Laptop provisioning
-In prepd:
-- create a bootstrap.sh script that installs Ansible and dependencies, e.g. Homebrew, python, etc
-- add a playbook that provisions a mac or ubuntu laptop with android, packer, extras, etc
-- update README to document provisioning a mac from brand new:
-1. git clone prepd
-2. run bootstrap.sh
-3. run ./laptop.yml
-4. bin/console to create a client and project OR git clone a project created with prepd
