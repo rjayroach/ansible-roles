@@ -19,5 +19,5 @@ git submodule update --remote --merge
 
 ## Updating Code
 
-Code changed in the submodule can be committed and pushed like any other repo. See 
-[here](https://chrisjean.com/git-submodules-adding-using-removing-and-updating) for details.
+Code changed in the submodule can be [committed and pushed]
+(https://chrisjean.com/git-submodules-adding-using-removing-and-updating) like any other repo.
