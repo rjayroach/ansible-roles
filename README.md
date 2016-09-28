@@ -1,7 +1,7 @@
-## Ansible Roles
+# Ansible Roles
 
-These custom Ansible roles are primarily intended to be included in a project derived from
-[prepd-project](https://github.com/rjayroach/prepd-project/) which provides a set of infrastructure blueprints.
+Custom Ansible roles primarily intended to be included in a project derived from [prepd-project]
+(https://github.com/rjayroach/prepd-project/) to provide a set of infrastructure blueprints.
 
 ## Using
 
