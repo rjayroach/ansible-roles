@@ -1,8 +1,7 @@
 ## Ansible Roles
 
 These custom Ansible roles are primarily intended to be included in a project derived from
-[prepd-project](https://github.com/rjayroach/prepd-project/) which provides a set of infrastructure blueprints
-
+[prepd-project](https://github.com/rjayroach/prepd-project/) which provides a set of infrastructure blueprints.
 
 ## Using
 
@@ -20,6 +19,5 @@ git submodule update --remote --merge
 
 ## Updating Code
 
-Code changed in the submodule can be committed and pushed like any other repo
-
-[Reference](https://chrisjean.com/git-submodules-adding-using-removing-and-updating)
+Code changed in the submodule can be committed and pushed like any other repo. See 
+[here](https://chrisjean.com/git-submodules-adding-using-removing-and-updating) for details.
