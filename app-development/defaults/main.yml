@@ -1,0 +1,4 @@
+---
+action: clone-repos
+app_directory: '{{ ansible_env.HOME }}/{{ config.name }}'
+app_data_directory: '{{ ansible_env.HOME }}/{{ config.project.name }}/data/{{ config.name }}'
