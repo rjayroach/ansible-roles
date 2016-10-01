@@ -43,37 +43,39 @@
     marker: '# {mark} ANSIBLE MANAGED BLOCK (project-setup)'
     block: |
       alias adc='spring rake app:db:clean'
+      alias adcm='spring rake app:db:clean:migrate'
+      alias adcms='spring rake app:db:clean:migrate:seed'
+      alias adcs='spring rake app:db:clean:seed'
       alias adm='spring rake app:db:migrate'
-      alias admc='spring rake app:db:migrate:clean'
-      alias admcs='spring rake app:db:migrate:seed'
       alias ads='spring rake app:db:seed'
-      alias adsc='spring rake app:db:seed:clean'
-      alias adsct='SEED_TENANT=true spring rake app:db:seed:clean'
       alias adtp='spring rake app:db:test:prepare'
 
       alias beg='bundle exec guard'
 
       alias dc='spring rake db:clean'
+      alias dcm='spring rake db:clean:migrate'
+      alias dcms='spring rake db:clean:migrate:seed'
+      alias dcs='spring rake db:clean:seed'
       alias dm='spring rake db:migrate'
-      alias dmc='spring rake db:migrate:clean'
-      alias dmcs='spring rake db:migrate:seed'
-      alias dsc='spring rake db:seed:clean'
+      alias ds='spring rake db:seed'
       alias dtp='spring rake db:test:prepare'
 
       alias fs='foreman start -e <()'
 
-      alias ggpl='spring stop; git checkout Gemfile.lock; git pull'
-
       alias pss='ps -ef|grep spring'
 
       alias rc='spring rails console'
+
       alias rg='spring rails generate'
       alias rgjc='spring rails generate jsonapi:controller'
       alias rgjr='spring rails generate jsonapi:resource'
       alias rgm='spring rails generate model'
+
       alias rk='spring rake'
       alias rkd='RAILS_ENV=test spring rake docs:generate'
+
       alias rs='spring rspec'
 
+      alias sgpl='spring stop; git checkout Gemfile.lock; git pull'
       alias src='spring stop; rc'
       alias ss='spring stop'
