@@ -1,6 +1,9 @@
 ---
-- name: install cordova
+- name: Install Cordova
+  # TODO: don't assume the location of npm
+  # TODO: add a meta depends on role node
   command: ~/src/node-v0.12.1-linux-x64/bin/npm install -g cordova
+  # command: npm install -g cordova
   args:
      warn: false
      creates: ~/src/node-v0.12.1-linux-x64/bin/cordova
@@ -10,21 +13,36 @@
   register: sdk_dir
 
 - name: download Android SDK
-  get_url: url=http://dl.google.com/android/android-sdk_r24.2-linux.tgz dest=/tmp/yadr_install.sh mode=0755
+  # TODO: The dest value is not correct
+  # TODO: put the version of android SDK in a vars file (or default)
+  get_url:
+    url: http://dl.google.com/android/android-sdk_r24.2-linux.tgz
+    dest: /tmp/yadr_install.sh mode=0755
   when: yadr_dir.stat.exists == false
 
+  # TODO: put the JDK in a Java role and depend on that role also
 - apt: default-jdk, update=true
 
-# accept the SDK and reject the Google Glass linense
-- shell: echo "y\nn" | tools/android update sdk --no-ui
+- name: Accept the SDK and reject the Google Glass linense
+  shell: echo "y\nn" | tools/android update sdk --no-ui
     
 
 # See: https://wiki.debian.org/Multiarch/HOWTO
-- name: install i386 arch
+- name: Install i386 arch
   command:  dpkg --add-architecture i386
 
-- name: install i386 packages
+- name: Install i386 packages
   apt: libstdc++6:i386 libgcc1:i386 zlib1g:i386 libncurses5:i386
 
 # http://stackoverflow.com/questions/4615145/android-device-is-not-listed-while-running-adb-devices-ubantu-10-10
 # http://tools.android.com/recent/updatingsdkfromcommand-line
+
+- name: Insert aliases
+  blockinfile:
+    create: yes
+    dest: ~/.zsh.after/aliases.zsh
+    marker: '# {mark} ANSIBLE MANAGED BLOCK (cordova)'
+    block: |
+      alias cv='cordova'
+      alias cvb='cordova build'
+      alias cvp='cordova plugin'

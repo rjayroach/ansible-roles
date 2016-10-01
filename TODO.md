@@ -2,6 +2,16 @@
 
 These TODOs are organized and titled by the role
 
+## Yadr
+
+- cleanup files/zsh.after/aliases.zsh
+
+
+## Docker
+
+- Decide on whether to port dkr from the perx vagrant VM (or remove these aliases)
+
+
 ## Extras
 
 - move the android-sdk, android-studio and java to it's own role 'android'
@@ -9,10 +19,12 @@ These TODOs are organized and titled by the role
 - move go and packer homebrew packages to the 'packer' role
 - move boot2docker to the 'docker' role
 
+
 ## Virtualbox
 
 - create this role
 - it downloads and installs it to the laptop (mac or ubuntu)
+
 
 ## Vagrant
 
@@ -22,6 +34,7 @@ These TODOs are organized and titled by the role
 vagrant plugin install vagrant-vbguest      # keep your VirtualBox Guest Additions up to date
 vagrant plugin install vagrant-cachier      # caches guest packages
 vagrant plugin install vagrant-hostmanager  # updates /etc/hosts file when machines go up/down
+
 
 ## Packer
 
