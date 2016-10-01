@@ -23,6 +23,3 @@ extras:
     - kindle
     - spotify
     - transmission
-    - vagrant
-    - vagrant-manager
-    - virtualbox

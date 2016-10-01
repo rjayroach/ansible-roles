@@ -21,18 +21,18 @@
       alias v='vagrant'
       alias vb='vagrant box'
       alias vd='vagrant destroy'
-      alias vdm='vagrant destroy --force master'
+      alias vd0='vagrant destroy --force node0'
       alias vg='vagrant global-status'
       alias vh='vagrant halt'
-      alias vhm='vagrant halt master'
+      alias vh0='vagrant halt node0'
       alias vp='vagrant provision'
-      alias vpm='vagrant provision master'
+      alias vp0='vagrant provision node0'
       alias vs='vagrant ssh'
-      alias vsm='vagrant ssh master'
+      alias vs0='vagrant ssh node0'
       alias vst='vagrant status'
       alias vu='vagrant up'
-      alias vum='vagrant up master'
+      alias vu0='vagrant up node0'
       alias vup='vagrant up --provision'
-      alias vhn="bash -lc 'vagrant halt /swarm-node[0-9]/'"
-      alias vun="bash -lc 'vagrant up /swarm-node[0-9]/'"
+      alias vhn="bash -lc 'vagrant halt /node[1-9]/'"
+      alias vun="bash -lc 'vagrant up /node[1-9]/'"
   when: zsh_aliases.stat.exists
