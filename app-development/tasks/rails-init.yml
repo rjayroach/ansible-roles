@@ -57,6 +57,7 @@
       alias dcms='spring rake db:clean:migrate:seed'
       alias dcs='spring rake db:clean:seed'
       alias dm='spring rake db:migrate'
+      alias dms='spring rake db:migrate:status'
       alias ds='spring rake db:seed'
       alias dtp='spring rake db:test:prepare'
 
