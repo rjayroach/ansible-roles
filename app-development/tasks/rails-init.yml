@@ -68,10 +68,14 @@
       alias rc='spring rails console'
 
       alias rg='spring rails generate'
-      alias rgj='spring rails generate jsonapi:controller spring rails generate jsonapi:resource'
       alias rgjc='spring rails generate jsonapi:controller'
       alias rgjr='spring rails generate jsonapi:resource'
       alias rgm='spring rails generate model'
+
+      function rgj() {
+        spring rails generate jsonapi:controller "$1"
+        spring rails generate jsonapi:resource "$1"
+      }
 
       alias rk='spring rake'
       alias rkd='RAILS_ENV=test spring rake docs:generate'
