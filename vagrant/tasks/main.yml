@@ -12,6 +12,12 @@
 - command: vagrant plugin install vagrant-cachier      # caches guest packages
 - command: vagrant plugin install vagrant-hostmanager  # updates /etc/hosts file when machines go up/down
  
+# NOTE: http://stackoverflow.com/questions/23874260/error-when-trying-vagrant-up
+- name: "Remove vagrant's built in curl which fails to download boxes on Mac"
+  command: rm -rf /opt/vagrant/embedded/bin/curl
+  become: yes
+  when: ansible_os_family == 'Darwin'
+
 - name: Check if zsh aliases file exists
   stat:
     path: ~/.zsh.after/aliases.zsh
