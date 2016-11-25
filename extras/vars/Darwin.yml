@@ -3,7 +3,10 @@ extras:
   homebrew_cask_appdir: /Applications
 
   homebrew_installed_packages:
+    # to android role:
     - android-sdk
+
+    # to packder role (not sure where mercurial belongs)
     - go
     - mercurial
     - packer
@@ -13,13 +16,9 @@ extras:
     - homebrew/binary
 
   homebrew_cask_apps:
-    - android-studio
-    - boot2docker
-    - dropbox
-    - evernote
-    - firefox
-    - iterm2
-    - java
-    - kindle
-    - spotify
-    - transmission
+    # for android:
+    # - android-studio
+    # - java
+
+    # to docker role
+    # - boot2docker

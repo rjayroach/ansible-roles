@@ -1,21 +1,28 @@
 ---
 - name: Install common packages
   homebrew: name={{ item }} state=present
-  with_items: '{{ common.common_packages }}'
+  with_items: '{{ common_packages }}'
 
-#- homebrew_tap: tap={{ item }} state=present
-#  with_items: homebrew_taps
+# - homebrew_tap: tap={{ item }} state=present
+#   with_items:
+#     - caskroom/cask
+#     - homebrew/binary
 
 - name: Install homebrew cask
   homebrew: name={{ item }} state=present
-  with_items: '{{ common.homebrew_installed_packages }}'
+  with_items:
+    - cask
 
+# NOTE: cask requires to become root, but not to run cask as root so don't use become: yes here
 - name: Install packages via cask
   homebrew_cask: name={{ item }} state=present
-  with_items: '{{ common.homebrew_cask_apps }}'
+  with_items:
+    # - boot2docker
+    # - insomniax
+    - iterm2
 
-- name: Set shell mode to vi and copy in custom tmux.conf
+- name: Copy in custom inputrc
   copy: 'src={{ item }} dest={{ ansible_env.HOME }}/.{{ item }} owner={{ ansible_env.USER }} group=staff mode=0644'
   with_items:
     - inputrc
-    - tmux.conf
+  # TODO: only if the file doesn't exist

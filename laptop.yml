@@ -1,0 +1,10 @@
+#!/usr/bin/env ansible-playbook
+---
+- hosts: localhost
+  roles:
+    - common
+    - yadr
+    - developer-tools
+    - extras
+    - vagrant
+    # - packer
