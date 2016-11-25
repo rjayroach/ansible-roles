@@ -7,7 +7,10 @@
     - virtualbox
   when: ansible_os_family == 'Darwin'
 
-# TODO: Add the vagrant plugins installations as well
+# TODO: Add an 'unless' clause that checks if the plugin is already installed, otherwise it installs every time
+- command: vagrant plugin install vagrant-vbguest      # keep your VirtualBox Guest Additions up to date
+- command: vagrant plugin install vagrant-cachier      # caches guest packages
+- command: vagrant plugin install vagrant-hostmanager  # updates /etc/hosts file when machines go up/down
  
 - name: Check if zsh aliases file exists
   stat:
