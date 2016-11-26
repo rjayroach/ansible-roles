@@ -1,6 +1,0 @@
----
-common_debian_value: hello
-
-no_longer_needed_darwin_apps:
-  - lsof
-  - ntp
