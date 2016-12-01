@@ -1,8 +1,0 @@
----
-common_homebrew_install_path: /usr/local
-
-common_homebrew_taps:
-
-common_homebrew_cask_appdir: /Applications
-
-common_homebrew_cask_apps:

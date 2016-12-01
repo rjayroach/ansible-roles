@@ -3,8 +3,4 @@
 #       It means that for a given OS it installs a common set of packages and configs regardless of role
 #       So all other roles can depend on common and have a known config to base off of
 
-- include_vars: '{{ ansible_os_family }}.yml'
 - include: '{{ ansible_os_family }}.yml'
-
-# - name: Upgrade pip to latest version
-#   shell: 'pip install --upgrade pip'
