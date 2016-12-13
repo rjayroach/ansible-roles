@@ -1,5 +1,4 @@
 # TODO: IAM Users and SSL Cert uploads for use on ELBs
-# TODO: Manage SSH Keys
 # TODO: Manage Volume Mounts
 ---
 - include_vars: '{{ aws.vpc_info_file }}'
