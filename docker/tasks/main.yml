@@ -17,16 +17,6 @@
       alias dps='docker ps'
   when: zsh_after.stat.exists
 
-- name: Log in to docker registries
-  docker_login:
-    registry: '{{ item.registry }}'
-    username: '{{ item.username }}'
-    password: '{{ item.password }}'
-    email: '{{ item.email }}'
-    # reauthorize: yes
-  with_items: '{{ docker_creds }}'
-  when: docker_creds is defined
-
 # TODO: port dkr from the perx vagrant VM (or remove these aliases)
 - name: Insert aliases
   blockinfile:
@@ -45,4 +35,4 @@
       alias dsh='dkr shell'
       alias dst='dkr stop'
       alias dstr='dkr stop -r'
-
+  when: zsh_after.stat.exists

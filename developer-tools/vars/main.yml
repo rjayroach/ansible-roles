@@ -5,16 +5,18 @@ dev_tools:
     - tree
     - wget
   debian_packages:
-    - tmux
-    - curl
-    - git
-    - tcpdump
-    - rake
-    - unzip
-    - vim
     - apache2-utils
+    - curl
+    - dos2unix
     - exuberant-ctags
+    - git
+    - ipcalc
     - libcurl4-openssl-dev
     - libreadline-dev
     - libsqlite3-dev
+    - rake
     - sqlite3
+    - tcpdump
+    - tmux
+    - unzip
+    - vim

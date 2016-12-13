@@ -21,6 +21,11 @@
 #   notify:
 #     - Reload docker service
 #     - Start docker
+
+- name: Install pip
+  easy_install:
+    name: pip
+    # state: latest
  
 - name: Install docker-py
   pip:

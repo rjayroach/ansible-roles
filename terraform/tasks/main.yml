@@ -28,5 +28,6 @@
       alias tfa='terraform apply'
       alias tfd='terraform destroy'
       alias tfg='terraform graph'
+      alias tfgp='terraform graph | dot -Tpng > '
       alias tfp='terraform plan'
       alias tfs='terraform show'
