@@ -7,10 +7,13 @@
 
 - homebrew_cask: name={{ item }} state=present
   with_items:
+    - chrome
     - dropbox
     - evernote
     - firefox
     - kindle
     - postman
+    - skype
+    - slack
     - spotify
     - transmission

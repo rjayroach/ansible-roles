@@ -25,9 +25,11 @@
     dest: ~/.zsh.after/aliases.zsh
     marker: '# {mark} ANSIBLE MANAGED BLOCK (terraform)'
     block: |
-      alias tfa='terraform apply'
-      alias tfd='terraform destroy'
-      alias tfg='terraform graph'
-      alias tfgp='terraform graph | dot -Tpng > '
-      alias tfp='terraform plan'
+      alias tfa='terraform apply -var-file=../../.terraform-vars.txt'
+      alias tfd='terraform destroy -var-file=../../.terraform-vars.txt'
+      alias tfg='terraform get'
+      alias tfgr='terraform graph'
+      alias tfgrp='terraform graph | dot -Tpng > '
+      alias tfp='terraform plan -var-file=../../.terraform-vars.txt'
       alias tfs='terraform show'
+      alias tft='terraform taint'
