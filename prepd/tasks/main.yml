@@ -1,0 +1,34 @@
+---
+# if project-root/.boto exists then link it to ~/.boto and download ec2.py and ec2.ini and chmod ec2.py
+# - debug: var=playbook_dir
+# - debug: msg="{{ playbook_dir.split('/')[0:-1] | join('/') }}/.boto"
+
+- stat:
+    path: "{{ playbook_dir.split('/')[0:-1] | join('/') }}/.boto"
+  register: boto
+
+- name: Link project_root/.boto to ~/.boto if the file exists
+  file:
+    src: '{{ boto.stat.path }}'
+    dest: '{{ ansible_env.HOME }}/.boto'
+    state: link
+  when: boto.stat.exists == True
+
+- name: Get ec2.ini
+  get_url:
+    url: 'https://raw.githubusercontent.com/ansible/ansible/devel/contrib/inventory/ec2.ini'
+    dest: '{{ inventory_dir }}/ec2.ini'
+  when: boto.stat.exists == True
+
+- name: Get ec2.py
+  get_url:
+    url: 'https://raw.githubusercontent.com/ansible/ansible/devel/contrib/inventory/ec2.py'
+    dest: '{{ inventory_dir }}/ec2.py'
+  register: ec2_py
+  when: boto.stat.exists == True
+
+- name: Make ec2.py executable
+  file:
+    path: '{{ inventory_dir }}/ec2.py'
+    mode: 0755
+  when: ec2_py|changed
