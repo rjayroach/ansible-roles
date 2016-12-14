@@ -1,5 +1,5 @@
 ---
-- name: Check if terraform binary exists
+- name: Check if Terraform binary exists
   stat:
     path: /usr/local/bin/terraform
   register: terraform_binary
@@ -11,13 +11,22 @@
   when: terraform_binary.stat.exists == false
   register: new_archive
 
-- name: install terraform
+- name: Install Terraform
   unarchive:
     src: '{{ ansible_env.HOME }}/{{ terraform_file }}.zip'
     dest: /usr/local/bin
     copy: no
   when: new_archive|changed
   become: yes
+
+- name: Remove Terraform zip
+  file:
+    path: '{{ ansible_env.HOME }}/{{ terraform_file }}.zip'
+    state: absent
+
+- stat:
+    path: '{{ ansible_env.HOME }}/.zsh.after/aliases.zsh'
+  register: zsh_aliases
 
 - name: Insert aliases
   blockinfile:
@@ -33,3 +42,4 @@
       alias tfp='terraform plan -var-file=../../.terraform-vars.txt'
       alias tfs='terraform show'
       alias tft='terraform taint'
+  when: zsh_aliases.stat.exists == true
