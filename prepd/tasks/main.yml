@@ -4,7 +4,7 @@
 # - debug: msg="{{ playbook_dir.split('/')[0:-1] | join('/') }}/.boto"
 
 - stat:
-    path: "{{ playbook_dir.split('/')[0:-1] | join('/') }}/.boto"
+    path: '{{ playbook_dir.split("/")[0:-1] | join("/") }}/.boto'
   register: boto
 
 - name: Link project_root/.boto to ~/.boto if the file exists
@@ -32,3 +32,17 @@
     path: '{{ inventory_dir }}/ec2.py'
     mode: 0755
   when: ec2_py|changed
+
+- stat:
+    path: '{{ playbook_dir.split("/")[0:-1] | join("/") }}/.id_rsa'
+  register: id_rsa
+
+- name: Link project_root/.id_rsa and .id_rsa.pub to ~/.ssh if the files exist
+  file:
+    src: '{{ playbook_dir.split("/")[0:-1] | join("/") }}/.{{ item }}'
+    dest: '{{ ansible_env.HOME }}/.ssh/{{ item }}'
+    state: link
+  when: id_rsa.stat.exists == True
+  with_items:
+    - id_rsa
+    - id_rsa.pub
