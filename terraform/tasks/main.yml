@@ -1,4 +1,8 @@
 ---
+- name: Install graphiz to make graphs of infrastructure
+  apt: 
+    name: graphviz
+
 - name: Check if Terraform binary exists
   stat:
     path: /usr/local/bin/terraform
