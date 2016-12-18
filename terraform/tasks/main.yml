@@ -24,6 +24,25 @@
     path: '{{ ansible_env.HOME }}/{{ terraform_file }}.zip'
     state: absent
 
+- name: Check if Terragrunt binary exists
+  stat:
+    path: /usr/local/bin/terragrunt
+  register: terragrunt_binary
+
+- name: Get terragrunt binary
+  get_url:
+    url: 'https://github.com/gruntwork-io/terragrunt/releases/download/v{{ terragrunt_version }}/terragrunt_linux_amd64'
+    dest: /usr/local/bin/terragrunt
+  when: terragrunt_binary.stat.exists == false
+  register: terragrunt_archive
+  become: yes
+
+- name: Set terragrunt permissions
+  file:
+    path: /usr/local/bin/terragrunt
+    mode: 0755
+  become: yes
+
 - stat:
     path: '{{ ansible_env.HOME }}/.zsh.after/aliases.zsh'
   register: zsh_aliases
@@ -34,12 +53,27 @@
     dest: ~/.zsh.after/aliases.zsh
     marker: '# {mark} ANSIBLE MANAGED BLOCK (terraform)'
     block: |
-      alias tfa='terraform apply -var-file=../../.terraform-vars.txt'
-      alias tfd='terraform destroy -var-file=../../.terraform-vars.txt'
+      alias tfa='terraform apply -var-file=~/.terraform-vars.txt'
+      alias tfd='terraform destroy -var-file=~/.terraform-vars.txt'
       alias tfg='terraform get'
       alias tfgr='terraform graph'
       alias tfgrp='terraform graph | dot -Tpng > '
-      alias tfp='terraform plan -var-file=../../.terraform-vars.txt'
+      alias tfo='terraform output'
+      alias tfp='terraform plan -var-file=~/.terraform-vars.txt'
       alias tfs='terraform show'
+      alias tfst='terraform state'
       alias tft='terraform taint'
+
+      alias tga='terragrunt apply -var-file=~/.terraform-vars.txt'
+      alias tgd='terragrunt destroy -var-file=~/.terraform-vars.txt'
+      alias tgg='terragrunt get'
+      alias tggr='terragrunt graph'
+      alias tggrp='terragrunt graph | dot -Tpng > '
+      alias tgo='terragrunt output'
+      alias tgp='terragrunt plan -var-file=~/.terraform-vars.txt'
+      alias tgs='terragrunt show'
+      alias tgsu='terragrunt spin-up -var-file=~/.terraform-vars.txt'
+      alias tgst='terragrunt state'
+      alias tgt='terragrunt taint'
+      alias tgtd='terragrunt tear-down -var-file=~/.terraform-vars.txt'
   when: zsh_aliases.stat.exists == true
