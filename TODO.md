@@ -2,11 +2,6 @@
 
 These TODOs are organized and titled by the role
 
-## Yadr
-
-- cleanup files/zsh.after/aliases.zsh
-
-
 ## Docker
 
 - Decide on whether to port dkr from the perx vagrant VM (or remove these aliases)
@@ -26,19 +21,9 @@ These TODOs are organized and titled by the role
 - it downloads and installs it to the laptop (mac or ubuntu)
 
 
-## Vagrant
-
-- installs vagrant onto laptop
-- installs the plugins
-
-vagrant plugin install vagrant-vbguest      # keep your VirtualBox Guest Additions up to date
-vagrant plugin install vagrant-cachier      # caches guest packages
-vagrant plugin install vagrant-hostmanager  # updates /etc/hosts file when machines go up/down
-
-
 ## Packer
 
-- installs go and packer from homebrew
+- test that it installs go (as a dependency) and packer from homebrew
 - clones rjayroach/packer
 - probably need to update rjayroach/packer to build machines in a specific way that also allows to create AMIs
 - see if can automate posting boxes to atlas and pushing to S3
