@@ -72,9 +72,25 @@
       alias rgjr='spring rails generate jsonapi:resource'
       alias rgm='spring rails generate model'
 
+      # NOTE: bes() only works if there is one line in the Procfile
+      function bes() {
+        E=`awk '{first = $1; $1 = ""; print $0; }' Procfile`
+        eval $E
+      }
+
+      function psrk() {
+        ps aux | grep ruby | awk '{ print $2 }' | xargs kill -9
+      }
+
       function rgj() {
         spring rails generate jsonapi:controller "$1"
         spring rails generate jsonapi:resource "$1"
+      }
+
+      function srs() {
+        z $1
+        cd spec/dummy
+        spring rails server -b 0.0.0.0 -p $2
       }
 
       alias rk='spring rake'

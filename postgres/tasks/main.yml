@@ -37,6 +37,20 @@
   become: yes
   notify: Restart PostgreSQL
 
+- name: Insert aliases
+  blockinfile:
+    create: yes
+    dest: ~/.zsh.after/aliases.zsh
+    marker: '# {mark} ANSIBLE MANAGED BLOCK (postgres)'
+    block: |
+      alias supg='sudo su - postgres'
+
+      # Dump a schema named $2 from a database named $1
+      pgd() {
+        pg_dump $1 -n $2 | gzip -c > $1.sql.gz
+      }
+
+
 
 # - name: 'Trust connections from docker IP'
 #   lineinfile:
