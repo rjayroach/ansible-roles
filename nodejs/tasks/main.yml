@@ -1,36 +1,25 @@
 ---
-- name: Create ~/src and ~/bin directories
-  file:
-    path: '{{ ansible_env.HOME }}/{{ item }}'
-    state: directory
-  with_items:
-    - src
-    - bin
-  when: ansible_os_family == 'Debian'
+- name: Check if node is installed
+  stat:
+    path: /usr/local/bin/node
+  register: node
 
 - name: Get nodejs
   get_url:
     url: 'https://nodejs.org/dist/v{{ nodejs_version }}/node-v{{ nodejs_version }}-linux-x64.tar.xz'
-    dest: '{{ ansible_env.HOME }}/src/node-v{{ nodejs_version }}-linux-x64.tar.gz'
+    dest: '/tmp/node-v{{ nodejs_version }}-linux-x64.tar.gz'
   register: new_archive
-  when: ansible_os_family == 'Debian'
+  when: ansible_os_family == 'Debian' and node.stat.exists == false
 
-- name: install nodesjs
-  unarchive:
-    src: '{{ ansible_env.HOME }}/src/node-v{{ nodejs_version }}-linux-x64.tar.gz'
-    dest: '{{ ansible_env.HOME }}/src'
-    copy: no
+- name: Install nodesjs
+  command: 'tar -C /usr/local --strip-components 1 -xJf /tmp/node-v{{ nodejs_version }}-linux-x64.tar.xz'
+  become: yes
   when: new_archive|changed and ansible_os_family == 'Debian'
 
-- name: add nodejs to zsh path
-  lineinfile:
-    create: yes
-    dest: '~/.yadr/zsh/path.zsh'
-    line: 'export PATH=$PATH:~/src/node-v{{ nodejs_version }}-linux-x64/bin'
-  when: ansible_os_family == 'Debian'
-
 - name: Install Node via Homebrew
-  homebrew: name={{ item }} state=present
+  homebrew:
+    name: '{{ item }}'
+    state: present
   with_items:
     - npm
   when: ansible_os_family == 'Darwin'
