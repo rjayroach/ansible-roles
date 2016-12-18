@@ -62,6 +62,7 @@
       alias tfg='terraform get'
       alias tfgr='terraform graph'
       alias tfgrp='terraform graph | dot -Tpng > '
+      alias tfi='terraform import'
       alias tfo='terraform output'
       alias tfp='terraform plan -var-file=~/.terraform-vars.txt'
       alias tfs='terraform show'
