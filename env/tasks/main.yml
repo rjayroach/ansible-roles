@@ -1,0 +1,6 @@
+---
+- name: 'Write envs to {{ item.dir }}/.env'
+  template:
+    src: envs.j2
+    dest: '{{ item.dir }}/.env'
+  with_items: '{{ apps }}'

@@ -4,3 +4,11 @@
     name: ember-cli
     global: yes
   become: yes
+  when: apps is not defined
+
+- name: Install ember dependencies for existing application
+  shell: . /etc/profile && npm install && bower install
+  args:
+    chdir: '{{ item.dir }}/{{ item.name }}'
+  with_items: apps
+  when: apps is defined

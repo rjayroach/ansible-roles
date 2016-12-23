@@ -44,7 +44,7 @@
     src: 'home/{{ item }}'
     dest: '{{ ansible_env.HOME }}/.{{ item }}'
   with_items:
-    - tmux.user.conf
+    - tmux.conf.user
     - vimrc.after
 
 # TODO: move the git alias to Git role if ever there is one

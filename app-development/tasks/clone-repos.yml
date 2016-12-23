@@ -1,9 +1,0 @@
----
-- name: "Checkout the application's git repositories"
-  git:
-    repo: '{{ config.project.git_account }}/{{ item.repo | default(item.name) }}.git'
-    dest: '{{ app_directory }}/{{ item.name }}'
-    accept_hostkey: yes
-    update: no
-    version: "{{ item.version | default('HEAD') }}"
-  with_items: '{{ config.source_repos }}'

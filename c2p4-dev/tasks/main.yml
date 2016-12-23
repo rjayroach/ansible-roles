@@ -1,0 +1,11 @@
+---
+- name: "Checkout git repositories"
+  git:
+    repo: '{{ item.account }}/{{ item.name }}.git'
+    dest: '{{ ansible_env.HOME }}/{{ item.name }}'
+    accept_hostkey: yes
+    update: no
+    version: "{{ item.version | default('HEAD') }}"
+  with_items:
+    - { name: 'rails-templates', account: 'git@github.com:rjayroach' }
+    - { name: 'lego', account: 'git@github.com:rjayroach' }

@@ -1,0 +1,13 @@
+---
+# Options:
+# update: yes; when update is yes then the repo will be refreshed
+# version: a specific branch to checkout; default is HEAD
+
+- name: Checkout git repository
+  git:
+    repo: '{{ item.name }}.git'
+    dest: '{{ item.dir }}/{{ item.name }}'
+    accept_hostkey: yes
+    update: no #"{{ item.update | default(0) }}"
+    version: "{{ item.version | default('HEAD') }}"
+  with_items: '{{ repos }}'
