@@ -30,14 +30,14 @@
   with_items: '{{ apps }}'
   when: item.local is defined and item.local
 
-- name: Run bundle on rails applications
+- name: Run bundle
   shell: . /etc/profile && ~/.rbenv/shims/bundle
   args:
     chdir: '{{ item.dir }}/{{ item.name }}'
   with_items: '{{ apps }}'
   when: item.bundle is defined and item.bundle
 
-- name: Run database migrations on engine build applications
+- name: Run database migrations
   shell: . /etc/profile && ~/.rbenv/shims/bundle exec rake {{ 'app:' if item.engine is defined else '' }}db:migrate {{ 'app:' if item.engine is defined else '' }}db:test:prepare
   args:
     chdir: '{{ item.dir }}/{{ item.name }}'

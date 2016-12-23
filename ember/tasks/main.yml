@@ -6,11 +6,12 @@
   become: yes
   when: apps is not defined
 
-- name: Install ember dependencies for an existing application
-  shell: . /etc/profile && npm install && bower install
+# TODO: bower doesn't work from ansible for some reason
+- name: Install ember project dependencies
+  shell: . /etc/profile && npm install # && bower install
   args:
     chdir: '{{ item.dir }}/{{ item.name }}'
-  with_items: apps
+  with_items: '{{ apps }}'
   when: apps is defined
 
 - name: Insert aliases
