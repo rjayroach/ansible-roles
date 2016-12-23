@@ -2,6 +2,7 @@
 - name: Install graphiz to make graphs of infrastructure
   apt: 
     name: graphviz
+  become: yes
 
 - name: Check if Terraform binary exists
   stat:

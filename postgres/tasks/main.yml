@@ -47,6 +47,7 @@
     marker: '# {mark} ANSIBLE MANAGED BLOCK (postgres)'
     block: |
       alias supg='sudo su - postgres'
+      alias psqld='psql -d postgres'
 
       # Dump a schema named $2 from a database named $1
       pgd() {

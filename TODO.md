@@ -2,6 +2,17 @@
 
 These TODOs are organized and titled by the role
 
+tzupdate is not idempotent and is updated each time config-development.yml is run
+
+## Node
+
+- use nvm (similar to rbenv) to manage node version installs going forward
+
+
+## Rails
+
+- be able to specify the ruby version in the rails project itself rather than a 'global' ruby version as it is now
+
 ## Docker
 
 - Decide on whether to port dkr from the perx mac book projects/rjayroach/dkr
