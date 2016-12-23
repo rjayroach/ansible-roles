@@ -4,7 +4,7 @@ These TODOs are organized and titled by the role
 
 ## Docker
 
-- Decide on whether to port dkr from the perx vagrant VM (or remove these aliases)
+- Decide on whether to port dkr from the perx mac book projects/rjayroach/dkr
 
 
 ## Extras
@@ -17,8 +17,14 @@ These TODOs are organized and titled by the role
 
 ## Virtualbox
 
-- create this role
-- it downloads and installs it to the laptop (mac or ubuntu)
+- this is currently installed via homebrew but also needs to work on a linux host
+- also to create a role that can be run when a developer clones an existing prepd project and needs to install deps on local machine
+
+
+## Go
+
+- test that the binary installs properly; set a default version in defaults/main.yml
+- finish the implementation of this role. it needs to set the GOLANG path and a few other things
 
 
 ## Packer
