@@ -6,9 +6,19 @@
   become: yes
   when: apps is not defined
 
-- name: Install ember dependencies for existing application
+- name: Install ember dependencies for an existing application
   shell: . /etc/profile && npm install && bower install
   args:
     chdir: '{{ item.dir }}/{{ item.name }}'
   with_items: apps
   when: apps is defined
+
+- name: Insert aliases
+  blockinfile:
+    create: yes
+    dest: ~/.zsh.after/aliases.zsh
+    marker: '# {mark} ANSIBLE MANAGED BLOCK (ember)'
+    block: |
+      alias es='ember serve'
+      alias ebp='ember build environment=production'
+  when: apps is not defined
