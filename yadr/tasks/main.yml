@@ -46,6 +46,7 @@
   with_items:
     - tmux.conf.user
     - vimrc.after
+    - yadr/ctags/ctags
 
 # TODO: move the git alias to Git role if ever there is one
 - name: Insert aliases
