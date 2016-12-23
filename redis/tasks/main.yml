@@ -1,14 +1,27 @@
 ---
 - name: Install Debian packages
-  apt: name={{ item }} state=present
+  apt:
+    name: '{{ item }}'
+    state: present
   become: yes
-  with_items: [redis-server]
+  with_items:
+    - redis-server
+    - rlwrap
   when: ansible_distribution == 'Debian'
 
-- name: Connect to Redis on localhost form Docker Container
-  lineinfile:
-    dest: /etc/redis/redis.conf
-    regexp: '^bind'
-    line: 'bind 127.0.0.1 172.17.0.1'
-  become: yes
-  notify: Restart Redis
+- name: Insert aliases
+  blockinfile:
+    create: yes
+    dest: ~/.zsh.after/aliases.zsh
+    marker: '# {mark} ANSIBLE MANAGED BLOCK (redis)'
+    block: |
+      alias redis-cli='rlwrap -a -- redis-cli'
+
+# NOTE: This line causes redis to fail to start
+# - name: Connect to Redis on localhost form Docker Container
+#   lineinfile:
+#     dest: /etc/redis/redis.conf
+#     regexp: '^bind'
+#     line: 'bind 127.0.0.1 172.17.0.1'
+#   become: yes
+#   notify: Restart Redis
