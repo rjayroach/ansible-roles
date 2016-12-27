@@ -12,12 +12,12 @@
   args:
     chdir: '{{ ansible_env.HOME }}/.yadr'
 
-- name: Update the yadr repository
-  shell: 'rake update'
+- name: Pop the stash
+  shell: 'git stash pop'
   args:
     chdir: '{{ ansible_env.HOME }}/.yadr'
 
-- name: Pop the stash
-  shell: 'git stash pop'
+- name: Update the yadr repository
+  shell: 'rake update'
   args:
     chdir: '{{ ansible_env.HOME }}/.yadr'
