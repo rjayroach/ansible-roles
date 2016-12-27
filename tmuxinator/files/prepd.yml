@@ -10,6 +10,10 @@ windows:
       layout: main-horizontal
       panes:
         - cd ansible
+  - ansible-roles:
+      layout: main-horizontal
+      panes:
+        - cd ansible/roles
   - terraform-console:
       layout: main-horizontal
       panes:
@@ -18,3 +22,7 @@ windows:
       layout: main-horizontal
       panes:
         - cd terraform
+  - terraform-modules:
+      layout: main-horizontal
+      panes:
+        - cd terraform/modules
