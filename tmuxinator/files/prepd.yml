@@ -1,5 +1,5 @@
 name: prepd
-root:  ~/legos
+root:  ~/prepd
 
 windows:
   - ansible-console:
