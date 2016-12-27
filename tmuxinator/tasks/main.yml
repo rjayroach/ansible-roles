@@ -14,13 +14,6 @@
   template:
     dest: '{{ ansible_env.HOME }}/.tmuxinator/{{ item }}.yml'
     src: lego.j2
-  with_items: '{{ apps }}'
-
-- name: Create softlinks to a tmuxinator file
-  file:
-    dest: '{{ ansible_env.HOME }}/.tmuxinator/{{ item }}.yml'
-    src: 'lego.yml'
-    state: link
   with_items: '{{ projects }}'
 
 - name: Create softlinks to a tmuxinator file from an external project

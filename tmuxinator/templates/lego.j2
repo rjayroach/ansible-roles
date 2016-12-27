@@ -1,31 +1,31 @@
-name: {% item %}
-root:  ~/{% item %}
+name: {{ item }}
+root:  ~/{{ item }}
 
 windows:
   - console:
       layout: main-vertical
-      root: ~/<%= @settings[:project_name] %>/<%= @settings[:project_name] %>-api
+      root: ~/{{ item }}/{{ item }}-api
       panes:
         - rails console
   - servers:
       layout: main-vertical
       panes:
-        - cd <%= @settings[:project_name] %>-api && rails server -b 0.0.0.0
-        - cd <%= @settings[:project_name] %>-app && ember serve
+        - cd {{ item }}-api && rails server -b 0.0.0.0
+        - cd {{ item }}-app && ember serve
   - rails:
       layout: main-horizontal
       panes:
-        - cd <%= @settings[:project_name] %>-api
+        - cd {{ item }}-api
   - ember-pods:
       layout: main-horizontal
       panes:
-        - cd <%= @settings[:project_name] %>-app
+        - cd {{ item }}-app
   - ember:
       layout: main-horizontal
       panes:
-        - cd <%= @settings[:project_name] %>-app
+        - cd {{ item }}-app
   - data:
       layout: main-horizontal
-      root: ~/prepd/data/<%= @settings[:project_name] %>
+      root: ~/prepd/data/{{ item }}
       panes:
         -
