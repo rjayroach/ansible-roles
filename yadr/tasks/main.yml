@@ -9,3 +9,29 @@
 
 - include: 'update.yml'
   when: yadr_dir.stat.exists == true
+
+- name: Copy home directory hidden files
+  copy:
+    src: 'home/{{ item }}'
+    dest: '{{ ansible_env.HOME }}/.{{ item }}'
+  with_items:
+    - tmux.conf.user
+    - vimrc.after
+    - yadr/ctags/ctags
+
+# TODO: move the git alias to Git role if ever there is one
+- name: Insert aliases
+  blockinfile:
+    create: yes
+    dest: ~/.zsh.after/aliases.zsh
+    marker: '# {mark} ANSIBLE MANAGED BLOCK (yadr)'
+    block: |
+      alias ave='ansible-vault edit'
+      alias gsu='git submodule update --remote --merge'
+      alias du='du -csh *'
+
+- name: Remove bogus line from .vimrc
+  lineinfile:
+    dest: '{{ ansible_env.HOME }}/.vimrc'
+    state: absent
+    regexp: "^set list listchars"
