@@ -7,8 +7,8 @@
 - include: 'install.yml'
   when: yadr_dir.stat.exists == false
 
-- include: 'update.yml'
-  when: yadr_dir.stat.exists == true
+#- include: 'update.yml'
+#  when: yadr_dir.stat.exists == true
 
 - name: Copy home directory hidden files
   copy:
