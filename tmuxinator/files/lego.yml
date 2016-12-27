@@ -16,12 +16,16 @@ windows:
       layout: main-horizontal
       panes:
         - cd <%= @settings[:project_name] %>-api
+  - ember-pods:
+      layout: main-horizontal
+      panes:
+        - cd <%= @settings[:project_name] %>-app
   - ember:
       layout: main-horizontal
       panes:
         - cd <%= @settings[:project_name] %>-app
   - data:
       layout: main-horizontal
-      root: ~/legos/data/<%= @settings[:project_name] %>-api
+      root: ~/prepd/data/<%= @settings[:project_name] %>
       panes:
-        - pwd
+        -
