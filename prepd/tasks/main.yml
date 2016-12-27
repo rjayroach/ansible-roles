@@ -20,6 +20,13 @@
     state: present
   when: boto.stat.exists == true
 
+- name: Install awscli
+  pip:
+    name: awscli
+    state: present
+  become: yes
+  when: boto.stat.exists == true
+
 - name: Get ec2.ini
   get_url:
     url: 'https://raw.githubusercontent.com/ansible/ansible/devel/contrib/inventory/ec2.ini'
