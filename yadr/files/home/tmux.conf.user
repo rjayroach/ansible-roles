@@ -15,7 +15,7 @@ bind-key 0 select-window -t :10
 
 # Set the title of the current window to the host name
 set-option -g set-titles on
-set-option -g set-titles-string '#H' # '#H:#S.#I.#P #W #T' # window number,program name, active(or not)
+set-option -g set-titles-string '#H   (#W)' # '#H:#S.#I.#P #W #T' # window number,program name, active(or not)
 
 # When a smaller terminal connects to a tmux client, it shrinks to fit it.
 # The clients attached with bigger displays see this constrained view.

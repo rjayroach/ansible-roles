@@ -2,27 +2,27 @@ name: prepd
 root:  ~/prepd
 
 windows:
-  - ansible-console:
-      layout: main-horizontal
-      panes:
-        - cd ansible
   - ansible:
       layout: main-horizontal
       panes:
         - cd ansible
-  - ansible-roles:
+  - playbooks:
+      layout: main-horizontal
+      panes:
+        - cd ansible
+  - roles:
       layout: main-horizontal
       panes:
         - cd ansible/roles
-  - terraform-console:
-      layout: main-horizontal
-      panes:
-        - cd terraform
   - terraform:
       layout: main-horizontal
       panes:
         - cd terraform
-  - terraform-modules:
+  - plans:
+      layout: main-horizontal
+      panes:
+        - cd terraform
+  - modules:
       layout: main-horizontal
       panes:
         - cd terraform/modules
