@@ -10,3 +10,14 @@ bind | split-window -h
 bind = split-window -v
 
 bind-key 0 select-window -t :10
+
+# Remaining settings are documented here: https://justin.abrah.ms/dotfiles/tmux.html
+
+# Set the title of the current window to the host name
+set-option -g set-titles on
+set-option -g set-titles-string '#H' # '#H:#S.#I.#P #W #T' # window number,program name, active(or not)
+
+# When a smaller terminal connects to a tmux client, it shrinks to fit it.
+# The clients attached with bigger displays see this constrained view.
+# aggressive-resize makes it such that the window is only resized if the smaller client is actively looking at it.
+setw -g aggressive-resize on
