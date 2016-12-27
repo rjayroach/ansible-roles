@@ -1,14 +1,21 @@
 #!/usr/bin/env ansible-playbook
 ---
-- hosts: dev
+- name: Stash any changes made in the Yadr repository
+  shell: 'git stash'
+  args:
+    chdir: '{{ ansible_env.HOME }}/.yadr'
 
-  tasks: 
-    - name: 'update yadr 1'
-      shell: 'git pull --rebase'
-      args:
-        chdir: '{{ ansible_env.HOME }}/.yadr'
+- name: Rebase the yadr git repository
+  shell: 'git pull --rebase'
+  args:
+    chdir: '{{ ansible_env.HOME }}/.yadr'
 
-    - name: 'update yadr 2'
-      shell: 'rake update'
-      args:
-        chdir: '{{ ansible_env.HOME }}/.yadr'
+- name: Update the yadr repository
+  shell: 'rake update'
+  args:
+    chdir: '{{ ansible_env.HOME }}/.yadr'
+
+- name: Pop the stash
+  shell: 'git stash pop'
+  args:
+    chdir: '{{ ansible_env.HOME }}/.yadr'
