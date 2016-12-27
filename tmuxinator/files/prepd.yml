@@ -1,0 +1,20 @@
+name: prepd
+root:  ~/legos
+
+windows:
+  - ansible-console:
+      layout: main-horizontal
+      panes:
+        - cd ansible
+  - ansible:
+      layout: main-horizontal
+      panes:
+        - cd ansible
+  - terraform-console:
+      layout: main-horizontal
+      panes:
+        - cd terraform
+  - terraform:
+      layout: main-horizontal
+      panes:
+        - cd terraform

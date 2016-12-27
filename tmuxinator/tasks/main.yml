@@ -5,7 +5,22 @@
     state: directory
     mode: 0755
 
+- name: Copy template files
+  copy:
+    src: '{{ item }}'
+    dest: '{{ ansible_env.HOME }}/.tmuxinator/{{ item }}'
+  with_items:
+    - lego.yml
+    - prepd.yml
+
 - name: Create softlinks to a tmuxinator file
+  file:
+    dest: '{{ ansible_env.HOME }}/.tmuxinator/{{ item }}.yml'
+    src: 'lego.yml'
+    state: link
+  with_items: '{{ projects }}'
+
+- name: Create softlinks to a tmuxinator file from an external project
   file:
     dest: '{{ ansible_env.HOME }}/.tmuxinator/{{ item.name }}'
     src: '{{ item.src }}'

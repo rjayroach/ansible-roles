@@ -1,0 +1,27 @@
+name: <%= @settings[:project_name] %>
+root:  ~/<%= @settings[:project_name] %>
+
+windows:
+  - console:
+      layout: main-vertical
+      root: ~/<%= @settings[:project_name] %>/<%= @settings[:project_name] %>-api
+      panes:
+        - rails console
+  - servers:
+      layout: main-vertical
+      panes:
+        - cd <%= @settings[:project_name] %>-api && rails server -b 0.0.0.0
+        - cd <%= @settings[:project_name] %>-app && ember serve
+  - rails:
+      layout: main-horizontal
+      panes:
+        - cd <%= @settings[:project_name] %>-api
+  - ember:
+      layout: main-horizontal
+      panes:
+        - cd <%= @settings[:project_name] %>-app
+  - data:
+      layout: main-horizontal
+      root: ~/legos/data/<%= @settings[:project_name] %>-api
+      panes:
+        - pwd
