@@ -1,0 +1,72 @@
+---
+# if project-root/.boto exists then link it to ~/.boto and download ec2.py and ec2.ini and chmod ec2.py
+# - debug: var=playbook_dir
+# - debug: msg="{{ playbook_dir.split('/')[0:-1] | join('/') }}/.boto"
+
+- stat:
+    path: '{{ playbook_dir.split("/")[0:-1] | join("/") }}/.boto'
+  register: boto
+
+- name: Link project_root/.boto to ~/.boto if the file exists
+  file:
+    src: '{{ boto.stat.path }}'
+    dest: '{{ ansible_env.HOME }}/.boto'
+    state: link
+  when: boto.stat.exists == true
+
+- name: Install boto
+  pip:
+    name: boto
+    state: present
+  when: boto.stat.exists == true
+
+- name: Install awscli
+  pip:
+    name: awscli
+    state: present
+  become: yes
+  when: boto.stat.exists == true
+
+- name: Get ec2.ini
+  get_url:
+    url: 'https://raw.githubusercontent.com/ansible/ansible/devel/contrib/inventory/ec2.ini'
+    dest: '{{ inventory_dir }}/ec2.ini'
+  when: boto.stat.exists == true
+
+- name: Get ec2.py
+  get_url:
+    url: 'https://raw.githubusercontent.com/ansible/ansible/devel/contrib/inventory/ec2.py'
+    dest: '{{ inventory_dir }}/ec2.py'
+  register: ec2_py
+  when: boto.stat.exists == true
+
+- name: Make ec2.py executable
+  file:
+    path: '{{ inventory_dir }}/ec2.py'
+    mode: 0755
+  when: ec2_py|changed
+
+- stat:
+    path: '{{ playbook_dir.split("/")[0:-1] | join("/") }}/.id_rsa'
+  register: id_rsa
+
+- name: Link project_root/.id_rsa and .id_rsa.pub to ~/.ssh if the files exist
+  file:
+    src: '{{ playbook_dir.split("/")[0:-1] | join("/") }}/.{{ item }}'
+    dest: '{{ ansible_env.HOME }}/.ssh/{{ item }}'
+    state: link
+  when: id_rsa.stat.exists == true
+  with_items:
+    - id_rsa
+    - id_rsa.pub
+
+- stat:
+    path: '{{ playbook_dir.split("/")[0:-1] | join("/") }}/.terraform-vars.txt'
+  register: terraform_vars
+
+- name: Link project_root/.terraform-vars.txt to ~/.terraform_vars.txt if the file exists
+  file:
+    src: '{{ playbook_dir.split("/")[0:-1] | join("/") }}/.terraform-vars.txt'
+    dest: '{{ ansible_env.HOME }}/.terraform-vars.txt'
+    state: link
+  when: terraform_vars.stat.exists == true

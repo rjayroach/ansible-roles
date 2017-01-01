@@ -1,0 +1,23 @@
+#!/usr/bin/env ansible-playbook
+# NOTE: This doesn't really work b/c it prompts to clean (Y/N) and
+# save session: Y/N
+---
+- name: Stash any changes made in the Yadr repository
+  shell: 'git stash'
+  args:
+    chdir: '{{ ansible_env.HOME }}/.yadr'
+
+- name: Rebase the yadr git repository
+  shell: 'git pull --rebase'
+  args:
+    chdir: '{{ ansible_env.HOME }}/.yadr'
+
+- name: Pop the stash
+  shell: 'git stash pop'
+  args:
+    chdir: '{{ ansible_env.HOME }}/.yadr'
+
+- name: Update the yadr repository
+  shell: 'rake update'
+  args:
+    chdir: '{{ ansible_env.HOME }}/.yadr'

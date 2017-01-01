@@ -26,15 +26,16 @@
 
 - name: Check if the requested ruby version is already installed
   stat:
-    path: '{{ ansible_env.HOME }}/.rbenv/versions/{{ ruby_version }}'
+    path: '{{ ansible_env.HOME }}/.rbenv/versions/{{ version }}'
   register: ruby_dir
 
-- name: 'Install ruby {{ ruby_version }}'
-  shell: '. /etc/profile && rbenv install {{ ruby_version }}'
+- debug: msg='{{ ansible_env.HOME }}/.rbenv/versions/{{ version }}'
+- name: 'Install ruby {{ version }}'
+  shell: '. /etc/profile && rbenv install {{ version }}'
   when: ruby_dir.stat.isdir is not defined
 
 - name: Set global rbenv version
-  shell: '. /etc/profile && rbenv global {{ ruby_version }}'
+  shell: '. /etc/profile && rbenv global {{ version }}'
   when: ruby_dir.stat.isdir is not defined
 
 
@@ -48,3 +49,69 @@
     src: bundle_config.j2
     dest: '{{ ansible_env.HOME }}/.bundle/config'
     force: no
+
+- name: Insert aliases
+  blockinfile:
+    create: yes
+    dest: ~/.zsh.after/aliases.zsh
+    marker: '# {mark} ANSIBLE MANAGED BLOCK (ruby)'
+    block: |
+      alias adc='spring rake app:db:clean'
+      alias adcm='spring rake app:db:clean:migrate'
+      alias adcms='spring rake app:db:clean:migrate:seed'
+      alias adcs='spring rake app:db:clean:seed'
+      alias adm='spring rake app:db:migrate'
+      alias ads='spring rake app:db:seed'
+      alias adtp='spring rake app:db:test:prepare'
+
+      alias beg='bundle exec guard'
+
+      alias dc='spring rake db:clean'
+      alias dcm='spring rake db:clean:migrate'
+      alias dcms='spring rake db:clean:migrate:seed'
+      alias dcs='spring rake db:clean:seed'
+      alias dm='spring rake db:migrate'
+      alias dms='spring rake db:migrate:status'
+      alias ds='spring rake db:seed'
+      alias dtp='spring rake db:test:prepare'
+
+      alias fs='foreman start -e <()'
+
+      alias pss='ps -ef|grep spring'
+
+      alias rc='spring rails console'
+
+      alias rg='spring rails generate'
+      alias rgjc='spring rails generate jsonapi:controller'
+      alias rgjr='spring rails generate jsonapi:resource'
+      alias rgm='spring rails generate model'
+
+      # NOTE: bes() only works if there is one line in the Procfile
+      function bes() {
+        E=`awk '{first = $1; $1 = ""; print $0; }' Procfile`
+        eval $E
+      }
+
+      function psrk() {
+        ps aux | grep ruby | awk '{ print $2 }' | xargs kill -9
+      }
+
+      function rgj() {
+        spring rails generate jsonapi:controller "$1"
+        spring rails generate jsonapi:resource "$1"
+      }
+
+      function srs() {
+        z $1
+        cd spec/dummy
+        spring rails server -b 0.0.0.0 -p $2
+      }
+
+      alias rk='spring rake'
+      alias rkd='RAILS_ENV=test spring rake docs:generate'
+
+      alias rs='spring rspec'
+
+      alias sgpl='spring stop; git checkout Gemfile.lock; git pull'
+      alias src='spring stop; rc'
+      alias ss='spring stop'

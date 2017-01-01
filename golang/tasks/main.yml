@@ -1,0 +1,31 @@
+---
+- name: Check if Go is installed
+  stat:
+    path: /usr/local/go/bin
+  register: bin
+
+- name: Get Go
+  get_url:
+    url: 'https://storage.googleapis.com/golang/go{{ golang_version }}.linux-amd64.tar.gz'
+    dest: '/tmp/go{{ golang_version }}.linux-amd64.tar.gz'
+  register: new_archive
+  when: ansible_os_family == 'Debian' and bin.stat.exists == false
+
+- name: Install Go
+  command: 'tar -C /usr/local -xzf /tmp/go{{ golang_version }}.linux-amd64.tar.gz'
+  become: yes
+  when: new_archive|changed and ansible_os_family == 'Debian'
+
+# Change these to .zsh path
+- lineinfile: dest=~/.bash_profile line="export GOPATH=$HOME/go"
+- lineinfile: dest=~/.bash_profile line="export PATH=$PATH:$GOPATH/bin"
+- file: path=~/go/bin state=directory
+
+# NOTE: Not tested
+- name: Install Go via Homebrew
+  homebrew:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - go
+  when: ansible_os_family == 'Darwin'

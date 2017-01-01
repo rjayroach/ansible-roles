@@ -25,14 +25,18 @@
     marker: '# {mark} ANSIBLE MANAGED BLOCK (docker)'
     block: |
       # Calls ruby file ~/bin/dkr
-      alias db='dkr build'
-      alias dp='dkr push'
-      alias dpl='dkr pull'
+      # alias db='dkr build'
+      # alias dp='dkr push'
+      # alias dpl='dkr pull'
 
-      alias dr='dkr run'
-      alias drm='dkr remove'
-      alias ds='dkr start'
-      alias dsh='dkr shell'
-      alias dst='dkr stop'
-      alias dstr='dkr stop -r'
+      # alias dr='dkr run'
+      # alias drm='dkr remove'
+      # alias ds='dkr start'
+      # alias dsh='dkr shell'
+      # alias dst='dkr stop'
+      # alias dstr='dkr stop -r'
+
+      drma() {
+        docker rm $(docker ps -a -q)
+      }
   when: zsh_after.stat.exists

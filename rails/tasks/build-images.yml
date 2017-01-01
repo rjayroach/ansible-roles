@@ -1,0 +1,9 @@
+---
+# NOTE: This is old code and for sure won't work without being refactored but could be used to build rails images
+#       if we want to use ansible to build the images or this could maybe be put into circle.yml
+- name: 'Prepare projects for building docker images'
+  shell: . /etc/profile && rm -f Gemfile.lock && ~/.rbenv/shims/bundle package --all && ~/.rbenv/shims/bundle package --all > /tmp/prepared_{{ item.name }}
+  args:
+    chdir: '{{ project.directory }}/{{ item.name }}'
+    creates: '/tmp/prepare_{{ item.name }}'
+  with_items: '{{ project.docker_images }}'

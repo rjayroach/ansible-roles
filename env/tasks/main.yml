@@ -1,0 +1,12 @@
+---
+- name: 'Write envs to {{ item.dir }}/.env'
+  template:
+    dest: '{{ item.dir }}/.env'
+    src: envs.j2
+  with_items: '{{ apps }}'
+
+- name: 'Set mode to 0600 on {{ item.dir }}/.env'
+  file:
+    path: '{{ item.dir }}/.env'
+    mode: 0600
+  with_items: '{{ apps }}'

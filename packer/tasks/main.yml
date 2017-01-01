@@ -1,14 +1,16 @@
 ---
-- homebrew: name=packer state=present
+- homebrew:
+    name: packer
+    state: present
   when: ansible_os_family == 'Darwin'
 
-- apt: name=packer state=present
+- apt:
+    name: packer
+    state: present
   when: ansible_os_family == 'Debian'
 
 - file: path=~/.bash_profile state=touch
-- lineinfile: dest=~/.bash_profile line="export GOPATH=$HOME/go"
-- lineinfile: dest=~/.bash_profile line="export PATH=$PATH:$GOPATH/bin"
-- file: path=~/go/bin state=directory
+
 #- command: export PATH=$PATH:$GOPATH/bin && go get github.com/lmars/packer-post-processor-vagrant-s3
 - command: go get github.com/lmars/packer-post-processor-vagrant-s3
 - file: path=~/.packer.d/plugins state=directory

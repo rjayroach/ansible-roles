@@ -1,11 +1,16 @@
 ---
 # - homebrew_tap: tap={{ item }} state=present
 #   with_items: '{{ extras.homebrew_taps }}'
-# 
-# - homebrew: name={{ item }} state=present
-#   with_items: '{{ extras.homebrew_installed_packages }}'
 
-- homebrew_cask: name={{ item }} state=present
+- homebrew:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - gpg
+
+- homebrew_cask:
+    name: '{{ item }}'
+    state: present
   with_items:
     - google-chrome
     - dropbox

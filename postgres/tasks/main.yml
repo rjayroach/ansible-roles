@@ -1,15 +1,18 @@
 ---
-# - set_fact:
-#     role: "{{ postgres|combine(project.postgres|default({})) }}"
-
 - name: Install Debian packages
-  apt: name={{ item }} state=present update_cache=yes cache_valid_time=86400
+  apt:
+    name: '{{ item }}'
+    state: present
+    update_cache: yes
+    cache_valid_time: 86400
   become: yes
   with_items: [libpq-dev, postgresql, postgresql-client, postgresql-contrib, python-psycopg2]
   when: ansible_distribution == 'Debian'
 
-- name: copy .inputrc to postgres home
-  copy: src=.inputrc dest=/var/lib/postgresql
+- name: Copy .inputrc to postgres home
+  copy:
+    src: inputrc
+    dest: /var/lib/postgresql/.inputrc
   become: yes
   become_user: postgres
   when: ansible_distribution == 'Debian'
@@ -37,23 +40,16 @@
   become: yes
   notify: Restart PostgreSQL
 
+- name: Insert aliases
+  blockinfile:
+    create: yes
+    dest: ~/.zsh.after/aliases.zsh
+    marker: '# {mark} ANSIBLE MANAGED BLOCK (postgres)'
+    block: |
+      alias supg='sudo su - postgres'
+      alias psqld='psql -d postgres'
 
-# - name: 'Trust connections from docker IP'
-#   lineinfile:
-#     dest: /etc/postgresql/9.4/main/pg_hba.conf
-#     line: 'host    all         all         {{ role.docker_network }}    trust'
-#   become: yes
-#   notify: Restart PostgreSQL
-
-# - name: 'Create ROLE {{ role.username }} and grant dbcreate and superuser privileges'
-#   postgresql_user:
-#     name: '{{ role.username }}'
-#     password: '{{ role.password }}'
-#     role_attr_flags: 'SUPERUSER,CREATEDB'
-#   become: yes
-#   become_user: postgres
-
-# - include: project-database.yml group={{ outer_item.group }}
-#   with_items: '{{ project_groups }}'
-#   loop_control:
-#     loop_var: outer_item
+      # Dump a schema named $2 from a database named $1
+      pgd() {
+        pg_dump $1 -n $2 | gzip -c > $1.sql.gz
+      }

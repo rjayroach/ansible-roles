@@ -1,0 +1,36 @@
+---
+- name: Install Debian packages
+  apt:
+    name: '{{ item }}'
+  with_items: [rake, git, zsh, vim-nox]
+  become: yes
+  when: ansible_pkg_mgr == 'apt'
+
+- name: Download Yadr
+  get_url:
+    url: https://raw.githubusercontent.com/skwp/dotfiles/master/install.sh
+    dest: /tmp/yadr_install.sh
+    mode: 0755
+  when: yadr_dir.stat.exists == false
+
+- name: Install Yadr
+  command: bash -c 'echo yes | /tmp/yadr_install.sh'
+  when: yadr_dir.stat.exists == false
+
+- name: Set the user shell to zsh
+  user:
+    name: '{{ ansible_user }}'
+    shell: /bin/zsh
+  become: yes
+  when: ansible_distribution == 'Debian'
+
+- name: Update zprofile
+  blockinfile:
+    create: yes
+    dest: '{{ ansible_env.HOME }}/.zprofile'
+    marker: '# {mark} ANSIBLE MANAGED BLOCK (yadr)'
+    block: |
+      export LC_CTYPE='en_US.UTF-8'
+      export LANG='en_US.UTF-8'
+      export LANGUAGE='en_US.UTF-8'
+  when: ansible_distribution == 'Debian'
