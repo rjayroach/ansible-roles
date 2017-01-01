@@ -1,7 +1,9 @@
 #!/usr/bin/env ansible-playbook
 ---
 - hosts: localhost
+
   roles:
+    - laptop
     - common
     - yadr
     - developer-tools

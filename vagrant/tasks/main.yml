@@ -26,6 +26,7 @@
 - name: Insert aliases
   blockinfile:
     dest: ~/.zsh.after/aliases.zsh
+    marker: '# {mark} ANSIBLE MANAGED BLOCK (vagrant)'
     block: |
       alias v='vagrant'
       alias vb='vagrant box'
