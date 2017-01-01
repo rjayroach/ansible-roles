@@ -1,0 +1,39 @@
+name: prepd
+root: ~/projects/rjayroach
+
+windows:
+  - ansible:
+      layout: main-horizontal
+      root: ~/projects/rjayroach/prepd-project/ansible
+      panes:
+        -
+  - playbooks:
+      layout: main-horizontal
+      root: ~/projects/rjayroach/prepd-project/ansible
+      panes:
+        -
+  - roles:
+      layout: main-horizontal
+      root: ~/projects/rjayroach/ansible-roles
+      panes:
+        -
+  - terraform:
+      layout: main-horizontal
+      root: ~/projects/rjayroach/prepd-project/terraform
+      panes:
+        -
+  - templates:
+      layout: main-horizontal
+      root: ~/projects/rjayroach/prepd-project/terraform
+      panes:
+        -
+  - modules:
+      layout: main-horizontal
+      root: ~/projects/rjayroach/terraform-modules
+      panes:
+        - 
+  - prepd-project:
+      layout: main-horizontal
+      root: ~/projects/rjayroach/prepd-project
+      panes:
+        -

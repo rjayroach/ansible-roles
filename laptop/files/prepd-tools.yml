@@ -1,0 +1,34 @@
+name: prepd-tools
+root: ~/projects/rjayroach
+
+windows:
+  - prepd-console:
+      layout: main-horizontal
+      root: ~/projects/rjayroach/prepd
+      panes:
+        - bin/console
+  - prepd:
+      layout: main-horizontal
+      root: ~/projects/rjayroach/prepd
+      panes:
+        -
+  - lego-console:
+      layout: main-horizontal
+      root: ~/projects/rjayroach/lego
+      panes:
+        - bin/console
+  - lego:
+      layout: main-horizontal
+      root: ~/projects/rjayroach/lego
+      panes:
+        -
+  - rails:
+      layout: main-horizontal
+      root: ~/projects/rjayroach/rails-templates
+      panes:
+        -
+  - docker-rails:
+      layout: main-horizontal
+      root: ~/projects/rjayroach/docker-rails
+      panes:
+        -
