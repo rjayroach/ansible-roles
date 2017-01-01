@@ -1,0 +1,5 @@
+---
+- name: Copy tmuxinator files
+  copy:
+    src: tmuxinator/
+    dest: '{{ ansible_env.HOME }}/.tmuxinator/'

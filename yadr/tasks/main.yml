@@ -1,6 +1,8 @@
 ---
 - name: install packages (Debian)
-  apt: name={{ item }} state=present
+  apt:
+    name: '{{ item }}'
+    state: present
   with_items:
     - rake
     - git
@@ -10,11 +12,15 @@
   when: ansible_pkg_mgr == 'apt'
 
 - name: Check if YADR is installed
-  stat: path={{ ansible_env.HOME }}/.yadr
+  stat:
+    path: '{{ ansible_env.HOME }}/.yadr'
   register: yadr_dir
 
 - name: download YADR
-  get_url: url=https://raw.githubusercontent.com/skwp/dotfiles/master/install.sh dest=/tmp/yadr_install.sh mode=0755
+  get_url:
+    url: 'https://raw.githubusercontent.com/skwp/dotfiles/master/install.sh'
+    dest: '/tmp/yadr_install.sh'
+    mode: 0755
   when: yadr_dir.stat.exists == false
 
 - name: install YADR
@@ -22,7 +28,9 @@
   when: yadr_dir.stat.exists == false
 
 - name: Set the user shell to zsh
-  user: name={{ ansible_user }} shell=/bin/zsh
+  user:
+    name: '{{ ansible_user }}'
+    shell: /bin/zsh
   become: yes
   when: ansible_distribution == 'Debian'
 
@@ -39,8 +47,6 @@
   when: ansible_distribution == 'Debian'
 
 - name: copy files to home directory
-  copy: src=home/ dest={{ ansible_env.HOME }}/
-
-# - name: copy files to .zsh.after
-#   copy: src=zsh.after/ dest={{ ansible_env.HOME }}/.zsh.after/
-#   tags: alias
+  copy:
+    src: home/
+    dest: '{{ ansible_env.HOME }}/'
