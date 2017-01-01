@@ -1,4 +1,4 @@
 ---
-terraform_version: 0.7.4
-terraform_file: terraform_0.7.4_linux_amd64
+terraform_version: 0.8.2
+terraform_file: 'terraform_{{ terraform_version }}_linux_amd64'
 terragrunt_version: 0.7.2
