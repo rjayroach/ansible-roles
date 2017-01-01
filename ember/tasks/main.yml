@@ -4,15 +4,7 @@
     name: ember-cli
     global: yes
   become: yes
-  when: apps is not defined
-
-# TODO: bower doesn't work from ansible for some reason
-- name: Install ember project dependencies
-  shell: . /etc/profile && npm install # && bower install
-  args:
-    chdir: '{{ item.dir }}/{{ item.name }}'
-  with_items: '{{ apps }}'
-  when: apps is defined
+  # when: apps|length == 0
 
 - name: Insert aliases
   blockinfile:
@@ -22,4 +14,12 @@
     block: |
       alias es='ember serve'
       alias ebp='ember build environment=production'
-  when: apps is not defined
+  # when: apps|length == 0
+
+# TODO: bower doesn't work from ansible for some reason
+- name: Install ember project dependencies
+  shell: . /etc/profile && npm install # && bower install
+  args:
+    chdir: '{{ item.dir }}/{{ item.name }}'
+  with_items: '{{ apps }}'
+  # when: apps|length > 0
