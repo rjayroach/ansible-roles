@@ -13,7 +13,15 @@
     marker: '# {mark} ANSIBLE MANAGED BLOCK (ember)'
     block: |
       alias es='ember serve'
-      alias ebp='ember build environment=production'
+      alias eds='ember deploy local'
+      alias edls='ember deploy:list local'
+      alias edas='ember deploy:activate local --rev '
+      alias edp='ember deploy production'
+      alias edlp='ember deploy:list production'
+      alias edap='ember deploy:activate production --rev '
+      alias eds='ember deploy staging'
+      alias edls='ember deploy:list staging'
+      alias edas='ember deploy:activate staging --rev '
   # when: apps|length == 0
 
 # TODO: bower doesn't work from ansible for some reason
