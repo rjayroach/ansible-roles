@@ -12,16 +12,19 @@
     dest: ~/.zsh.after/aliases.zsh
     marker: '# {mark} ANSIBLE MANAGED BLOCK (ember)'
     block: |
-      alias es='ember serve'
-      alias eds='ember deploy local'
-      alias edls='ember deploy:list local'
-      alias edas='ember deploy:activate local --rev '
-      alias edp='ember deploy production'
-      alias edlp='ember deploy:list production'
+      alias edal='ember deploy:activate local --rev '
       alias edap='ember deploy:activate production --rev '
-      alias eds='ember deploy staging'
-      alias edls='ember deploy:list staging'
       alias edas='ember deploy:activate staging --rev '
+      alias edll='ember deploy:list local'
+      alias edlp='ember deploy:list production'
+      alias edls='ember deploy:list staging'
+      alias edpl='ember deploy local'
+      alias edpp='ember deploy production'
+      alias edps='ember deploy staging'
+
+      alias eidp='ember install ember-cli-dotenv ember-cli-deploy ember-cli-deploy-build ember-cli-deploy-s3 ember-cli-deploy-revision-data ember-cli-deploy-display-revisions ember-cli-deploy-s3-index'
+
+      alias es='ember serve'
   # when: apps|length == 0
 
 # TODO: bower doesn't work from ansible for some reason
