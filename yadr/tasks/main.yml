@@ -27,7 +27,6 @@
     marker: '# {mark} ANSIBLE MANAGED BLOCK (yadr)'
     block: |
       alias ave='ansible-vault edit'
-      alias gsu='git submodule update --remote --merge'
       alias du='du -csh *'
 
 - name: Remove bogus line from .vimrc
