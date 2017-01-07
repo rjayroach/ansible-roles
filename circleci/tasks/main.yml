@@ -1,0 +1,6 @@
+---
+- name: Follow the project
+  uri:
+    url: 'https://circleci.com/api/v1.1/project/{{ item.provider }}/{{ item.account }}/{{ item.repo }}/follow?circle-token={{ circleci_token }}'
+    method: POST
+  with_items: '{{ projects }}'
