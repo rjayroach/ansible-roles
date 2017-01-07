@@ -18,9 +18,10 @@
     copy: no
   when: new_archive|changed
 
-- name: Install Terraform
-  command: install
-    path: '{{ ansible_env.HOME }}/hub-linux-amd64-{{ hub_version }}'
+- name: Install Hub
+  command: ./install
+  args:
+    chdir: '{{ ansible_env.HOME }}/hub-linux-amd64-{{ hub_version }}'
   become: yes
   when: new_archive|changed
 
@@ -40,16 +41,3 @@
     marker: '# {mark} ANSIBLE MANAGED BLOCK (git)'
     block: |
       alias gsu='git submodule update --remote --merge'
-
-# Options:
-# update: yes; when update is yes then the repo will be refreshed
-# version: a specific branch to checkout; default is HEAD
-
-- name: Checkout git repository
-  git:
-    repo: '{{ item.account }}/{{ item.name }}.git'
-    dest: '{{ item.dir }}/{{ item.name }}'
-    accept_hostkey: yes
-    update: no #"{{ item.update | default(0) }}"
-    version: "{{ item.version | default('HEAD') }}"
-  with_items: '{{ repos }}'
