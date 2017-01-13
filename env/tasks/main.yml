@@ -1,5 +1,5 @@
 ---
-- name: 'Write envs to {{ item.dir }}/.env'
+- name: 'Write envs to project_root/.env'
   template:
     dest: '{{ item.dir }}/.env'
     src: envs.j2
