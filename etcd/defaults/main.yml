@@ -1,0 +1,6 @@
+---
+etcd_version: 3.0.16
+etcd_release: 'etcd-v{{ etcd_version }}-linux-amd64'
+etcd_download_url: 'https://github.com/coreos/etcd/releases/download/v{{ etcd_version }}/{{ etcd_release }}.tar.gz'
+etcd_binary_path: /usr/local/bin
+iface: eth0

@@ -1,0 +1,5 @@
+---
+kube_services:
+  - kube-apiserver
+  - kube-controller-manager
+  - kube-scheduler

@@ -1,0 +1,55 @@
+---
+- name: Check if binary is installed
+  stat:
+    path: '{{ etcd_binary_path }}/etcd'
+  register: bin
+
+- name: Download etcd binaries
+  get_url:
+    url: '{{ etcd_download_url }}'
+    dest: '/tmp'
+    # TODO Add hash check
+  become: yes
+  register: new_archive
+  when: bin.stat.exists == false
+
+- name: Unpack etcd binaries
+  unarchive:
+    copy: no
+    src: '/tmp/{{ etcd_release }}.tar.gz'
+    dest: /tmp
+  become: yes
+  when: new_archive|changed
+
+- name: Copy etcd binaries
+  copy:
+    remote_src: true
+    src: '/tmp/{{ etcd_release }}/{{ item }}'
+    dest: '{{ etcd_binary_path }}'
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+    - etcd
+    - etcdctl
+  become: yes
+  when: new_archive|changed
+
+- name: Create etcd data dir
+  file:
+    path: /var/lib/etcd
+    state: directory
+  become: yes
+
+- name: Add etcd systemd unit
+  template:
+    src: etcd.service.j2
+    dest: /etc/systemd/system/etcd.service
+    mode: 0755
+  become: yes
+  notify: Reload etcd
+
+- name: Enable etcd service
+  command: systemctl enable etcd
+  become: yes
+  when: new_archive|changed

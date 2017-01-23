@@ -1,0 +1,3 @@
+---
+dependencies:
+  - { role: kubernetes, kubernetes_var_path: /etc/etcd, copy_certs: true }

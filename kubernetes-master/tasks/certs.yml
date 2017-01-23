@@ -1,0 +1,54 @@
+---
+- name: Create kubernetes dir
+  file:
+    path: '{{ kubernetes_cert_path }}'
+    state: directory
+
+# See: https://coreos.com/kubernetes/docs/latest/openssl.html
+- name: Create Cluster Root CA
+  command: openssl genrsa -out ca-key.pem 2048
+  args:
+    chdir: '{{ kubernetes_cert_path }}'
+    creates: ca-key.pem
+
+- name: Create Cluster Root CA
+  command: openssl req -x509 -new -nodes -key ca-key.pem -days 10000 -out ca.pem -subj "/CN=kube-ca"
+  args:
+    chdir: '{{ kubernetes_cert_path }}'
+    creates: ca.pem
+
+- name: OpenSSL Config
+  template:
+    src: openssl.cnf.j2
+    dest: '{{ kubernetes_cert_path }}/openssl.cnf'
+    mode: 0644
+
+# Using the above openssl.cnf, create the api-server keypair:
+- name: Generate the API Server Keypair
+  command: openssl genrsa -out apiserver-key.pem 2048
+  args:
+    chdir: '{{ kubernetes_cert_path }}'
+    creates: apiserver-key.pem
+
+- name: Generate the API Server Keypair Signing Request
+  command: openssl req -new -key apiserver-key.pem -out apiserver.csr -subj "/CN=kube-apiserver" -config openssl.cnf
+  args:
+    chdir: '{{ kubernetes_cert_path }}'
+    creates: apiserver.csr
+
+- name: Sign the API Server Keypair
+  command: openssl x509 -req -in apiserver.csr -CA ca.pem -CAkey ca-key.pem -CAcreateserial -out apiserver.pem -days 365 -extensions v3_req -extfile openssl.cnf
+  args:
+    chdir: '{{ kubernetes_cert_path }}'
+    creates: apiserver.pem
+
+
+- name: Insert ssh aliases for each node
+  blockinfile:
+    create: yes
+    dest: ~/.zsh.after/aliases.zsh
+    marker: '# {mark} ANSIBLE MANAGED BLOCK (config-local.yml)'
+    block: |
+      alias n1='ssh node1.local'
+      alias n2='ssh node2.local'
+      alias n3='ssh node3.local'

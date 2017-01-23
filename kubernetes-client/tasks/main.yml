@@ -1,0 +1,66 @@
+---
+- name: Check if kubectl binary exists
+  stat:
+    path: '{{ kubernetes_bin_path }}/kubectl'
+  register: binary
+
+- name: Get latest stable binary
+  get_url:
+    url: '{{ kubernetes_download_path }}/kubectl'
+    dest: '{{ kubernetes_bin_path }}/kubectl'
+  when: binary.stat.exists == false
+  register: new_archive
+  become: yes
+
+- name: Set permissions
+  file:
+    path: '{{ kubernetes_bin_path }}/kubectl'
+    mode: 0755
+  become: yes
+  when: new_archive|changed
+
+- name: Install shell completion and aliases for zsh
+  blockinfile:
+    create: yes
+    dest: ~/.zsh.after/aliases.zsh
+    marker: '# {mark} ANSIBLE MANAGED BLOCK (kubernetes-client)'
+    block: |
+      source <(kubectl completion zsh)
+      alias kdd='kubectl describe deployment'
+      alias kdj='kubectl describe job'
+      alias kdn='kubectl describe node'
+      alias kdp='kubectl describe pod'
+      alias kds='kubectl describe service'
+
+      alias kgd='kubectl get deployment'
+      alias kgj='kubectl get job'
+      alias kgn='kubectl get node'
+      alias kgp='kubectl get pod'
+      alias kgs='kubectl get service'
+
+      alias kl='kubectl logs'
+
+      alias ksgd='kubectl get deployments --namespace=kube-system'
+      alias ksgp='kubectl get pods --namespace=kube-system'
+
+
+- name: Check certificate file
+  stat:
+    path: '{{ kubernetes_cert_path }}/ca.pem'
+  register: cert
+
+- assert:
+    that: 'cert.stat.exists == True'
+
+# NOTE: configuration stored in ~/.kube/config
+- name: Set kubectl endpoint
+  shell: 'kubectl config set-cluster {{ kubernetes_cluster_name }} --certificate-authority={{ kubernetes_cert_path }}/ca.pem --embed-certs=true --server=https://{{ kubernetes_api_endpoint }}:{{ kubernetes_api_endpoint_port }}'
+
+- name: Set kubectl credentials
+  shell: 'kubectl config set-credentials {{ kubectl_user }} --token {{ kubectl_token }}'
+
+- name: Set kubectl default context
+  shell: 'kubectl config set-context default-context --cluster={{ kubernetes_cluster_name }} --user={{ kubectl_user }}'
+
+- name: Switch kubectl to default context
+  shell: 'kubectl config use-context default-context'

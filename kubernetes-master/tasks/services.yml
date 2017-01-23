@@ -1,0 +1,40 @@
+---
+# NOTE: Unfortunately the built-in Ansible Kubernetes module doesn't do very much and this task doesn't even work
+# - name: Create a kubernetes namespace
+#   kubernetes:
+#     api_endpoint: '{{ kubernetes_api_endpoint }}'
+#     url_username: '{{ kubectl_user }}'
+#     url_password: '{{ kubectl_token }}'
+#     file_reference: '{{ kubernetes_unit_path }}/{{ item }}'
+#     state: present
+#   with_items:
+#     - services/kubedns.yml
+#     - deployments/kubedns.yml
+
+
+- name: Create the Kube DNS
+  command: 'kubectl create -f {{ kubernetes_unit_path }}/{{ item }}'
+  ignore_errors: yes
+  with_items:
+    - services/kubedns.yml
+    - deployments/kubedns.yml
+
+- name: Get services list
+  shell: 'kubectl --namespace=kube-system get svc'
+  register: cmd_result
+  retries: 5
+  delay: 10
+
+- assert:
+    that:
+      - "'kube-dns   10.32.0.10' in cmd_result.stdout"
+
+- name: Get services list
+  shell: 'kubectl --namespace=kube-system get pods'
+  register: cmd_result
+  retries: 5
+  delay: 10
+
+- assert:
+    that:
+      - "'kube-dns-v20' in cmd_result.stdout"

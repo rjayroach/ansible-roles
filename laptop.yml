@@ -10,4 +10,6 @@
     - extras
     - vagrant
     - cordova
+    # - { role: kubernetes-client, kubernetes_cert_path: '{{ playbook_dir }}/../../data/kubernetes',
+    #     kubernetes_unit_path: '{{ playbook_dir }}/../../kubernetes' }
     # - packer

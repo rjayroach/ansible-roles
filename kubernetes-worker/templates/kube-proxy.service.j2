@@ -1,0 +1,18 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Kubernetes Kube Proxy
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+
+[Service]
+ExecStart={{ kubernetes_bin_path }}/kube-proxy \
+  --master=https://{{ hostvars[groups['controller'][0]]['ansible_' + iface].ipv4.address }}:6443 \
+  --kubeconfig=/var/lib/kubelet/kubeconfig \
+  --proxy-mode=iptables \
+  --v=2
+
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

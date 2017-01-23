@@ -1,0 +1,113 @@
+---
+# NOTE: Check if kernel mods and so on are ready for docker:
+# https://raw.githubusercontent.com/docker/docker/master/contrib/check-config.sh
+
+
+#- lineinfile
+# GRUB_CMDLINE_LINUX="cgroup_enable=memory swapaccount=1"
+
+# command update-grub2
+# become: yes
+
+# See: https://support.ansible.com/hc/en-us/articles/201958037-Reboot-a-server-and-wait-for-it-to-come-back
+# - name: restart machine
+#   command: shutdown -r now 'Ansible updates triggered'
+#   async: 0
+#   poll: 0
+#   ignore_errors: true
+# 
+# - name: waiting for server to come back
+#   local_action: wait_for host={{ inventory_hostname }} state=started
+
+
+- name: Create CNI dir
+  file:
+    path: /opt/cni/bin
+    state: directory
+  become: yes
+
+- name: Check if binary is installed
+  stat:
+    path: /opt/cni/bin/cnitool
+  register: bin
+
+- name: Download CNI binaries
+  get_url:
+    url: '{{ cni_download_url }}'
+    dest: /tmp
+    # TODO Add hash check
+  become: yes
+  register: new_archive
+  when: bin.stat.exists == false
+
+- name: Unpack CNI binaries
+  unarchive:
+    copy: no
+    src: '/tmp/{{ cni_package_file }}'
+    dest: /opt/cni/bin
+    creates: /opt/cni/bin/cnitool
+  become: yes
+  when: new_archive|changed
+
+
+- name: Create Kubelet directory
+  file:
+    path: /var/lib/kubelet
+    state: directory
+  become: yes
+
+- name: Check if binary is installed
+  stat:
+    path: '{{ kubernetes_bin_path }}/kubectl'
+  register: bin
+
+- name: Download Kubelets binaries
+  get_url:
+    url: '{{ kubernetes_download_path }}/{{ item }}'
+    dest: '{{ kubernetes_bin_path }}'
+    group: root
+    owner: root
+    mode: 0755
+    # TODO Add hash check
+  with_items:
+    - kubectl
+    - kube-proxy
+    - kubelet
+  become: yes
+  when: bin.stat.exists == false
+
+# - debug: var=hostvars[groups['controller'][0]]['ansible_eth1']['ipv4']['address']
+
+# NOTE: This cannot be run with --limit=nodeX.local coz it needs all the local nodes hostvars in order to render template
+- name: Add Kubelet configuration
+  template:
+    src: kubeconfig.j2
+    dest: /var/lib/kubelet/kubeconfig
+    mode: 0644
+  become: yes
+
+- name: Add kubelet systemd unit
+  template:
+    src: kubelet.service.j2
+    dest: '{{ kubernetes_service_path }}/kubelet.service'
+    mode: 0644
+  become: yes
+  notify:
+    - Reload systemd
+    - Enable kubelet service
+    - Restart kubelet service
+
+#############
+# Kube-proxy
+#############
+
+- name: Add kube-proxy systemd unit
+  template:
+    src: kube-proxy.service.j2
+    dest: '{{ kubernetes_service_path }}/kube-proxy.service'
+    mode: 0644
+  become: yes
+  notify:
+    - Reload systemd
+    - Enable kube-proxy service
+    - Restart kube-proxy service

@@ -1,0 +1,22 @@
+---
+- name: Create kubernetes data dir
+  file:
+    path: '{{ kubernetes_var_path }}'
+    state: directory
+  become: yes
+  when: copy_certs == true
+
+# This must be run on the kubernetes-master node
+- name: Copy certificates
+  copy:
+    src: '{{ kubernetes_cert_path }}/{{ item }}'
+    dest: '{{ kubernetes_var_path }}'
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - ca.pem
+    - apiserver.pem
+    - apiserver-key.pem
+  become: yes
+  when: copy_certs == true

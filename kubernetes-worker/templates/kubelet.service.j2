@@ -1,0 +1,36 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Kubernetes Kubelet
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+After=docker.service
+Requires=docker.service
+
+# hostname-override is necessary because Vagrant requires eth0 to be the NAT iface (10.0.2.15)
+# and kubelet default is to set it's internal IP to the IP Address with the default GW
+# Because the cluster internal network is on eth1 (172.28.128.x) it needs to be manually set here
+# See: https://github.com/kubernetes/kubernetes/issues/33618
+
+[Service]
+ExecStart={{ kubernetes_bin_path }}/kubelet \
+  --hostname-override={{ hostvars[inventory_hostname]['ansible_' + iface].ipv4.address }} \
+  --allow-privileged=true \
+  --api-servers={% for node in groups['controller'] %}https://{{ hostvars[node]['ansible_' + iface].ipv4.address }}:6443{% if not loop.last %},{% endif %}{% endfor %} \
+  --cloud-provider= \
+  --cluster-dns={{ kubernetes_cluster_dns }} \
+  --cluster-domain=cluster.local \
+  --container-runtime=docker \
+  --docker=unix:///var/run/docker.sock \
+  --network-plugin=kubenet \
+  --kubeconfig=/var/lib/kubelet/kubeconfig \
+  --reconcile-cidr=true \
+  --serialize-image-pulls=false \
+  --tls-cert-file={{ kubernetes_var_path }}/apiserver.pem \
+  --tls-private-key-file={{ kubernetes_var_path }}/apiserver-key.pem \
+  --v=2
+
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
