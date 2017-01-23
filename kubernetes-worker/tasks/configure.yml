@@ -1,0 +1,41 @@
+---
+- name: Create Kubelet directory
+  file:
+    path: /var/lib/kubelet
+    state: directory
+  become: yes
+# - debug: var=hostvars[groups['controller'][0]]['ansible_eth1']['ipv4']['address']
+
+# NOTE: This cannot be run with --limit=nodeX.local coz it needs all the local nodes hostvars in order to render template
+- name: Add Kubelet configuration
+  template:
+    src: kubeconfig.j2
+    dest: /var/lib/kubelet/kubeconfig
+    mode: 0644
+  become: yes
+
+- name: Add kubelet systemd unit
+  template:
+    src: kubelet.service.j2
+    dest: '{{ kubernetes_service_path }}/kubelet.service'
+    mode: 0644
+  become: yes
+  notify:
+    - Reload systemd
+    - Enable kubelet service
+    - Restart kubelet service
+
+#############
+# Kube-proxy
+#############
+
+- name: Add kube-proxy systemd unit
+  template:
+    src: kube-proxy.service.j2
+    dest: '{{ kubernetes_service_path }}/kube-proxy.service'
+    mode: 0644
+  become: yes
+  notify:
+    - Reload systemd
+    - Enable kube-proxy service
+    - Restart kube-proxy service

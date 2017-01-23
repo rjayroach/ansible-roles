@@ -1,0 +1,18 @@
+---
+- name: Check if binary is installed
+  stat:
+    path: '{{ kubernetes_bin_path }}/kube-apiserver'
+  register: bin
+
+- name: Download Kubernetes controller binaries
+  get_url:
+    url: '{{ kubernetes_download_path }}/{{ item }}'
+    dest: '{{ kubernetes_bin_path }}'
+    owner: root
+    group: root
+    mode: 0755
+    # TODO Add hash check
+  with_items: '{{ kube_services + ["kubectl"] }}'
+  register: new_archive
+  become: yes
+  when: bin.stat.exists == false

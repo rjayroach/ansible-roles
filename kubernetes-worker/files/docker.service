@@ -9,12 +9,12 @@ Type=notify
 # the default is not to use systemd for cgroups because the delegate issues still
 # exists and systemd currently does not support the cgroup feature set required
 # for containers run by docker
+#  --storage-driver=overlay
 ExecStart=/usr/bin/dockerd -H fd:// \
- --iptables=false \
+  --iptables=false \
   --ip-masq=false \
   --host=unix:///var/run/docker.sock \
   --log-level=error \
-  --storage-driver=overlay
 
 ExecReload=/bin/kill -s HUP $MAINPID
 LimitNOFILE=1048576

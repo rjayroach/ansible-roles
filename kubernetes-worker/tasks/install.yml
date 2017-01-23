@@ -1,0 +1,91 @@
+---
+- name: Create CNI dir
+  file:
+    path: /opt/cni/bin
+    state: directory
+  become: yes
+
+- name: Check if binary is installed
+  stat:
+    path: /opt/cni/bin/cnitool
+  register: bin
+
+- name: Download CNI binaries
+  get_url:
+    url: '{{ cni_download_url }}'
+    dest: /tmp
+    # TODO Add hash check
+  become: yes
+  register: new_archive
+  when: bin.stat.exists == false
+
+- name: Unpack CNI binaries
+  unarchive:
+    copy: no
+    src: '/tmp/{{ cni_package_file }}'
+    dest: /opt/cni/bin
+    creates: /opt/cni/bin/cnitool
+  become: yes
+  when: new_archive|changed
+
+
+- name: Check if binary is installed
+  stat:
+    path: '{{ kubernetes_bin_path }}/kubectl'
+  register: bin
+
+- name: Download kubectl kube-proxy and kubelet binaries
+  get_url:
+    url: '{{ kubernetes_download_path }}/{{ item }}'
+    dest: '{{ kubernetes_bin_path }}'
+    group: root
+    owner: root
+    mode: 0755
+    # TODO Add hash check
+  with_items:
+    - kubectl
+    - kube-proxy
+    - kubelet
+  become: yes
+  when: bin.stat.exists == false
+
+- name: Update Docker systemd file with custom file for Kubernetes
+  copy:
+    src: docker.service
+    dest: /lib/systemd/system
+    owner: root
+    group: root
+    mode: 0644
+  become: yes
+  notify:
+    - Reload systemd
+    - Enable docker service
+    - Restart docker service
+
+# NOTE: Check if kernel mods and so on are ready for docker:
+# https://raw.githubusercontent.com/docker/docker/master/contrib/check-config.sh
+- name: Enable cgroup memory in kernel
+  lineinfile:
+    dest: /etc/default/grub
+    line: GRUB_CMDLINE_LINUX="cgroup_enable=memory swapaccount=1"
+  become: yes
+  register: grub
+
+- name: Update grub
+  command: update-grub2
+  become: yes
+  when: grub|changed
+
+# See: https://support.ansible.com/hc/en-us/articles/201958037-Reboot-a-server-and-wait-for-it-to-come-back
+- name: Shutdown machine (bring back up with Vagrant)
+  command: shutdown -h now 'Ansible updates triggered'
+  async: 0
+  poll: 0
+  ignore_errors: true
+  become: yes
+  when: grub|changed
+
+# TODO: Implement this later when machine doesn't rely on vagrant's directory being present
+# - name: waiting for server to come back
+#   local_action: wait_for host={{ inventory_hostname }} state=started
+#   when: grub|changed

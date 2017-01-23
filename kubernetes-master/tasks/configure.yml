@@ -22,6 +22,7 @@
     src: openssl.cnf.j2
     dest: '{{ kubernetes_cert_path }}/openssl.cnf'
     mode: 0644
+  register: ssl_config
 
 # Using the above openssl.cnf, create the api-server keypair:
 - name: Generate the API Server Keypair
@@ -36,11 +37,12 @@
     chdir: '{{ kubernetes_cert_path }}'
     creates: apiserver.csr
 
+# NOTE: This file determines which machine can talk to which machine
 - name: Sign the API Server Keypair
   command: openssl x509 -req -in apiserver.csr -CA ca.pem -CAkey ca-key.pem -CAcreateserial -out apiserver.pem -days 365 -extensions v3_req -extfile openssl.cnf
   args:
     chdir: '{{ kubernetes_cert_path }}'
-    creates: apiserver.pem
+  when: ssl_config|changed
 
 
 - name: Insert ssh aliases for each node

@@ -1,8 +1,11 @@
 ---
+- name: Enable etcd
+  command: systemctl enable etcd
+  become: yes
+
 - name: Reload etcd
   command: systemctl daemon-reload
   become: yes
-  notify: Restart etcd
 
 - name: Restart etcd
   service:

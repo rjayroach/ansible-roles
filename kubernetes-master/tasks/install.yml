@@ -1,0 +1,30 @@
+---
+- name: Check if binary is installed
+  stat:
+    path: '{{ kubernetes_bin_path }}/kubectl'
+  register: bin
+
+- name: Download Kubernetes binaries
+  get_url:
+    url: '{{ kubernetes_download_path }}/{{ item }}'
+    dest: '{{ kubernetes_bin_path }}'
+    owner: root
+    group: root
+    mode: 0755
+    # TODO Add hash check
+  with_items:
+    - kubectl
+  register: new_archive
+  become: yes
+  when: bin.stat.exists == false
+
+
+- name: Insert ssh aliases for each node
+  blockinfile:
+    create: yes
+    dest: ~/.zsh.after/aliases.zsh
+    marker: '# {mark} ANSIBLE MANAGED BLOCK (config-local.yml)'
+    block: |
+      alias n1='ssh node1.local'
+      alias n2='ssh node2.local'
+      alias n3='ssh node3.local'

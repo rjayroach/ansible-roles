@@ -1,6 +1,5 @@
 ---
-# kubernetes_api_endpoint: node1.local #kube-375210502.ap-southeast-1.elb.amazonaws.com
-kubernetes_api_endpoint: 172.28.128.5
+kubernetes_api_endpoint: node1.local #kube-375210502.ap-southeast-1.elb.amazonaws.com
 kubernetes_api_endpoint_port: 6443
 kubernetes_cluster_name: k8s1
 

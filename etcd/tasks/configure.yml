@@ -1,0 +1,11 @@
+---
+- name: Add etcd systemd unit
+  template:
+    src: etcd.service.j2
+    dest: /etc/systemd/system/etcd.service
+    mode: 0755
+  become: yes
+  notify:
+    - Enable etcd
+    - Reload etcd
+    - Restart etcd

@@ -5,6 +5,7 @@ Description=etcd
 Documentation=https://github.com/coreos
 
 [Service]
+Type=notify
 ExecStart={{ etcd_binary_path }}/etcd --name {{ inventory_hostname }} \
   --cert-file=/etc/etcd/apiserver.pem \
   --key-file=/etc/etcd/apiserver-key.pem \

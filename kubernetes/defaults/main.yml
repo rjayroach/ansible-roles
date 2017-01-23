@@ -1,6 +1,7 @@
 ---
 kubernetes_version: 1.5.2
 
+include_services: false
 # node1.local is 172.28.128.5
 kubernetes_service_ip: 172.28.128.5
 kubernetes_master_host: 172.28.128.5
@@ -11,7 +12,8 @@ kubernetes_service_path: /etc/systemd/system
 
 kubernetes_unit_path: '{{ playbook_dir }}/../kubernetes'
 
-copy_certs: false
+# This is set by the calling playbook
+mode: 'noop'
 
 bin_type: "{{ 'darwin' if ansible_os_family == 'Darwin' else 'linux' }}"
 

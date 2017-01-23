@@ -3,3 +3,4 @@ cni_version: 0.4.0
 cni_package_file: 'cni-amd64-v{{ cni_version }}.tgz'
 cni_download_url: 'https://github.com/containernetworking/cni/releases/download/v{{ cni_version }}/{{ cni_package_file }}'
 iface: eth0
+kubernetes_cluster_dns: 10.32.0.10

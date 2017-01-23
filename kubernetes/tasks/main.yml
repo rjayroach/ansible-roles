@@ -4,7 +4,7 @@
     path: '{{ kubernetes_var_path }}'
     state: directory
   become: yes
-  when: copy_certs == true
+  when: mode == 'configure'
 
 # This must be run on the kubernetes-master node
 - name: Copy certificates
@@ -19,4 +19,5 @@
     - apiserver.pem
     - apiserver-key.pem
   become: yes
-  when: copy_certs == true
+  when: mode == 'configure'
+  register: certs
