@@ -5,9 +5,9 @@
 
 - name: Checkout git repository
   git:
-    repo: '{{ item.account }}/{{ item.name }}.git'
+    repo: '{{ item.account }}/{{ item.repo | default(item.name) }}.git'
     dest: '{{ item.dir }}/{{ item.name }}'
     accept_hostkey: yes
     update: no #"{{ item.update | default(0) }}"
-    version: "{{ item.version | default('HEAD') }}"
+    version: "{{ item.branch | default('HEAD') }}"
   with_items: '{{ repos }}'
