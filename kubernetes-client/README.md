@@ -11,12 +11,15 @@
 
 ~/.kube/config
 
-
 ## Commands
-
 
 See: https://kubernetes.io/docs/user-guide/kubectl-cheatsheet
 
+### Shortcuts
+
+-n = namespace
+ep = endpoints
+svc = service
 
 ### Administration
 
@@ -40,6 +43,29 @@ kube-system   kube-dns-v20-1485703853-4rhrs   2/3       Running   22         33m
 
 kubectl exec -it nginx-3449338310-7lxc9 bash
 ```
+
+#### Kubernetes Dashboard
+
+```bash
+wget https://rawgit.com/kubernetes/dashboard/master/src/deploy/kubernetes-dashboard.yaml
+kubectl create -f kubernetes-dashboard.yaml
+# The dashboard is running on a node as an internal service. To access it from local machine, create an ssh tunnel to the port the dashboard is running on:
+kubectl get pods -o wide -n=kube-system
+kubectl describe service kubernetes-dashboard -n=kube-system
+ssh -L 9000:node3.rhodes.rhodes-edge.local:31022 vagrant@node3.rhodes.rhodes-edge.local
+# from localhost: http://localhost:9000/
+```
+
+#### ConfigMap
+
+```bash
+# Create a ConfigMap and run once a busybox container that will output the ENV vars
+kubectl create -f ~/prepd/kubernetes/config-map-example.yml
+# The container will have completed, so get the details including the container id
+kubectl describe pod dapi-test-pod
+
+```
+
 
 #### Reset a pod
 
@@ -86,3 +112,31 @@ kubectl get pods --all-namespaces --show-labels
 #### ReplicationSets
 
 #### DaemonSets
+
+
+### DNS
+
+https://kubernetes.io/docs/admin/dns/
+
+Given:
+
+
+```bash
+kubectl get services
+NAME         CLUSTER-IP   EXTERNAL-IP   PORT(S)        AGE
+kubernetes   10.32.0.1    <none>        443/TCP        7h
+nginx        10.32.0.55   <nodes>       80:32271/TCP   6h
+
+kubectl get pods -o wide
+NAME                     READY     STATUS    RESTARTS   AGE       IP           NODE
+nginx-3449338310-7whvv   1/1       Running   0          6h        10.200.0.3   172.28.128.11
+```
+
+Then:
+
+```bash
+kubectl exec -it nginx-3449338310-7whvv -- dig nginx.default.svc.cluster.local
+kubectl exec -it nginx-3449338310-7whvv -- dig 10-200-0-3.default.pod.cluster.local
+kubectl exec -it nginx-3449338310-7whvv -- nslookup kubernetes.default
+```
+
