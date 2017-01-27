@@ -66,6 +66,10 @@
 
       alias beg='bundle exec guard'
 
+      alias cop='rubocop'
+      alias copa='rubocop -a'
+      alias copd='rubocop -D'
+
       alias dc='spring rake db:clean'
       alias dcm='spring rake db:clean:migrate'
       alias dcms='spring rake db:clean:migrate:seed'
