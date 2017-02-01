@@ -12,17 +12,22 @@
     dest: ~/.zsh.after/aliases.zsh
     marker: '# {mark} ANSIBLE MANAGED BLOCK (ember)'
     block: |
-      alias edal='ember deploy:activate local --rev '
-      alias edap='ember deploy:activate production --rev '
-      alias edas='ember deploy:activate staging --rev '
-      alias edll='ember deploy:list local'
-      alias edlp='ember deploy:list production'
-      alias edls='ember deploy:list staging'
-      alias edpl='ember deploy local'
-      alias edpp='ember deploy production'
-      alias edps='ember deploy staging'
+      alias ead='ember deploy:activate development --rev '
+      alias eal='ember deploy:activate local --rev '
+      alias eap='ember deploy:activate production --rev '
+      alias eas='ember deploy:activate staging --rev '
 
-      alias eidp='ember install ember-cli-dotenv ember-cli-deploy ember-cli-deploy-build ember-cli-deploy-s3 ember-cli-deploy-revision-data ember-cli-deploy-display-revisions ember-cli-deploy-s3-index'
+      alias edd='ember deploy development'
+      alias edp='ember deploy local'
+      alias edp='ember deploy production'
+      alias edp='ember deploy staging'
+
+      alias eld='ember deploy:list development'
+      alias ell='ember deploy:list local'
+      alias elp='ember deploy:list production'
+      alias els='ember deploy:list staging'
+
+      alias edep='ember install ember-cli-dotenv ember-cli-deploy ember-cli-deploy-build ember-cli-deploy-s3 ember-cli-deploy-revision-data ember-cli-deploy-display-revisions ember-cli-deploy-s3-index'
 
       alias es='ember serve'
   # when: apps|length == 0
