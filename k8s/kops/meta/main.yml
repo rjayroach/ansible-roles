@@ -1,0 +1,4 @@
+---
+dependencies:
+  - { role: awscli }
+  - { role: 'k8s/kubectl' }

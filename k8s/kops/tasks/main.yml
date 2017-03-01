@@ -1,0 +1,8 @@
+---
+- include: install.yml
+  when: "'install' in kops_modes"
+- include: configure.yml
+  when: "'configure' in kops_modes"
+
+# - include: '{{ item }}.yml'
+#   with_items: '{{ kops_modes }}'

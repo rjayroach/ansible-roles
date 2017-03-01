@@ -1,0 +1,6 @@
+---
+kubernetes_version: 1.5.2
+
+bin_type: "{{ 'darwin' if ansible_os_family == 'Darwin' else 'linux' }}"
+kubernetes_bin_path: /usr/local/bin
+kubernetes_download_path: 'https://storage.googleapis.com/kubernetes-release/release/v{{ kubernetes_version }}/bin/{{ bin_type }}/amd64'

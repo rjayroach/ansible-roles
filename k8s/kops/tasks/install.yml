@@ -1,0 +1,33 @@
+---
+# TODO: kops needs kubectl to be installed which is already defined in kubernetes-client
+# However, those k8s roles are focused on local deploy with meta deps and so on.
+# don't want to spend time on that now, but this role should depend on kubectl being installed
+- name: Check if binary is installed
+  stat:
+    path: /usr/local/bin/kops
+  register: bin
+
+- name: Get binary
+  get_url:
+    url: 'https://github.com/kubernetes/kops/releases/download/v{{ kops_version }}/kops-linux-amd64'
+    dest: '{{ kops_binary_path }}'
+  register: new_archive
+  become: yes
+  when: ansible_os_family == 'Debian' and bin.stat.exists == false
+
+- name: Set executable permissions on binary
+  file:
+    path: '{{ kops_binary_path }}'
+    mode: 0755
+  become: yes
+  when: new_archive|changed
+
+
+# NOTE: Not tested
+- name: Install binary via Homebrew
+  homebrew:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - kops
+  when: ansible_os_family == 'Darwin'
