@@ -33,14 +33,3 @@
   with_items:
     - id_rsa
     - id_rsa.pub
-
-- stat:
-    path: '{{ playbook_dir.split("/")[0:-1] | join("/") }}/.terraform-vars.txt'
-  register: terraform_vars
-
-- name: Link project_root/.terraform-vars.txt to ~/.terraform_vars.txt if the file exists
-  file:
-    src: '{{ playbook_dir.split("/")[0:-1] | join("/") }}/.terraform-vars.txt'
-    dest: '{{ ansible_env.HOME }}/.terraform-vars.txt'
-    state: link
-  when: terraform_vars.stat.exists == true
