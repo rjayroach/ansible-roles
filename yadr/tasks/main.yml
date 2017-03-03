@@ -29,6 +29,9 @@
       alias ave='ansible-vault edit'
       alias du='du -csh *'
 
+      # Edit and source this file
+      alias via='vi ~/.zsh.after/aliases.zsh; source ~/.zsh.after/aliases.zsh'
+
 - name: Remove bogus line from .vimrc
   lineinfile:
     dest: '{{ ansible_env.HOME }}/.vimrc'

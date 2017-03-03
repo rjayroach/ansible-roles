@@ -1,22 +1,25 @@
 ---
-dev_tools:
-  common_packages:
-    - nmap
-    - tree
-    - wget
-  debian_packages:
-    - apache2-utils
-    - curl
-    - dos2unix
-    - exuberant-ctags
-    - git
-    - ipcalc
-    - libcurl4-openssl-dev
-    - libreadline-dev
-    - libsqlite3-dev
-    - rake
-    - sqlite3
-    - tcpdump
-    - tmux
-    - unzip
-    - vim
+dev_tools_common_packages:
+  - nmap
+  - tree
+  - wget
+
+dev_tools_darwin_packages:
+  - gpg
+
+dev_tools_debian_packages:
+  - apache2-utils
+  - curl
+  - dos2unix
+  - exuberant-ctags
+  - git
+  - ipcalc
+  - libcurl4-openssl-dev
+  - libreadline-dev
+  - libsqlite3-dev
+  - rake
+  - sqlite3
+  - tcpdump
+  - tmux
+  - unzip
+  - vim

@@ -3,9 +3,12 @@
   command: npm install -g cordova
 
 - name: Install packages via cask
-  homebrew_cask: name={{ item }} state=present
+  homebrew_cask:
+    name: '{{ item }}'
+    state: present
   with_items:
     - android-studio
+    # - java
   when: ansible_os_family == 'Darwin'
 
 

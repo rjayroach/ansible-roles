@@ -4,3 +4,8 @@ common_packages:
 common_debian_packages:
   - lsof
   - ntp
+common_darwin_packages:
+  - cask
+common_darwin_cask_packages:
+  - iterm2
+  # - insomniax

@@ -1,28 +1,24 @@
 ---
 - name: Install common packages
-  homebrew: name={{ item }} state=present
-  with_items: '{{ common_packages }}'
-
-# - homebrew_tap: tap={{ item }} state=present
-#   with_items:
-#     - caskroom/cask
-#     - homebrew/binary
-
-- name: Install homebrew cask
-  homebrew: name={{ item }} state=present
-  with_items:
-    - cask
+  homebrew:
+    name: '{{ item }}'
+    state: present
+  with_items: '{{ common_packages + common_darwin_packages }}'
 
 # NOTE: cask requires to become root, but not to run cask as root so don't use become: yes here
 - name: Install packages via cask
-  homebrew_cask: name={{ item }} state=present
-  with_items:
-    # - boot2docker
-    # - insomniax
-    - iterm2
+  homebrew_cask:
+    name: '{{ item }}'
+    state: present
+  with_items: '{{ common_darwin_cask_packages }}'
 
+# TODO: only if the file doesn't exist
 - name: Copy in custom inputrc
-  copy: 'src={{ item }} dest={{ ansible_env.HOME }}/.{{ item }} owner={{ ansible_env.USER }} group=staff mode=0644'
+  copy:
+    src: '{{ item }}'
+    dest: '{{ ansible_env.HOME }}/.{{ item }}'
+    owner: '{{ ansible_env.USER }}'
+    group: staff
+    mode: 0644
   with_items:
     - inputrc
-  # TODO: only if the file doesn't exist

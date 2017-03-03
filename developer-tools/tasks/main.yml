@@ -1,20 +1,20 @@
 ---
-- name: Install common packages on Debian
-  apt: 'name={{ item }} state=present update_cache=yes cache_valid_time={{ cache_valid_time|default(86400) }}'
-  with_items: '{{ dev_tools.common_packages }}'
+- name: Install Debian specific packages
+  apt:
+    name: '{{ item }}'
+    state: present
+    update_cache: yes
+    cache_valid_time: '{{ cache_valid_time | default(86400) }}'
+  with_items: '{{ dev_tools_common_packages + dev_tools_debian_packages }}'
   when: ansible_distribution == 'Debian'
   become: yes
 
 - name: Install common packages on MacOSX
-  homebrew: 'name={{ item }} state=present'
-  with_items: '{{ dev_tools.common_packages }}'
+  homebrew:
+    name: '{{ item }}'
+    state: present
+  with_items: '{{ dev_tools_common_packages + dev_tools_darwin_packages }}'
   when: ansible_distribution == 'MacOSX'
-
-- name: Install Debian specific packages
-  apt: 'name={{ item }} state=present update_cache=yes cache_valid_time={{ cache_valid_time|default(86400) }}'
-  with_items: '{{ dev_tools.debian_packages }}'
-  when: ansible_distribution == 'Debian'
-  become: yes
 
 - name: Insert aliases
   blockinfile:
@@ -25,6 +25,3 @@
       # Shortcuts for TMux
       alias tl='tmux list-sessions'
       alias ta='tmux a -dt $1'
-
-      # Edit and source this file
-      alias via='vi ~/.zsh.after/aliases.zsh; source ~/.zsh.after/aliases.zsh'

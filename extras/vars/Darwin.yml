@@ -1,4 +1,6 @@
 ---
+# NOTE: These values are not used in a task
+# TODO: Move the homebrew installed packages to their respective role at some point
 extras:
   homebrew_cask_appdir: /Applications
 
@@ -14,11 +16,3 @@ extras:
   homebrew_taps:
     - caskroom/cask
     - homebrew/binary
-
-  homebrew_cask_apps:
-    # for android:
-    # - android-studio
-    # - java
-
-    # to docker role
-    # - boot2docker
