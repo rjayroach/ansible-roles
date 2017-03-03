@@ -1,0 +1,36 @@
+terragrunt = {
+  # Configure Terragrunt to use DynamoDB for locking
+  lock {
+    backend = "dynamodb"
+    config {
+      state_file_id = "${path_relative_to_include()}"
+    }
+  }
+
+  # Configure Terragrunt to automatically store tfstate files in an S3 bucket
+  remote_state {
+    backend = "s3"
+    config {
+      encrypt = "true"
+      bucket = "{{ bucket }}"
+      key = "${path_relative_to_include()}/terraform.tfstate"
+      bucket = "{{ region }}"
+    }
+  }
+
+  terraform = {
+    extra_arguments "secrets" {
+      arguments = [
+        "-var-file=pod.tfvars",
+        "-var-file=env.tfvars",
+      ]
+      commands = [
+        "apply",
+        "plan",
+        "import",
+        "push",
+        "refresh"
+      ]
+    }
+  }
+}
