@@ -51,3 +51,12 @@ Go to System Preferences -> Sharing, enable Remote Login.
 - General: Window Section: Uncheck 'Native full screen windows'
 - Appearance: Tab bar location: Bottom;  Theme: Dark
 - Profiles: Colors => Load Presets to pick Solarized Dark
+
+## Chrome Extensions
+- Lastpass
+- Vimium
+- Ember Inspector
+
+## Git Projects
+- prepd-project
+- terraform-modules

@@ -1,9 +1,8 @@
 ---
-- name: Create .tmuxinator directory in home
-  file:
-    path: '{{ ansible_env.HOME }}/.tmuxinator'
-    state: directory
-    mode: 0755
+- name: Install tmuxinator gem
+  gem:
+    name: tmuxinator
+    state: latest
 
 - name: Copy tmuxinator files
   copy:

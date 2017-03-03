@@ -1,0 +1,3 @@
+---
+dependencies:
+  - { role: tmuxinator, copy_prepd: false }

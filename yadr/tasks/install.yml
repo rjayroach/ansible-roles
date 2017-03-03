@@ -6,6 +6,9 @@
   become: yes
   when: ansible_pkg_mgr == 'apt'
 
+# TODO: on mac install vim with lua support for neocomplete
+#  brew install vim --with-lua
+
 - name: Download Yadr
   get_url:
     url: https://raw.githubusercontent.com/skwp/dotfiles/master/install.sh

@@ -9,6 +9,7 @@
   copy:
     src: prepd.yml
     dest: '{{ ansible_env.HOME }}/.tmuxinator/prepd.yml'
+  when: copy_prepd == true
 
 - name: Copy template files
   template:
