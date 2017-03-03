@@ -31,13 +31,15 @@
   pip:
     name: docker-py
     state: present
-    # NOTE: See: https://github.com/ansible/ansible/issues/17495
-    version: 1.9.0
+    # NOTE: See: https://github.com/ansible/ansible/issues/21348
+    version: 1.10.6
 
 - name: Install docker-compose
   pip:
     name: docker-compose
     state: present
+    # NOTE: See: https://github.com/ansible/ansible/issues/21348
+    version: 1.9.0
 
 - name: 'Add user {{ ansible_user }} to docker group'
   user:
