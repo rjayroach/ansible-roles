@@ -14,7 +14,7 @@ terragrunt = {
       encrypt = "true"
       bucket = "{{ bucket }}"
       key = "${path_relative_to_include()}/terraform.tfstate"
-      bucket = "{{ region }}"
+      region = "{{ region }}"
     }
   }
 
