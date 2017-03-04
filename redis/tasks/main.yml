@@ -16,12 +16,3 @@
     marker: '# {mark} ANSIBLE MANAGED BLOCK (redis)'
     block: |
       alias redis-cli='rlwrap -a -- redis-cli'
-
-# NOTE: This line causes redis to fail to start
-# - name: Connect to Redis on localhost form Docker Container
-#   lineinfile:
-#     dest: /etc/redis/redis.conf
-#     regexp: '^bind'
-#     line: 'bind 127.0.0.1 172.17.0.1'
-#   become: yes
-#   notify: Restart Redis
