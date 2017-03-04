@@ -1,4 +1,21 @@
 ---
+- name: Create .ssh directory in home
+  file:
+    path: '{{ ansible_env.HOME }}/.ssh'
+    state: directory
+    mode: 0755
+
+- name: Ensure content of ~/.ssh/config
+  blockinfile:
+    create: yes
+    dest: ~/.ssh/config
+    marker: '# {mark} ANSIBLE MANAGED BLOCK (laptop)'
+    block: |
+      Host *.local
+        User vagrant
+        ForwardAgent yes
+        AddressFamily inet
+
 - name: Install tmuxinator gem
   gem:
     name: tmuxinator
