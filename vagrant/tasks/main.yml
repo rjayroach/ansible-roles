@@ -14,7 +14,9 @@
  
 # NOTE: http://stackoverflow.com/questions/23874260/error-when-trying-vagrant-up
 - name: "Remove vagrant's built in curl which fails to download boxes on Mac"
-  command: rm -rf /opt/vagrant/embedded/bin/curl
+  file:
+    path: /opt/vagrant/embedded/bin/curl
+    state: absent
   become: yes
   when: ansible_os_family == 'Darwin'
 
