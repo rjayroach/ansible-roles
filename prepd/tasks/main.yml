@@ -1,13 +1,10 @@
 ---
 # if project-root/.boto exists then link it to ~/.boto and download ec2.py and ec2.ini and chmod ec2.py
-# - debug: var=playbook_dir
-# - debug: msg="{{ playbook_dir.split('/')[0:-1] | join('/') }}/.boto"
-
 - stat:
-    path: '{{ playbook_dir.split("/")[0:-1] | join("/") }}/.boto'
+    path: '{{ credentials_dir }}/boto'
   register: boto
 
-- name: Link project_root/.boto to ~/.boto if the file exists
+- name: Link credentials_dir/boto to ~/.boto if the file exists
   file:
     src: '{{ boto.stat.path }}'
     dest: '{{ ansible_env.HOME }}/.boto'
@@ -21,12 +18,12 @@
   when: boto.stat.exists == true
 
 - stat:
-    path: '{{ playbook_dir.split("/")[0:-1] | join("/") }}/.id_rsa'
+    path: '{{ credentials_dir }}/id_rsa'
   register: id_rsa
 
-- name: Link project_root/.id_rsa and .id_rsa.pub to ~/.ssh if the files exist
+- name: Link credentials_dir/id_rsa and id_rsa.pub to ~/.ssh if the files exist
   file:
-    src: '{{ playbook_dir.split("/")[0:-1] | join("/") }}/.{{ item }}'
+    src: '{{ credentials_dir }}/{{ item }}'
     dest: '{{ ansible_env.HOME }}/.ssh/{{ item }}'
     state: link
   when: id_rsa.stat.exists == true

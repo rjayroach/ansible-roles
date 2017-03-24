@@ -56,6 +56,8 @@ Go to System Preferences -> Sharing, enable Remote Login.
 - Lastpass
 - Vimium
 - Ember Inspector
+- AdBlock Plus
+- Harvest
 
 ## Git Projects
 - prepd-project

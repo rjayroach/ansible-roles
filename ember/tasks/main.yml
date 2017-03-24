@@ -18,9 +18,9 @@
       alias eas='ember deploy:activate staging --rev '
 
       alias edd='ember deploy development'
-      alias edp='ember deploy local'
+      alias edl='ember deploy local'
       alias edp='ember deploy production'
-      alias edp='ember deploy staging'
+      alias eds='ember deploy staging'
 
       alias eld='ember deploy:list development'
       alias ell='ember deploy:list local'

@@ -4,21 +4,10 @@
     name: graphviz
   become: yes
 
-- stat:
-    path: '{{ playbook_dir.split("/")[0:-1] | join("/") }}/.terraform-vars.txt'
-  register: terraform_vars
-
-- name: Link project_root/.terraform-vars.txt to ~/.terraform_vars.txt if the file exists
-  file:
-    src: '{{ playbook_dir.split("/")[0:-1] | join("/") }}/.terraform-vars.txt'
-    dest: '{{ ansible_env.HOME }}/.terraform-vars.txt'
-    state: link
-  when: terraform_vars.stat.exists == true
-
 - name: Generate terraform.tfvars
   template:
     src: terraform.tfvars.j2
-    dest: '{{ ansible_env.HOME }}/prepd/terraform/terraform.tfvars'
+    dest: '{{ tf_dir }}/terraform.tfvars'
     force: no
 
 - name: Check if Terraform binary exists
@@ -75,28 +64,29 @@
     dest: ~/.zsh.after/aliases.zsh
     marker: '# {mark} ANSIBLE MANAGED BLOCK (terraform)'
     block: |
-      alias tfa='terraform apply -var-file=~/.terraform-vars.txt'
-      alias tfd='terraform destroy -var-file=~/.terraform-vars.txt'
+      alias tfa='terraform apply'
+      alias tfd='terraform destroy'
       alias tfg='terraform get'
       alias tfgr='terraform graph'
       alias tfgrp='terraform graph | dot -Tpng > '
       alias tfi='terraform import'
       alias tfo='terraform output'
-      alias tfp='terraform plan -var-file=~/.terraform-vars.txt'
+      alias tfp='terraform plan'
       alias tfs='terraform show'
       alias tfst='terraform state'
       alias tft='terraform taint'
 
-      alias tga='terragrunt apply -var-file=~/.terraform-vars.txt'
-      alias tgd='terragrunt destroy -var-file=~/.terraform-vars.txt'
+      alias tga='terragrunt apply'
+      alias tgaa='terragrunt apply-all'
+      alias tgd='terragrunt destroy'
+      alias tgda='terragrunt destroy-all'
       alias tgg='terragrunt get'
       alias tggr='terragrunt graph'
       alias tggrp='terragrunt graph | dot -Tpng > '
       alias tgo='terragrunt output'
-      alias tgp='terragrunt plan -var-file=~/.terraform-vars.txt'
+      alias tgoa='terragrunt output-all'
+      alias tgp='terragrunt plan'
       alias tgs='terragrunt show'
-      alias tgsu='terragrunt spin-up -var-file=~/.terraform-vars.txt'
       alias tgst='terragrunt state'
       alias tgt='terragrunt taint'
-      alias tgtd='terragrunt tear-down -var-file=~/.terraform-vars.txt'
   when: zsh_aliases.stat.exists == true
