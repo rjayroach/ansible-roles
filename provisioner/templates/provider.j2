@@ -1,0 +1,30 @@
+### Providers
+
+variable "region" {}
+
+{%- for provider in providers %}
+
+variable "aws_access_key_id_{{ provider.label }}" {}
+variable "aws_secret_access_key_{{ provider.label }}" {}
+
+  {% if provider.regions is defined %}
+    {%- for region in provider.regions %}
+
+provider "{{ provider.type }}" {
+  alias = "{{ region }}"
+  access_key = "${var.aws_access_key_id_{{ provider.label }}}"
+  secret_key = "${var.aws_secret_access_key_{{ provider.label }}}"
+  region = "{{ region }}"
+}
+    {% endfor %}
+  {% endif %}
+
+  {%- if provider.region is defined %}
+
+provider "aws" {
+  access_key = "${var.aws_access_key_id_{{ provider.label }}}"
+  secret_key = "${var.aws_secret_access_key_{{ provider.label }}}"
+  region = "${var.region}"
+}
+  {% endif %}
+{% endfor %}

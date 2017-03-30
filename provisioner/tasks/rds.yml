@@ -1,0 +1,29 @@
+---
+- name: Ensure app credentials file exists
+  copy:
+    dest: '{{ ansible_vars_file_rds }}'
+    force: no
+    content: ''
+
+- name: Template the RDS component
+  template:
+    src: rds.j2
+    dest: '{{ component_type_dir }}/rds.tf'
+
+- name: Add rds module variables to .tfvars
+  blockinfile:
+    create: yes
+    dest: '{{ tfvars_file }}'
+    marker: '# {mark} ANSIBLE MANAGED BLOCK (rds)'
+    block: |
+      db_allocated_storage = "{{ provision.db_allocated_storage }}"
+      db_availability_zone = "{{ provision.db_availability_zone }}"
+      db_engine = "{{ provision.db_engine }}"
+      db_identifier = "{{ application_name }}-{{ infrastructure_env }}"
+      db_instance_type = "{{ provision.db_instance_type }}"
+      db_name = "{{ api_server.DATABASE_NAME }}"
+      db_parameter_group_name = "{{ provision.db_parameter_group_name }}"
+      db_password = "{{ api_server.DATABASE_PASSWORD }}"
+      db_storage_encrypted = "{{ provision.db_storage_encrypted }}"
+      db_username = "{{ api_server.DATABASE_USERNAME }}"
+      db_env_file = "{{ ansible_vars_file_rds }}"

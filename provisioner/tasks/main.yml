@@ -1,0 +1,38 @@
+# components/<service>/<component>/<type>/<module>.tf
+# components/recheck/api-server/public/vpc.tf
+# components/recheck/api-server/private/vpc.tf
+
+# environment/<service>/<component>/terraform.tfvars
+# staging/recheck/api-server/terraform.tfvars
+---
+- name: Ensure the terragrunt temp directory is clean
+  file:
+    path: '{{ item }}'
+    state: absent
+  with_items:
+    - '/tmp/vagrant/terragrunt-download'
+
+- name: Ensure the component directory tree exists
+  file:
+    path: '{{ item }}'
+    state: directory
+  with_items:
+    - '{{ tf_components_dir }}'
+    - '{{ tf_components_dir }}/{{ service }}'
+    - '{{ tf_components_dir }}/{{ service }}/{{ component }}'
+    - '{{ tf_components_dir }}/{{ service }}/{{ component }}/{{ type }}'
+
+- name: Ensure the implementation directory tree exists
+  file:
+    path: '{{ item }}'
+    state: directory
+  with_items:
+    - '{{ tf_dir }}/{{ infrastructure_env }}'
+    - '{{ tf_dir }}/{{ infrastructure_env }}/{{ service }}'
+    - '{{ tf_dir }}/{{ infrastructure_env }}/{{ service }}/{{ component }}'
+
+- include: get-current-ip.yml
+  when: provision.web_app_allowed_hosts == 'current-ip' or provision.vpc_bastion_cidr == 'current-ip'
+
+- include: '{{ item }}.yml'
+  with_items: "{{ ['provider', 'remote-state'] + modules }}"

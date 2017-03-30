@@ -1,0 +1,9 @@
+---
+component_type_dir: '{{ tf_components_dir }}/{{ service }}/{{ component }}/{{ type }}'
+tfvars_file: '{{ tf_dir }}/{{ infrastructure_env }}/{{ service }}/{{ component }}/terraform.tfvars'
+credentials_file: '{{ credentials_dir }}/terraform.tfvars'
+ansible_vars_dir: '{{ ansible_dir }}/group_vars/{{ infrastructure_env }}'
+
+# NOTE: cannot use 'ansible_vars_dir' in following vars b/c it has not been evaluated yet
+ansible_vars_file_rds: '{{ ansible_dir }}/group_vars/{{ infrastructure_env }}/tf-{{ service }}-rds.yml'
+ansible_vars_file_s3_website: '{{ web_app_dir }}/.env.deploy.{{ infrastructure_env }}'

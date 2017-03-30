@@ -1,0 +1,17 @@
+# Subdomain for the exclusive use of this application
+# Dependencies
+# global_route53 remote state
+
+variable "subdomain_name" {}
+
+module "subdomain" {
+  source                = "../../../../modules/aws/subdomain"
+
+  # Parameters
+  name           = "${var.subdomain_name}"
+  parent_zone_id = "${data.terraform_remote_state.{{ subdomain.remote_state }}.zone_id}"
+}
+
+output "zone_id" {
+  value = "${module.subdomain.zone_id}"
+}

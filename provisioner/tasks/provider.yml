@@ -1,0 +1,43 @@
+---
+- name: Template the Providers
+  template:
+    src: provider.j2
+    dest: '{{ component_type_dir }}/providers.tf'
+
+- name: Template the Provider and Remote Data Sources Component
+  template:
+    src: provider-credentials.j2
+    dest: '{{ credentials_file }}'
+
+- name: Add terragrunt config to tfvars
+  blockinfile:
+    create: yes
+    dest: '{{ tfvars_file }}'
+    marker: '# {mark} ANSIBLE MANAGED BLOCK (terragrunt)'
+    block: |
+      terragrunt = {
+        terraform {
+          source = "../../..//components/{{ service }}/{{ component }}/{{ type }}"
+          extra_arguments "secrets" {
+            arguments = [
+              "-var-file={{ credentials_file }}",
+            ]
+            commands = [
+              "apply", "plan", "import", "push", "refresh", "destroy"
+            ]
+          }
+        }
+        include = {
+          path = "${find_in_parent_folders()}"
+        }
+      {% if dependencies is defined %}
+        dependencies {
+          paths = [
+      {% for item in dependencies %}
+            "../{{ item }}",
+      {% endfor %}
+          ]
+        }
+      {% endif %}
+      }
+      region = "{{ provision.tf_aws_region }}"

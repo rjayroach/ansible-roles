@@ -1,0 +1,13 @@
+# VPC for the exclusive use of this application
+variable "vpc_environment" {}
+variable "vpc_public_availability_zone" {}
+variable "vpc_private_availability_zone" {}
+
+module "vpc" {
+  source                = "../../../../modules/aws/vpc/public-only"
+
+  # VPC parameters
+  environment               = "${var.vpc_environment}"
+  public_availability_zone  = "${var.vpc_public_availability_zone}"
+  private_availability_zone = "${var.vpc_private_availability_zone}"
+}

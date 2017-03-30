@@ -1,0 +1,15 @@
+---
+- name: Template the Remote State
+  template:
+    src: remote-state.j2
+    dest: '{{ component_type_dir }}/remote-state.tf'
+
+- name: Add vpc module variables to .tfvars
+  blockinfile:
+    create: yes
+    dest: '{{ tfvars_file }}'
+    marker: '# {mark} ANSIBLE MANAGED BLOCK (remote-state)'
+    block: |
+      tf_remote_state_bucket = "{{ provision.tf_remote_state_bucket }}"
+      tf_remote_state_region = "{{ provision.tf_remote_state_region }}"
+      tf_remote_state_environment = "{{ infrastructure_env }}"

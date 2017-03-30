@@ -1,0 +1,52 @@
+# RDS
+
+# Current Dependencies:
+# The vpc component must also be present
+
+
+# TODO: Make into multi-az possible
+variable "db_allocated_storage" {}
+variable "db_availability_zone" {}
+variable "db_engine" {}
+variable "db_identifier" {}
+variable "db_instance_type" {}
+variable "db_name" {}
+variable "db_parameter_group_name" {}
+variable "db_password" {}
+variable "db_storage_encrypted" {}
+variable "db_username" {}
+variable "db_env_file" {}
+
+module "rds" {
+  source                    = "../../../../modules/aws/rds"
+
+  # rds variables
+  allocated_storage         = "${var.db_allocated_storage}"
+  availability_zone         = "${var.db_availability_zone}"
+  backup_retention_period   = 7
+  # backup_window             = "16:35-17:05"
+  engine                    = "${var.db_engine}"
+  engine_version            = "9.5.4"
+  final_snapshot_identifier = "${var.db_identifier}-final"
+  identifier                = "${var.db_identifier}"
+  instance_class            = "${var.db_instance_type}"
+  # maintenance_window        = "mon:21:27-mon:21:57"
+  multi_az                  = false
+  name                      = "${var.db_name}"
+  parameter_group_name      = "${var.db_parameter_group_name}"
+  password                  = "${var.db_password}"
+  port                      = 5432
+  publicly_accessible       = false
+  storage_encrypted         = "${var.db_storage_encrypted}"
+  storage_type              = "gp2"
+  username                  = "${var.db_username}"
+  vpc_security_group_ids    = "${module.vpc.vpc_security_group_ids}"
+  vpc_subnet_ids            = ["${module.vpc.subnet_id}", "${module.vpc.subnet_id_2}"]
+
+  # security group variables
+  vpc_id                    = "${module.vpc.vpc_id}"
+  cidr_blocks               = ["172.16.0.0/24", "172.16.1.0/24"]
+
+  # other variables
+  env_file                  = "${var.db_env_file}"
+}

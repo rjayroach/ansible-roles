@@ -1,0 +1,17 @@
+---
+- name: Template the api-server component
+  template:
+    src: app-server-with-elb.j2
+    dest: '{{ component_type_dir }}/app-server-with-elb.tf'
+
+- name: Add api-server module variables to .tfvars
+  blockinfile:
+    create: yes
+    dest: '{{ tfvars_file }}'
+    marker: '# {mark} ANSIBLE MANAGED BLOCK (app-server-with-elb)'
+    block: |
+      api_server_application = "{{ application_name }}"
+      api_server_environment = "{{ infrastructure_env }}"
+      api_server_instance_type = "{{ provision.tf_instance_type }}"
+      api_server_public_key = "{{ ssh_dir }}/id_rsa.pub"
+      api_server_region = "{{ provision.tf_aws_region }}"

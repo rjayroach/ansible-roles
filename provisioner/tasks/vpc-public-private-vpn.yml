@@ -1,0 +1,16 @@
+# TODO: The underlying tf module, e.g. public-only, public-private-vpn can be a default var in this role
+---
+- name: Template the VPC component
+  template:
+    src: vpc-public-only.j2
+    dest: '{{ component_type_dir }}/vpc-public-only.tf'
+
+- name: Add vpc module variables to .tfvars
+  blockinfile:
+    create: yes
+    dest: '{{ tfvars_file }}'
+    marker: '# {mark} ANSIBLE MANAGED BLOCK (vpc-public-only)'
+    block: |
+      vpc_environment = "{{ infrastructure_env }}"
+      vpc_public_availability_zone  = "{{ provision.vpc_public_availability_zone }}"
+      vpc_private_availability_zone = "{{ provision.vpc_private_availability_zone }}"

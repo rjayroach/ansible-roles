@@ -1,0 +1,27 @@
+### Remote Data Sources
+
+variable "tf_remote_state_bucket" {}
+variable "tf_remote_state_region" {}
+variable "tf_remote_state_environment" {}
+
+{% for item in remote_states %}
+data "terraform_remote_state" "{{ item | replace('/', '-') }}" {
+  backend = "s3"
+  config {
+    bucket = "${var.tf_remote_state_bucket}"
+    key    = "{{ item }}/terraform.tfstate"
+    region = "${var.tf_remote_state_region}"
+  }
+}
+{% endfor %}
+
+{% for item in env_remote_states %}
+data "terraform_remote_state" "{{ item | replace('/', '-') }}" {
+  backend = "s3"
+  config {
+    bucket = "${var.tf_remote_state_bucket}"
+    key    = "${var.tf_remote_state_environment}/{{ item }}/terraform.tfstate"
+    region = "${var.tf_remote_state_region}"
+  }
+}
+{% endfor %}

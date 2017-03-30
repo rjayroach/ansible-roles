@@ -1,0 +1,13 @@
+---
+- name: Template the Subdomain component
+  template:
+    src: subdomain.j2
+    dest: '{{ component_type_dir }}/subdomain.tf'
+
+- name: Add subdomain module variables to .tfvars
+  blockinfile:
+    create: yes
+    dest: '{{ tfvars_file }}'
+    marker: '# {mark} ANSIBLE MANAGED BLOCK (subdomain)'
+    block: |
+      subdomain_name = "{{ subdomain.name }}"
