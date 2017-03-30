@@ -27,3 +27,4 @@
       db_storage_encrypted = "{{ provision.db_storage_encrypted }}"
       db_username = "{{ api_server.DATABASE_USERNAME }}"
       db_env_file = "{{ ansible_vars_file_rds }}"
+      db_ansible_vars_key = "tf_{{ application_name }}_rds"

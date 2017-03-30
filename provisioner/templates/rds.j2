@@ -16,6 +16,7 @@ variable "db_password" {}
 variable "db_storage_encrypted" {}
 variable "db_username" {}
 variable "db_env_file" {}
+variable "db_ansible_vars_key" {}
 
 module "rds" {
   source                    = "../../../../modules/aws/rds"
@@ -49,4 +50,5 @@ module "rds" {
 
   # other variables
   env_file                  = "${var.db_env_file}"
+  ansible_vars_key          = "${var.db_ansible_vars_key}"
 }
