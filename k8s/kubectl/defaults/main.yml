@@ -1,5 +1,5 @@
 ---
-kubernetes_version: 1.5.2
+kubernetes_version: 1.5.5
 
 bin_type: "{{ 'darwin' if ansible_os_family == 'Darwin' else 'linux' }}"
 kubernetes_bin_path: /usr/local/bin

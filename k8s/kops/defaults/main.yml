@@ -1,5 +1,5 @@
 ---
-kops_version: 1.4.4
+kops_version: 1.5.3
 kops_binary_path: /usr/local/bin/kops
 kops_modes:
   - install

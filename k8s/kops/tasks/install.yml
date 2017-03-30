@@ -9,7 +9,8 @@
 
 - name: Get binary
   get_url:
-    url: 'https://github.com/kubernetes/kops/releases/download/v{{ kops_version }}/kops-linux-amd64'
+    # url: 'https://github.com/kubernetes/kops/releases/download/v{{ kops_version }}/kops-linux-amd64'
+    url: 'https://github.com/kubernetes/kops/releases/download/{{ kops_version }}/kops-linux-amd64'
     dest: '{{ kops_binary_path }}'
   register: new_archive
   become: yes
