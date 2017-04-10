@@ -19,7 +19,7 @@ variable "db_env_file" {}
 variable "db_ansible_vars_key" {}
 
 module "rds" {
-  source                    = "../../../../modules/aws/rds"
+  source                    = "{{ modules_path }}/aws/rds"
 
   # rds variables
   allocated_storage         = "${var.db_allocated_storage}"

@@ -2,7 +2,8 @@
 - name: Template the Remote State
   template:
     src: remote-state.j2
-    dest: '{{ component_type_dir }}/remote-state.tf'
+    dest: '{{ component_dir }}/remote-state.tf'
+  when: remote_states is defined
 
 - name: Add vpc module variables to .tfvars
   blockinfile:
@@ -13,3 +14,4 @@
       tf_remote_state_bucket = "{{ provision.tf_remote_state_bucket }}"
       tf_remote_state_region = "{{ provision.tf_remote_state_region }}"
       tf_remote_state_environment = "{{ infrastructure_env }}"
+      tf_resource = "{{ resource }}"

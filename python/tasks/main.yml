@@ -1,0 +1,11 @@
+---
+- name: Install python-setuptools
+  apt: 
+    name: python-setuptools
+  become: yes
+
+- name: Install pip
+  easy_install:
+    name: pip
+    # state: latest
+  become: yes

@@ -1,0 +1,9 @@
+---
+- name: Ensure the component directory tree exists
+  file:
+    path: '{{ item }}'
+    state: directory
+  with_items:
+    - '{{ tf_components_dir }}/{{ service }}'
+    - '{{ tf_dir }}/{{ service }}/{{ infrastructure_env }}'
+    - '{{ tf_dir }}/{{ service }}/{{ infrastructure_env }}/{{ resource }}'

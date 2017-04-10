@@ -4,7 +4,7 @@ terragrunt = {
     backend = "dynamodb"
     config {
       state_file_id = "${path_relative_to_include()}"
-      aws_region = "{{ region }}"
+      aws_region = "{{ provision.tf_remote_state_region }}"
     }
   }
 
@@ -13,9 +13,9 @@ terragrunt = {
     backend = "s3"
     config {
       encrypt = "true"
-      bucket = "{{ bucket }}"
+      bucket = "{{ provision.tf_remote_state_bucket }}"
       key = "${path_relative_to_include()}/terraform.tfstate"
-      region = "{{ region }}"
+      region = "{{ provision.tf_remote_state_region }}"
     }
   }
 }

@@ -1,0 +1,28 @@
+# components/<service>/<component>/<type>/<module>.tf
+# components/recheck/api-server/public/vpc.tf
+# components/recheck/api-server/private/vpc.tf
+
+# environment/<service>/<component>/terraform.tfvars
+# staging/recheck/api-server/terraform.tfvars
+---
+- name: Generate terraform.tfvars
+  template:
+    src: terraform.tfvars.j2
+    # dest: '{{ tf_environments_dir }}/terraform.tfvars'
+    dest: '{{ tf_dir }}/terraform.tfvars'
+    force: no
+
+- name: Ensure the terragrunt temp directory is clean
+  file:
+    path: '{{ item }}'
+    state: absent
+  with_items:
+    - '/tmp/vagrant/terragrunt-download'
+
+- name: Ensure the component directory tree exists
+  file:
+    path: '{{ item }}'
+    state: directory
+  with_items:
+    - '{{ tf_components_dir }}'
+    - '{{ tf_dir }}/{{ service }}'

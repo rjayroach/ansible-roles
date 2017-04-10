@@ -8,7 +8,7 @@
 - name: Template the RDS component
   template:
     src: rds.j2
-    dest: '{{ component_type_dir }}/rds.tf'
+    dest: '{{ component_dir }}/rds.tf'
 
 - name: Add rds module variables to .tfvars
   blockinfile:

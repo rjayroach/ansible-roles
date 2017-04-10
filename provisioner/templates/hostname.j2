@@ -3,14 +3,12 @@
 variable "hostname_name" {}
 
 module "hostname" {
-  source        = "../../../../modules/aws/hostname"
+  source        = "{{ modules_path }}/aws/hostname"
 
   # NOTE: The certificate is only good for the root domain so create hostname in the primary zone
-  # zone_id       = "${data.terraform_remote_state.global-route53.zone_id}"
-  # zone_id       = "${var.create_subdomain ? module.subdomain.zone_id : data.terraform_remote_state.global-route53.zone_id}"
-  zone_id       = "${data.terraform_remote_state.{{ hostname.remote_state }}.zone_id}"
+  zone_id       = "${data.terraform_remote_state.{{ hostname.remote_state_domain }}.zone_id}"
   name          = "${var.hostname_name}"
 
-  alias_name    = "${module.{{ hostname.module }}.dns_name}" 
-  alias_zone_id = "${module.{{ hostname.module }}.zone_id}" 
+  alias_name    = "${data.terraform_remote_state.{{ hostname.remote_state_host }}.dns_name}"
+  alias_zone_id = "${data.terraform_remote_state.{{ hostname.remote_state_host }}.zone_id}"
 }

@@ -4,12 +4,6 @@
     name: graphviz
   become: yes
 
-- name: Generate terraform.tfvars
-  template:
-    src: terraform.tfvars.j2
-    dest: '{{ tf_dir }}/terraform.tfvars'
-    force: no
-
 - name: Check if Terraform binary exists
   stat:
     path: /usr/local/bin/terraform

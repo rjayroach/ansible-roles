@@ -8,7 +8,7 @@
 - name: Template the web-app component
   template:
     src: s3-website.j2
-    dest: '{{ component_type_dir }}/s3-website.tf'
+    dest: '{{ component_dir }}/s3-website.tf'
 
 - name: Add s3-website variables to .tfvars
   blockinfile:
@@ -22,5 +22,5 @@
       web_app_app_host = "{{ web_app.APP_HOST }}"
       web_app_credentials_file = "{{ ansible_vars_file_s3_website }}"
       web_app_environment = "{{ infrastructure_env }}"
-      web_app_iam_user_name = "{{ application_name }}-{{ infrastructure_env }}-s3"
+      web_app_iam_user_name = "{{ infrastructure_env }}-{{ service }}-{{ resource }}-s3"
       web_app_region = "{{ provision.tf_aws_region }}"

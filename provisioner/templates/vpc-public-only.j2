@@ -1,13 +1,29 @@
 # VPC for the exclusive use of this application
-variable "vpc_environment" {}
-variable "vpc_public_availability_zone" {}
-variable "vpc_private_availability_zone" {}
+variable "vpc_tag_name" {}
+variable "vpc_subnet_az_public_1" {}
+variable "vpc_subnet_az_public_2" {}
 
 module "vpc" {
-  source                = "../../../../modules/aws/vpc/public-only"
+  source             = "{{ modules_path }}/aws/vpc/public-only"
 
   # VPC parameters
-  environment               = "${var.vpc_environment}"
-  public_availability_zone  = "${var.vpc_public_availability_zone}"
-  private_availability_zone = "${var.vpc_private_availability_zone}"
+  vpc_tag_name       = "${var.vpc_tag_name}"
+  subnet_az_public_1 = "${var.vpc_subnet_az_public_1}"
+  subnet_az_public_2 = "${var.vpc_subnet_az_public_2}"
+}
+
+output "security_group_id_public" {
+  value = "${module.vpc.security_group_id_public}"
+}
+
+output "subnet_id_public_1" {
+  value = "${module.vpc.subnet_id_public_1}"
+}
+
+output "subnet_id_public_2" {
+  value = "${module.vpc.subnet_id_public_2}"
+}
+
+output "vpc_id" {
+  value = "${module.vpc.vpc_id}"
 }

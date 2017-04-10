@@ -9,7 +9,7 @@ variable "web_app_iam_user_name" {}
 variable "web_app_region" {}
 
 module "s3-website" {
-  source           = "../../../../modules/aws/s3-website"
+  source           = "{{ modules_path }}/aws/s3-website"
 
   allowed_ip       = "${var.web_app_allowed_hosts}"
   api_url          = "${var.web_app_api_url}"
@@ -21,10 +21,10 @@ module "s3-website" {
   region           = "${var.web_app_region}"
 }
 
-# output "dns_name" {
-#   value = "${module.s3-website.dns_name}"
-# }
-# 
-# output "zone_id" {
-#   value = "${module.s3-website.zone_id}"
-# }
+output "dns_name" {
+  value = "${module.s3-website.dns_name}"
+}
+
+output "zone_id" {
+  value = "${module.s3-website.zone_id}"
+}

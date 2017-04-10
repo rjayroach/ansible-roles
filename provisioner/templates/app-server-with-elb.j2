@@ -1,29 +1,36 @@
 # API Server
 variable "api_server_application" {}
+variable "api_server_component" {}
 variable "api_server_environment" {}
+variable "api_server_resource" {}
+variable "api_server_service" {}
 variable "api_server_instance_type" {}
 variable "api_server_public_key" {}
 variable "api_server_region" {}
 
-module "app-server-with-elb" {
-  source                  = "../../../../modules/aws/app-server-with-elb"
+# module "app-server-with-elb" {
+module "{{ component }}" {
+  source                  = "{{ modules_path }}/aws/app-server-with-elb"
 
   # Instance parameters
   application             = "${var.api_server_application}"
+  component               = "${var.api_server_component}"
   environment             = "${var.api_server_environment}"
+  resource                = "${var.api_server_resource}"
+  service                 = "${var.api_server_service}"
   instance_type           = "${var.api_server_instance_type}"
   public_key              = "${var.api_server_public_key}"
   region                  = "${var.api_server_region}"
-  server_cert_arn         = "${data.terraform_remote_state.global-iam.server_cert_arn}"
-  subnet_id               = "${module.vpc.subnet_id}"
-  vpc_id                  = "${module.vpc.vpc_id}"
-  vpc_security_group_ids  = "${module.vpc.vpc_security_group_ids}"
+  server_cert_arn         = "${data.terraform_remote_state.{{ rem.iam }}.server_cert_arn}"
+  subnet_id               = "${data.terraform_remote_state.{{ rem.vpc }}.subnet_id_public_1}"
+  vpc_id                  = "${data.terraform_remote_state.{{ rem.vpc }}.vpc_id}"
+  vpc_security_group_ids  = "${data.terraform_remote_state.{{ rem.vpc }}.security_group_id_public}"
 }
 
-# output "dns_name" {
-#   value = "${module.app-server-with-elb.dns_name}" 
-# }
-# 
-# output "zone_id" {
-#   value = "${module.app-server-with-elb.zone_id}" 
-# }
+output "dns_name" {
+  value = "${module.{{ component }}.dns_name}"
+}
+
+output "zone_id" {
+  value = "${module.{{ component }}.zone_id}"
+}

@@ -1,13 +1,16 @@
 # VPC for the exclusive use of this application
 variable "vpc_environment" {}
-variable "vpc_public_availability_zone" {}
-variable "vpc_private_availability_zone" {}
+variable "vpc_subnet_az_public" {}
+variable "vpc_subnet_az_private" {}
+
+variable "bastion_cidr" {}
 
 module "vpc" {
-  source                = "../../../modules/aws/vpc/public-private-vpn"
+  source                = "{{ modules_path }}/aws/vpc/public-private-vpn"
 
   # VPC parameters
-  environment               = "${var.vpc_environment}"
-  public_availability_zone  = "${var.vpc_public_availability_zone}"
-  private_availability_zone = "${var.vpc_private_availability_zone}"
+  environment       = "${var.vpc_environment}"
+  subnet_az_public  = "${var.vpc_subnet_az_public}"
+  subnet_az_private = "${var.vpc_subnet_az_private}"
+  bastion_cidr = "${var.bastion_cidr}"
 }
