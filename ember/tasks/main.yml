@@ -15,8 +15,10 @@
       edx() {
         if (( $# == 2 )); then
           echo "ember deploy $1.$2"
+          ember deploy $1.$2
         else
           echo "ember deploy $1"
+          ember deploy $1
         fi
       }
 
