@@ -2,41 +2,21 @@
 - include: 'install.yml'
   become: yes
 
-- name: Check if ~/.zsh.after exists
-  stat:
-    path: ~/.zsh.after
-  register: zsh_after
+- name: Get the user shell
+  command: echo $SHELL
+  register: shell
+
+- set_fact:
+    aliases_file: { '/bin/zsh': '.zsh.after/aliases.zsh', '/bin/bash': '.bash_aliases' }
 
 - name: Insert aliases
   blockinfile:
     create: yes
-    dest: ~/.zsh.after/aliases.zsh
+    dest: "{{ ansible_env.HOME }}/{{ aliases_file[shell.stdout] | default('/tmp/test') }}"
     marker: '# {mark} ANSIBLE MANAGED BLOCK (docker)'
     block: |
       alias di='docker images'
       alias dps='docker ps'
-  when: zsh_after.stat.exists
-
-# TODO: port dkr from the perx vagrant VM (or remove these aliases)
-- name: Insert aliases
-  blockinfile:
-    create: yes
-    dest: ~/.zsh.after/aliases.zsh
-    marker: '# {mark} ANSIBLE MANAGED BLOCK (docker)'
-    block: |
-      # Calls ruby file ~/bin/dkr
-      # alias db='dkr build'
-      # alias dp='dkr push'
-      # alias dpl='dkr pull'
-
-      # alias dr='dkr run'
-      # alias drm='dkr remove'
-      # alias ds='dkr start'
-      # alias dsh='dkr shell'
-      # alias dst='dkr stop'
-      # alias dstr='dkr stop -r'
-
       drma() {
         docker rm $(docker ps -a -q)
       }
-  when: zsh_after.stat.exists
