@@ -12,20 +12,47 @@
     dest: ~/.zsh.after/aliases.zsh
     marker: '# {mark} ANSIBLE MANAGED BLOCK (ember)'
     block: |
-      alias ead='ember deploy:activate development --rev '
-      alias eal='ember deploy:activate local --rev '
-      alias eap='ember deploy:activate production --rev '
-      alias eas='ember deploy:activate staging --rev '
+      edx() {
+        if (( $# == 2 )); then
+          echo "ember deploy $1.$2"
+        else
+          echo "ember deploy $1"
+        fi
+      }
 
-      alias edd='ember deploy development'
-      alias edl='ember deploy local'
-      alias edp='ember deploy production'
-      alias eds='ember deploy staging'
+      edd() { edx development $1 }
+      eds() { edx staging $1 }
+      edp() { edx production $1 }
 
-      alias eld='ember deploy:list development'
-      alias ell='ember deploy:list local'
-      alias elp='ember deploy:list production'
-      alias els='ember deploy:list staging'
+
+      elx() {
+        if (( $# == 2 )); then
+          echo "ember deploy:list $1.$2"
+          ember deploy:list $1.$2
+        else
+          echo "ember deploy:list $1"
+          ember deploy:list $1
+        fi
+      }
+
+      eld() { elx development $1 }
+      els() { elx staging $1 }
+      elp() { elx production $1 }
+
+
+      eax() {
+        if (( $# == 3 )); then
+          echo "ember deploy:activate $1.$2 --rev $3"
+          ember deploy:activate $1.$2 --rev $3
+        else
+          echo "ember deploy:activate $1 -- rev $2"
+          ember deploy:activate $1 --rev $2
+        fi
+      }
+
+      ead() { eax development $1 $2 }
+      eas() { eax staging $1 $2 }
+      eap() { eax production $1 $2 }
 
       alias edep='ember install ember-cli-dotenv ember-cli-deploy ember-cli-deploy-build ember-cli-deploy-s3 ember-cli-deploy-revision-data ember-cli-deploy-display-revisions ember-cli-deploy-s3-index'
 
