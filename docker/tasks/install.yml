@@ -51,6 +51,12 @@
     # NOTE: See: https://github.com/ansible/ansible/issues/21348
     version: 1.9.0
 
+- name: Install bash completion for docker
+  get_url:
+    url: https://raw.githubusercontent.com/docker/docker/master/contrib/completion/bash/docker
+    dest: /etc/bash_completion.d/docker
+    mode: 0644
+
 - name: 'Add user {{ ansible_user }} to docker group'
   user:
     name: '{{ ansible_user }}'

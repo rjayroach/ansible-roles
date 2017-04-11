@@ -4,6 +4,7 @@ common_packages:
 common_debian_packages:
   - lsof
   - ntp
+  - bash-completion
 common_darwin_packages:
   - cask
 common_darwin_cask_packages:
