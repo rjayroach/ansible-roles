@@ -1,0 +1,28 @@
+---
+- name: Merge bastion vars
+  set_fact:
+    attrs: "{{ bastion_defaults | combine(bastion) }}"
+
+- include: get-current-ip.yml attribute=cidr
+  when: attrs.cidr == 'current-ip'
+
+- name: Template the Bastion Host
+  template:
+    src: ec2-bastion-host.j2
+    dest: '{{ component_dir }}/ec2-bastion-host.tf'
+
+- name: Add bastion host variables to .tfvars
+  blockinfile:
+    create: yes
+    dest: '{{ tfvars_file }}'
+    marker: '# {mark} ANSIBLE MANAGED BLOCK (ec2-bastion-host)'
+    block: |
+      bastion_availability_zone = "{{ vpc_subnet_az_public }}"
+      bastion_cidr = "{{ bastion.cidr }}"
+      bastion_component = "{{ component }}"
+      bastion_environment = "{{ infrastructure_env }}"
+      bastion_key_name = "{{ ssh_key_name }}"
+      bation_region = "{{ provision.tf_aws_region }}"
+      bastion_resource = "{{ resource }}"
+      bastion_service = "{{ service }}"
+      bastion_subnet_az_public = "{{ vpc_subnet_az_public }}"

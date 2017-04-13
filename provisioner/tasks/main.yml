@@ -22,8 +22,5 @@
     - '{{ tf_components_dir }}/{{ service }}/{{ res_key | default(resource) }}/{{ component }}'
     - '{{ tf_dir }}/{{ service }}/{{ infrastructure_env }}/{{ resource }}/{{ inf_key | default(component) }}'
 
-#- include: get-current-ip.yml
-#  when: provision.web_app_allowed_hosts == 'current-ip' or provision.vpc_bastion_cidr == 'current-ip'
-
 - include: '{{ item }}.yml'
   with_items: "{{ ['provider', 'remote-state'] + modules }}"

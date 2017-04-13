@@ -1,0 +1,38 @@
+---
+vpc: {}
+vpc_public_only_defaults:
+  cidr: 172.16.0.0/20
+  subnet_az_public_1: us-east-1a
+  subnet_az_public_2: us-east-1b
+  subnet_cidr_public_1: 172.16.0.0/24
+  subnet_cidr_public_2: 172.16.1.0/24
+  tag_name: "{{ service }}-{{ infrastructure_env }}-{{ resource }}-{{ inf_key | default(component) }}"
+
+rds: {}
+rds_defaults:
+  db_availability_zone: us-east-1a
+  db_allocated_storage: 10
+  db_engine: postgres
+  db_instance_type: db.m3.medium
+  db_parameter_group_name: default.postgres9.5
+  db_storage_encrypted: 'true'
+  db_identifier: "{{ application_name }}-{{ resource }}-{{ infrastructure_env }}"
+  db_name: '{{ application_name }}_{{ resource }}_{{ infrastructure_env }}'
+  ansible_vars_file: '{{ ansible_dir }}/group_vars/{{ infrastructure_env }}/tf-rds-{{ service }}-{{ resource }}-{{ component }}.yml'
+
+s3_website: {}
+s3_website_defaults:
+  ansible_vars_file: '{{ web_app_dir }}/.env.deploy.{{ infrastructure_env }}.{{ resource }}'
+  web_app_allowed_hosts: '0.0.0.0/0'
+
+bastion: {}
+bastion_defaults:
+  cidr: 'current-ip'
+
+app_server: {}
+app_server_defaults:
+  instance_type: t2.micro
+
+subdomain: {}
+subdomain_defaults:
+  prefix: '{{ infrastructure_env }}_'

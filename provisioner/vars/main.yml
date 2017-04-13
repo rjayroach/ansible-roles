@@ -4,6 +4,3 @@ tfvars_file: '{{ tf_dir }}/{{ service }}/{{ infrastructure_env }}/{{ resource }}
 modules_path: '../../../../modules'
 components_path: '../../../..//components'
 component_path: "{{ components_path }}/{{ service }}/{{ res_key | default(resource) }}/{{ component }}"
-
-ansible_vars_file_rds: '{{ ansible_dir }}/group_vars/{{ infrastructure_env }}/tf-rds-{{ service }}-{{ resource }}-{{ component }}.yml'
-ansible_vars_file_s3_website: '{{ web_app_dir }}/.env.deploy.{{ infrastructure_env }}.{{ resource }}'

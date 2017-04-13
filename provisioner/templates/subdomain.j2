@@ -10,7 +10,10 @@ module "subdomain" {
 
   # Parameters
   name           = "${var.subdomain_name}"
+{#
   parent_zone_id = "${data.terraform_remote_state.{{ subdomain.remote_state }}.{{ subdomain.prefix }}zone_id}"
+#}
+  parent_zone_id = "${data.terraform_remote_state.domain.{{ csubdomain.prefix }}zone_id}"
 }
 
 output "zone_id" {

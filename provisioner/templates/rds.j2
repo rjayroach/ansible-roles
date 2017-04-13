@@ -18,6 +18,11 @@ variable "db_username" {}
 variable "db_env_file" {}
 variable "db_ansible_vars_key" {}
 
+variable "db_cidr_blocks" {
+  type = "list"
+  default = ["172.16.0.0/24", "172.16.1.0/24"]
+}
+
 module "rds" {
   source                    = "{{ modules_path }}/aws/rds"
 
@@ -41,12 +46,16 @@ module "rds" {
   storage_encrypted         = "${var.db_storage_encrypted}"
   storage_type              = "gp2"
   username                  = "${var.db_username}"
-  vpc_security_group_ids    = "${module.vpc.vpc_security_group_ids}"
-  vpc_subnet_ids            = ["${module.vpc.subnet_id}", "${module.vpc.subnet_id_2}"]
+
+  # remote state variables
+  vpc_security_group_ids    = "${data.terraform_remote_state.vpc.security_group_id_public}"
+  vpc_subnet_ids            = ["${data.terraform_remote_state.vpc.subnet_id_public_1}", "${data.terraform_remote_state.vpc.subnet_id_public_2}"]
 
   # security group variables
-  vpc_id                    = "${module.vpc.vpc_id}"
-  cidr_blocks               = ["172.16.0.0/24", "172.16.1.0/24"]
+  vpc_id                    = "${data.terraform_remote_state.vpc.vpc_id}"
+  cidr_blocks               = "${var.db_cidr_blocks}"
+
+  # ["172.16.0.0/24", "172.16.1.0/24"]
 
   # other variables
   env_file                  = "${var.db_env_file}"

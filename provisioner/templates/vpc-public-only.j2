@@ -3,13 +3,31 @@ variable "vpc_tag_name" {}
 variable "vpc_subnet_az_public_1" {}
 variable "vpc_subnet_az_public_2" {}
 
+variable "subnet_cidr_public_1" {
+  description = "The CIDR block for the private subnet"
+  default     = "172.16.0.0/24"
+}
+
+variable "subnet_cidr_public_2" {
+  description = "The CIDR block for the public subnet"
+  default     = "172.16.1.0/24"
+}
+
+variable "vpc_cidr" {
+  description = "The CIDR block for the VPC"
+  default     = "172.16.0.0/20"
+}
+
 module "vpc" {
   source             = "{{ modules_path }}/aws/vpc/public-only"
 
   # VPC parameters
-  vpc_tag_name       = "${var.vpc_tag_name}"
-  subnet_az_public_1 = "${var.vpc_subnet_az_public_1}"
-  subnet_az_public_2 = "${var.vpc_subnet_az_public_2}"
+  subnet_az_public_1   = "${var.vpc_subnet_az_public_1}"
+  subnet_az_public_2   = "${var.vpc_subnet_az_public_2}"
+  subnet_cidr_public_1 = "${var.vpc_subnet_cidr_public_1}"
+  subnet_cidr_public_2 = "${var.vpc_subnet_cidr_public_2}"
+  vpc_cidr             = "${var.vpc_cidr}"
+  vpc_tag_name         = "${var.vpc_tag_name}"
 }
 
 output "security_group_id_public" {

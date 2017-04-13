@@ -1,4 +1,8 @@
 ---
+- name: Merge vars
+  set_fact:
+    csubdomain: "{{ subdomain_defaults | combine(subdomain) }}"
+
 - name: Template the Subdomain component
   template:
     src: subdomain.j2
@@ -10,4 +14,4 @@
     dest: '{{ tfvars_file }}'
     marker: '# {mark} ANSIBLE MANAGED BLOCK (subdomain)'
     block: |
-      subdomain_name = "{{ subdomain.name }}"
+      subdomain_name = "{{ csubdomain.name }}"

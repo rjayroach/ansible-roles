@@ -1,0 +1,20 @@
+variable "vpc_tag_name" {}
+
+module "sg-app-server-with-elb" {
+  source                 = "{{ modules_path }}/aws/sg/app-server-with-elb"
+
+  vpc_tag_name           = "${var.vpc_tag_name}"
+
+{#
+  vpc_id                 = "${data.terraform_remote_state.{{ rem.vpc }}.vpc_id}"
+  vpc_security_group_ids = "${data.terraform_remote_state.{{ rem.vpc }}.security_group_id_public}"
+  vpc_id                 = "${data.terraform_remote_state.{{ remote_states.vpc | replace('/', '-') }}.vpc_id}"
+  vpc_security_group_ids = "${data.terraform_remote_state.{{ remote_states.vpc | replace('/', '-') }}.security_group_id_public}"
+#}
+  vpc_id                 = "${data.terraform_remote_state.vpc.vpc_id}"
+  vpc_security_group_ids = "${data.terraform_remote_state.vpc.security_group_id_public}"
+}
+
+output "security_group_elb_id" {
+  value = "${module.sg-app-server-with-elb.security_group_elb_id}"
+}

@@ -1,0 +1,13 @@
+---
+- name: Template the sg component
+  template:
+    src: sg-app-server-with-elb.j2
+    dest: '{{ component_dir }}/sg-app-server-with-elb.tf'
+
+- name: Add sg module variables to .tfvars
+  blockinfile:
+    create: yes
+    dest: '{{ tfvars_file }}'
+    marker: '# {mark} ANSIBLE MANAGED BLOCK (sg-app-server-with-elb)'
+    block: |
+      vpc_tag_name = "{{ service }}-{{ infrastructure_env }}-{{ resource }}-{{ inf_key | default(component) }}"

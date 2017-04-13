@@ -1,16 +1,24 @@
 # TODO: The underlying tf module, e.g. public-only, public-private-vpn can be a default var in this role
 ---
-- name: Template the VPC component
+- name: Merge vpc-public-only vars
+  set_fact:
+    attrs: "{{ vpc_public_only_defaults | combine(vpc) }}"
+
+- name: Template the vpc-public-only component
   template:
-    src: vpc-public-only.j2
+    # src: vpc-public-only.j2
+    src: '{{ tf_modules_dir }}/aws/vpc/public-only/main.tf'
     dest: '{{ component_dir }}/vpc-public-only.tf'
 
-- name: Add vpc module variables to .tfvars
+- name: Add vpc-public-only variables to .tfvars
   blockinfile:
     create: yes
     dest: '{{ tfvars_file }}'
     marker: '# {mark} ANSIBLE MANAGED BLOCK (vpc-public-only)'
     block: |
-      vpc_tag_name = "{{ service }}-{{ infrastructure_env }}-{{ resource }}-{{ inf_key | default(component) }}"
-      vpc_subnet_az_public_1 = "{{ vpc_subnet_az_public_1 }}"
-      vpc_subnet_az_public_2 = "{{ vpc_subnet_az_public_2 }}"
+      subnet_az_public_1 = "{{ attrs.subnet_az_public_1 }}"
+      subnet_az_public_2 = "{{ attrs.subnet_az_public_2 }}"
+      subnet_cidr_public_1 = "{{ attrs.subnet_cidr_public_1 }}"
+      subnet_cidr_public_2 = "{{ attrs.subnet_cidr_public_2 }}"
+      vpc_cidr = "{{ attrs.cidr }}"
+      vpc_tag_name = "{{ attrs.tag_name }}"

@@ -1,4 +1,8 @@
 ---
+- name: Merge vars
+  set_fact:
+    attrs: "{{ app_server_defaults | combine(app_server) }}"
+
 - name: Template the api-server component
   template:
     src: app-server-with-elb.j2
@@ -11,10 +15,10 @@
     marker: '# {mark} ANSIBLE MANAGED BLOCK (app-server-with-elb)'
     block: |
       api_server_application = "{{ application_name }}"
-      api_server_environment = "{{ infrastructure_env }}"
-      api_server_service = "{{ service }}"
-      api_server_resource = "{{ resource }}"
       api_server_component = "{{ component }}"
-      api_server_instance_type = "{{ provision.tf_instance_type }}"
-      api_server_public_key = "{{ ssh_dir }}/id_rsa.pub"
+      api_server_environment = "{{ infrastructure_env }}"
+      api_server_key_name = "{{ attrs.ssh_key_name }}"
+      api_server_instance_type = "{{ attrs.instance_type }}"
       api_server_region = "{{ provision.tf_aws_region }}"
+      api_server_resource = "{{ resource }}"
+      api_server_service = "{{ service }}"

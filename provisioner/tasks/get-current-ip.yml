@@ -11,10 +11,4 @@
 
 - name: Set the bastion_cidr to current IP
   set_fact:
-    provision: "{{ provision | combine({'vpc_bastion_cidr': ipt})}}"
-  when: provision.vpc_bastion_cidr == 'current-ip'
-
-- name: Set the web_app_allowed_hosts to current IP
-  set_fact:
-    provision: "{{ provision | combine({'web_app_allowed_hosts': ipt})}}"
-  when: provision.web_app_allowed_hosts == 'current-ip'
+    attrs: "{{ attrs | combine({attribute: ipt}) }}"

@@ -7,7 +7,28 @@ variable "tf_resource" {
   default = "not used"
 }
 
-{% for item in remote_states %}
+
+{% for key, value in remote_states.iteritems() %}
+data "terraform_remote_state" "{{ key }}" {
+  backend = "s3"
+  config {
+    bucket = "${var.tf_remote_state_bucket}"
+{% if value.startswith('global') %}
+    key    = "{{ value }}/terraform.tfstate"
+{% else %}
+{% set list1 = value.split('/') %}
+{% if list1 | length == 1 %}
+    key    = "{{ service }}/${var.tf_remote_state_environment}/${var.tf_resource}/{{ value }}/terraform.tfstate"
+{% else %}
+    key    = "{{ service }}/${var.tf_remote_state_environment}/{{ value }}/terraform.tfstate"
+{% endif %}
+{% endif %}
+    region = "${var.tf_remote_state_region}"
+  }
+}
+{% endfor %}
+
+{#% for item in remote_states %}
 data "terraform_remote_state" "{{ item | replace('/', '-') }}" {
   backend = "s3"
   config {
@@ -25,4 +46,4 @@ data "terraform_remote_state" "{{ item | replace('/', '-') }}" {
     region = "${var.tf_remote_state_region}"
   }
 }
-{% endfor %}
+{% endfor %#}

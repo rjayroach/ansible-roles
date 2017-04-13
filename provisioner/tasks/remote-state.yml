@@ -5,7 +5,7 @@
     dest: '{{ component_dir }}/remote-state.tf'
   when: remote_states is defined
 
-- name: Add vpc module variables to .tfvars
+- name: Add remote-state variables to .tfvars
   blockinfile:
     create: yes
     dest: '{{ tfvars_file }}'

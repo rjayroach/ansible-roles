@@ -3,15 +3,14 @@
 - name: Template the VPC component
   template:
     src: vpc-public-private-vpn.j2
-    dest: '{{ component_type_dir }}/vpc-public-private-vpn.tf'
+    dest: '{{ component_dir }}/vpc-public-private-vpn.tf'
 
 - name: Add vpc module variables to .tfvars
   blockinfile:
     create: yes
     dest: '{{ tfvars_file }}'
-    marker: '# {mark} ANSIBLE MANAGED BLOCK (vpc-public-only)'
+    marker: '# {mark} ANSIBLE MANAGED BLOCK (vpc-public-private-vpn)'
     block: |
-      vpc_environment = "{{ infrastructure_env }}"
-      vpc_subnet_az_public = "{{ provision.vpc_public_availability_zone }}"
-      vpc_subnet_az_private = "{{ provision.vpc_private_availability_zone }}"
-      bastion_cidr = "{{ provision.vpc_bastion_cidr }}"
+      vpc_tag_name = "{{ service }}-{{ infrastructure_env }}-{{ resource }}-{{ inf_key | default(component) }}"
+      vpc_subnet_az_public = "{{ vpc_subnet_az_public }}"
+      vpc_subnet_az_private = "{{ vpc_subnet_az_private }}"

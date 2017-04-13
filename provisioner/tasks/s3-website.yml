@@ -1,7 +1,14 @@
 ---
+- name: Merge s3_website vars
+  set_fact:
+    attrs: "{{ s3_website_defaults | combine(s3_website) }}"
+
+- include: get-current-ip.yml attribute=web_app_allowed_hosts
+  when: attrs.web_app_allowed_hosts == 'current-ip'
+
 - name: Ensure app credentials file exists
   copy:
-    dest: '{{ ansible_vars_file_s3_website }}'
+    dest: '{{ attrs.ansible_vars_file }}'
     force: no
     content: ''
 
@@ -16,11 +23,11 @@
     dest: '{{ tfvars_file }}'
     marker: '# {mark} ANSIBLE MANAGED BLOCK (s3-website)'
     block: |
-      web_app_allowed_hosts = "{{ provision.web_app_allowed_hosts }}"
-      web_app_api_url = "{{ web_app.API_URL }}"
+      web_app_allowed_hosts = "{{ attrs.web_app_allowed_hosts }}"
+      web_app_api_url = "{{ attrs.api_url }}"
       web_app_application = "{{ application_name }}"
-      web_app_app_host = "{{ web_app.APP_HOST }}"
-      web_app_credentials_file = "{{ ansible_vars_file_s3_website }}"
+      web_app_app_host = "{{ attrs.app_host }}"
+      web_app_credentials_file = "{{ attrs.ansible_vars_file }}"
       web_app_environment = "{{ infrastructure_env }}"
       web_app_iam_user_name = "{{ infrastructure_env }}-{{ service }}-{{ resource }}-s3"
       web_app_region = "{{ provision.tf_aws_region }}"

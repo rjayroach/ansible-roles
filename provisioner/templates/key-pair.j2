@@ -1,0 +1,11 @@
+# Create Route53 hostname
+
+variable "key_name" {}
+variable "public_key_path" {}
+
+module "key-pair" {
+  source          = "{{ modules_path }}/aws/key-pair"
+
+  key_name        = "${var.key_name}"
+  public_key_path = "${var.public_key_path}"
+}
