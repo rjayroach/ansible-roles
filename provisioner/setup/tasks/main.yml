@@ -1,23 +1,29 @@
-# components/<service>/<component>/<type>/<module>.tf
-# components/recheck/api-server/public/vpc.tf
-# components/recheck/api-server/private/vpc.tf
-
-# environment/<service>/<component>/terraform.tfvars
-# staging/recheck/api-server/terraform.tfvars
 ---
+- name: Ensure the terraform credentials directory exists
+  file:
+    path: '{{ credentials_dir }}/terraform'
+    state: directory
+
+- include_vars:
+    file: '{{ credentials_dir }}/aws/terraform.yml'
+    name: aws_keys
+
+- name: Generate tfvars for each terraform credential
+  template:
+    src: terraform-credentials.tfvars.j2
+    dest: "{{ credentials_dir }}/terraform/{{ item.key.split('_')[-1] }}.tfvars"
+  with_dict: '{{ aws_keys }}'
+
 - name: Generate terraform.tfvars
   template:
     src: terraform.tfvars.j2
-    # dest: '{{ tf_environments_dir }}/terraform.tfvars'
     dest: '{{ tf_dir }}/terraform.tfvars'
     force: no
 
 - name: Ensure the terragrunt temp directory is clean
   file:
-    path: '{{ item }}'
+    path: '{{ terragrunt_dir }}'
     state: absent
-  with_items:
-    - '/tmp/vagrant/terragrunt-download'
 
 - name: Ensure the component directory tree exists
   file:

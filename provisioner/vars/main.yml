@@ -4,3 +4,4 @@ tfvars_file: '{{ tf_dir }}/{{ service }}/{{ infrastructure_env }}/{{ resource }}
 modules_path: '../../../../modules'
 components_path: '../../../..//components'
 component_path: "{{ components_path }}/{{ service }}/{{ res_key | default(resource) }}/{{ component }}"
+terragrunt_dir: '{{ ansible_env.TMPDIR }}/terragrunt-download'

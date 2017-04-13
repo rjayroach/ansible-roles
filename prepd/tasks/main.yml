@@ -1,32 +1,23 @@
----
-# if project-root/.boto exists then link it to ~/.boto and download ec2.py and ec2.ini and chmod ec2.py
-- stat:
-    path: '{{ credentials_dir }}/boto'
-  register: boto
+# TODO:
+# This role will assume the tasks that are currently done in prepd.rb, e.g. encrypting credentials, decrypting and processing credentials
 
-- name: Link credentials_dir/boto to ~/.boto if the file exists
-  file:
-    src: '{{ boto.stat.path }}'
-    dest: '{{ ansible_env.HOME }}/.boto'
-    state: link
-  when: boto.stat.exists == true
+# See this page for using gpg-agent for ansible vault: https://blog.erincall.com/p/using-pgp-to-encrypt-the-ansible-vault
 
-- name: Install boto
-  pip:
-    name: boto
-    state: present
-  when: boto.stat.exists == true
+# 1) manage credentials
+# - cloud api keys
+# - ssh keys
+# - certificates
 
-- stat:
-    path: '{{ credentials_dir }}/id_rsa'
-  register: id_rsa
+# 2) manage configuration:
+# When a new host is provisioned with a new key then:
+# - .ssh/config needs to be updated
+# - inventory_hosts: the ansible_ssh_private_key value needs to be updated
 
-- name: Link credentials_dir/id_rsa and id_rsa.pub to ~/.ssh if the files exist
-  file:
-    src: '{{ credentials_dir }}/{{ item }}'
-    dest: '{{ ansible_env.HOME }}/.ssh/{{ item }}'
-    state: link
-  when: id_rsa.stat.exists == true
-  with_items:
-    - id_rsa
-    - id_rsa.pub
+# 3) process credentials
+# - credentials/terraform/default.tfvars needs to be generated
+# - write the AWS CSV files into yml in prepd/credentials/aws/*.yml
+
+# Maybe change this role name from prepd to credentials or make this a sub-role, e.g. prepd/credentials
+
+# NOTE: $AWS_PROFILE is used to specify account to access the tf bucket
+# The tfvars file still needs to be used to specifiy different AWS accounts for the acutal plan apply
