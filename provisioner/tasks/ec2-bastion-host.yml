@@ -1,7 +1,7 @@
 ---
 - name: Merge bastion vars
   set_fact:
-    attrs: "{{ bastion_defaults | combine(bastion) }}"
+    attrs: "{{ bastion_defaults | combine(provision.tfvars | default({})) }}"
 
 - include: get-current-ip.yml attribute=access_cidr
   when: attrs.access_cidr == 'current-ip'

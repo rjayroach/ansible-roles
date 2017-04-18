@@ -1,7 +1,7 @@
 ---
 - name: Merge key pair vars
   set_fact:
-    attrs: "{{ key_pair_defaults | combine(key_pair) }}"
+    attrs: "{{ key_pair_defaults | combine(provision.tfvars | default({})) }}"
 
 - include_vars: key-pair.yml
 
