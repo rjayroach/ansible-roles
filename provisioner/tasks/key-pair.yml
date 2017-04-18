@@ -1,28 +1,22 @@
 ---
+- name: Merge key pair vars
+  set_fact:
+    attrs: "{{ key_pair_defaults | combine(key_pair) }}"
+
+- include_vars: key-pair.yml
+
 - name: Generate SSH key pair
-  shell: 'ssh-keygen -b 2048 -t rsa -f {{ ssh_dir }}/{{ ssh_key_name }} -q -N ""'
+  shell: 'ssh-keygen -b 2048 -t rsa -f {{ tfvars.public_key_path }} -q -N ""'
   args:
-    creates: '{{ ssh_dir }}/{{ ssh_key_name }}'
+    creates: '{{ tfvars.public_key_path }}'
 
 - name: Update local ssh config
   blockinfile:
     create: yes
     dest: '{{ ansible_env.HOME }}/.ssh/config'
-    marker: '# {mark} ANSIBLE MANAGED BLOCK ({{ ssh_key_name }})'
+    marker: '# {mark} ANSIBLE MANAGED BLOCK ({{ tfvars.key_name }})'
     block: |
-      Host {{ ssh_key_name }}
-        IdentityFile {{ ssh_dir }}/{{ ssh_key_name }}
+      Host {{ tfvars.key_name }}
+        IdentityFile {{ tfvars.public_key_path }}
 
-- name: Template the key-pair component
-  template:
-    src: key-pair.j2
-    dest: '{{ component_dir }}/key-pair.tf'
-
-- name: Add key-pair variables to .tfvars
-  blockinfile:
-    create: yes
-    dest: '{{ tfvars_file }}'
-    marker: '# {mark} ANSIBLE MANAGED BLOCK (key-pair)'
-    block: |
-      key_name = "{{ ssh_key_name }}"
-      public_key_path = "{{ ssh_dir }}/{{ ssh_key_name }}"
+- include: common-tasks.yml

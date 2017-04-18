@@ -1,0 +1,30 @@
+# '{{ module_meta.name }}' component {{ ansible_managed }}
+
+{% for key, value in tfvars.iteritems() %}
+variable "{{ module_meta.name | replace('-', '_') }}_{{ key }}" {}
+{% endfor %}
+
+module "{{ module_meta.name }}" {
+  source{{ ' ' * 24 }}= "{{ modules_path }}/{{ module_meta.path | default(module_meta.name) }}"
+
+{% for key, value in tfvars.iteritems() %}
+  {{ key }}{{ ' ' * (30 - (key | length)) }}= "${var.{{ module_meta.name | replace('-', '_') }}_{{ key }}}"
+{% endfor %}
+
+{% for key, value in remote_state_vars.iteritems() %}
+{% set pad = ' ' * (30 - (key | length)) %}
+{% if value is iterable and value is not string %}
+  {{ key }}{{ pad }}= [{% for xvalue in value %}"${data.terraform_remote_state.{{ xvalue }}}",{% endfor %}]
+{% elif value.split('.') | length == 1 %}
+  {{ key }}{{ pad }}= "${data.terraform_remote_state.{{ value }}.{{ key }}}"
+{% else %}
+  {{ key }}{{ pad }}= "${data.terraform_remote_state.{{ value }}}"
+{% endif %}
+{% endfor %}
+}
+{% for key, value in output_vars.iteritems() %}
+
+output "{{ key }}" {
+  value{{ ' ' * 25 }}= "${module.{{ module_meta.name }}.{{ value }}}"
+}
+{% endfor %}

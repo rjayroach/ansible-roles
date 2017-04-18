@@ -1,24 +1,8 @@
 ---
-- name: Merge vars
+- name: Merge app_server vars
   set_fact:
-    attrs: "{{ app_server_defaults | combine(app_server) }}"
+    attrs: '{{ app_server_defaults | combine(provision.tfvars | default({})) }}'
+- debug: var=attrs
 
-- name: Template the api-server component
-  template:
-    src: app-server-with-elb.j2
-    dest: '{{ component_dir }}/app-server-with-elb.tf'
-
-- name: Add api-server module variables to .tfvars
-  blockinfile:
-    create: yes
-    dest: '{{ tfvars_file }}'
-    marker: '# {mark} ANSIBLE MANAGED BLOCK (app-server-with-elb)'
-    block: |
-      api_server_application = "{{ application_name }}"
-      api_server_component = "{{ component }}"
-      api_server_environment = "{{ infrastructure_env }}"
-      api_server_key_name = "{{ attrs.ssh_key_name }}"
-      api_server_instance_type = "{{ attrs.instance_type }}"
-      api_server_region = "{{ provision.tf_aws_region }}"
-      api_server_resource = "{{ resource }}"
-      api_server_service = "{{ service }}"
+- include_vars: app-server-with-elb.yml
+- include: common.yml

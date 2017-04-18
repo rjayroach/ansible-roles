@@ -1,0 +1,23 @@
+---
+module_meta:
+  name: 'instance'
+  path: 'aws/ec2-bastion-host'
+
+tfvars:
+  access_cidr: "{{ attrs.access_cidr }}"
+  availability_zone: "{{ attrs.availability_zone }}"
+  component: '{{ component }}'
+  environment: '{{ infrastructure_env }}'
+  instance_type: '{{ attrs.instance_type }}'
+  key_name: '{{ attrs.ssh_key_name }}'
+  region: '{{ attrs.aws_region }}'
+  resource: '{{ resource }}'
+  service: '{{ service }}'
+  subnet_az_public: "{{ attrs.vpc_subnet_az_public }}"
+
+remote_state_vars:
+  sg_bastion_id: 'vpc'
+  subnet_public_id: 'vpc'
+  vpc_id: 'vpc'
+
+output_vars: {}

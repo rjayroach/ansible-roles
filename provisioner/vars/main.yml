@@ -1,7 +1,6 @@
 ---
-component_dir: "{{ tf_components_dir }}/{{ service }}/{{ res_key | default(resource) }}/{{ component }}"
-tfvars_file: '{{ tf_dir }}/{{ service }}/{{ infrastructure_env }}/{{ resource }}/{{ inf_key | default(component) }}/terraform.tfvars'
-modules_path: '../../../../modules'
+component_dir: '{{ tf_components_dir }}/{{ service }}/{{ component_namespace | default(resource) }}/{{ component }}'
+component_path: '{{ components_path }}/{{ service }}/{{ component_namespace | default(resource) }}/{{ component }}'
 components_path: '../../../..//components'
-component_path: "{{ components_path }}/{{ service }}/{{ res_key | default(resource) }}/{{ component }}"
-terragrunt_dir: '{{ ansible_env.TMPDIR }}/terragrunt-download'
+modules_path: '../../../../modules'
+tfvars_file: '{{ tf_dir }}/{{ service }}/{{ infrastructure_env }}/{{ resource }}/{{ resource_name | default(component) }}/terraform.tfvars'

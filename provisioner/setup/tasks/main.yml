@@ -14,15 +14,9 @@
     dest: "{{ credentials_dir }}/terraform/{{ item.key.split('_')[-1] }}.tfvars"
   with_dict: '{{ aws_keys }}'
 
-- name: Generate terraform.tfvars
-  template:
-    src: terraform.tfvars.j2
-    dest: '{{ tf_dir }}/terraform.tfvars'
-    force: no
-
 - name: Ensure the terragrunt temp directory is clean
   file:
-    path: '{{ terragrunt_dir }}'
+    path: '{{ ansible_env.TMPDIR }}/terragrunt-download'
     state: absent
 
 - name: Ensure the component directory tree exists
@@ -32,3 +26,13 @@
   with_items:
     - '{{ tf_components_dir }}'
     - '{{ tf_dir }}/{{ service }}'
+#
+# - name: Setup the user defined variables for the playbook
+#   set_fact:
+#     aprovision: '{{ global | combine(remote_state) }}'
+# 
+# - name: Generate terraform.tfvars
+#   template:
+#     src: terraform.tfvars.j2
+#     dest: '{{ tf_dir }}/terraform.tfvars'
+#     force: no

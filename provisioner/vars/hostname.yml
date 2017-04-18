@@ -1,0 +1,14 @@
+---
+module_meta:
+  name: 'hostname'
+  path: 'aws/hostname'
+
+tfvars:
+  name: '{{ attrs.name }}'
+
+remote_state_vars:
+  zone_id: 'domain'
+  alias_name: 'host.dns_name'
+  alias_zone_id: 'host.zone_id'
+
+output_vars: {}

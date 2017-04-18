@@ -1,0 +1,14 @@
+---
+module_meta:
+  name: 'sg-app-server'
+  path: 'aws/sg/app-server-with-elb'
+
+tfvars:
+  tag_name: '{{ attrs.tag_name }}'
+
+remote_state_vars:
+  vpc_id: 'vpc'
+  vpc_security_group_ids: 'vpc.security_group_id_public'
+
+output_vars:
+  security_group_elb_id: 'security_group_elb_id'

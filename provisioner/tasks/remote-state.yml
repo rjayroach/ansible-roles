@@ -11,7 +11,15 @@
     dest: '{{ tfvars_file }}'
     marker: '# {mark} ANSIBLE MANAGED BLOCK (remote-state)'
     block: |
-      tf_remote_state_bucket = "{{ provision.tf_remote_state_bucket }}"
-      tf_remote_state_region = "{{ provision.tf_remote_state_region }}"
-      tf_remote_state_environment = "{{ infrastructure_env }}"
-      tf_resource = "{{ resource }}"
+      remote_state_bucket = "{{ provision.remote_state.bucket }}"
+      remote_state_region = "{{ provision.remote_state.region }}"
+
+      {% for key, value in remote_states.iteritems() %}
+      {% if value.startswith('global') %}
+      remote_state_key_{{ key }} = "{{ value }}"
+      {% elif value.split('/') | length == 1 %}
+      remote_state_key_{{ key }} = "{{ service }}/{{ infrastructure_env }}/{{ resource }}/{{ value }}"
+      {% else %}
+      remote_state_key_{{ key }} = "{{ service }}/{{ infrastructure_env }}/{{ value }}"
+      {% endif %}
+      {% endfor %}

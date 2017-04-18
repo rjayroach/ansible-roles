@@ -15,7 +15,7 @@
           source = "{{ component_path }}"
           extra_arguments "secrets" {
             arguments = [
-              "-var-file={{ credentials_dir }}/terraform/{{ provider }}.tfvars",
+              "-var-file={{ credentials_dir }}/terraform/{{ provision.provider.credential }}.tfvars",
             ]
             commands = [
               "apply", "plan", "import", "push", "refresh", "destroy"
@@ -35,4 +35,4 @@
         }
       {% endif %}
       }
-      region = "{{ region }}"
+      region = "{{ provision.provider.region }}"

@@ -1,0 +1,11 @@
+---
+module_meta:
+  name: 'key-pair'
+  path: 'aws/key-pair'
+
+tfvars:
+  key_name: '{{ attrs.ssh_key_name }}'
+  public_key_path: '{{ ssh_dir }}/{{ attrs.ssh_key_name }}'
+
+remote_state_vars: {}
+output_vars: {}

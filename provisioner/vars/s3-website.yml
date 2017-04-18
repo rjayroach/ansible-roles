@@ -1,0 +1,20 @@
+---
+module_meta:
+  name: 's3-website'
+  path: 'aws/s3-website'
+
+tfvars:
+  access_cidr: '{{ attrs.access_cidr }}'
+  api_url: '{{ attrs.api_url }}'
+  application: '{{ attrs.application }}'
+  bucket_name: '{{ attrs.app_host }}'
+  credentials_file: '{{ attrs.credentials_file }}'
+  environment: '{{ attrs.environment }}'
+  iam_user_name: '{{ attrs.iam_user_name }}'
+  region: '{{ attrs.region }}'
+
+remote_state_vars: {}
+
+output_vars:
+  dns_name: 'dns_name'
+  zone_id: 'zone_id'

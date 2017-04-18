@@ -1,0 +1,13 @@
+---
+module_meta:
+  name: 'subdomain'
+  path: 'aws/subdomain'
+
+tfvars:
+  name: '{{ attrs.name }}'
+
+remote_state_vars:
+  parent_zone_id: 'domain.zone_id'
+
+output_vars:
+  zone_id: 'zone_id'

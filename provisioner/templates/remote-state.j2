@@ -1,29 +1,20 @@
 ### Remote Data Sources
 
-variable "tf_remote_state_bucket" {}
-variable "tf_remote_state_region" {}
-variable "tf_remote_state_environment" {}
-variable "tf_resource" {
-  default = "not used"
-}
-
+variable "remote_state_bucket" {}
+variable "remote_state_region" {}
 
 {% for key, value in remote_states.iteritems() %}
+variable "remote_state_key_{{ key }}" {}
+{% endfor %}
+
+{% for key, value in remote_states.iteritems() %}
+
 data "terraform_remote_state" "{{ key }}" {
   backend = "s3"
   config {
-    bucket = "${var.tf_remote_state_bucket}"
-{% if value.startswith('global') %}
-    key    = "{{ value }}/terraform.tfstate"
-{% else %}
-{% set list1 = value.split('/') %}
-{% if list1 | length == 1 %}
-    key    = "{{ service }}/${var.tf_remote_state_environment}/${var.tf_resource}/{{ value }}/terraform.tfstate"
-{% else %}
-    key    = "{{ service }}/${var.tf_remote_state_environment}/{{ value }}/terraform.tfstate"
-{% endif %}
-{% endif %}
-    region = "${var.tf_remote_state_region}"
+    bucket = "${var.remote_state_bucket}"
+    key    = "${var.remote_state_key_{{ key }}}/terraform.tfstate"
+    region = "${var.remote_state_region}"
   }
 }
 {% endfor %}
