@@ -1,7 +1,0 @@
----
-- name: 'Merge vpc-public-only vars'
-  set_fact:
-    attrs: '{{ vpc_public_only_defaults | combine(provision.tfvars | default({})) }}'
-
-- include_vars: vpc-public-only.yml
-- include: common.yml

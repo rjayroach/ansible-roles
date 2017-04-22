@@ -1,7 +1,0 @@
----
-- name: 'Merge sg-app-server-with-elb vars'
-  set_fact:
-    attrs: '{{ vpc_public_only_defaults }}'
-
-- include_vars: sg-app-server-with-elb.yml
-- include: common.yml

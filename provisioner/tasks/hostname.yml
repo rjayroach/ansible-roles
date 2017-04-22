@@ -1,7 +1,0 @@
----
-- name: 'Merge hostname vars'
-  set_fact:
-    attrs: '{{ hostname_defaults | combine(provision.tfvars | default({})) }}'
-
-- include_vars: hostname.yml
-- include: common.yml

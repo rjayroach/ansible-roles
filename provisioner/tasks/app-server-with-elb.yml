@@ -1,8 +1,0 @@
----
-- name: Merge app_server vars
-  set_fact:
-    attrs: '{{ app_server_defaults | combine(provision.tfvars | default({})) }}'
-- debug: var=attrs
-
-- include_vars: app-server-with-elb.yml
-- include: common.yml

@@ -1,7 +1,0 @@
----
-- name: 'Merge subdomain vars'
-  set_fact:
-    attrs: "{{ subdomain_defaults | combine(provision.tfvars | default({})) }}"
-
-- include_vars: subdomain.yml
-- include: common.yml
