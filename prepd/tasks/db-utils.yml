@@ -1,0 +1,27 @@
+#!/usr/bin/env ansible-playbook
+# invoke this playbook with extra_vars -e application=name
+# where name is the name of a valid application group
+# TODO: finish the implementation, possibly brake into different playbooks
+---
+- hosts: master
+  name: dump and fetch
+
+  tasks:
+    - group_by: key='{{ app }}'
+    #- set_fact:
+    #    envs: "{{ api_server_defaults }}"
+    #- debug: var='{{ envs }}'
+    - debug: var=app
+    - debug: var=application_name
+    - debug: var=app_data_dir
+
+- hosts: xmaster
+  roles:
+    - { role: postgres-utils, action: 'dump-and-fetch', envs: '{{ envs }}',
+        sql_file: '/tmp/{{ application_name }}.sql', dest_file: '{{ app_data_dir }}/{{ application_name }}.sql' }
+
+
+- hosts: xmaster:&local
+
+  roles:
+    - { role: postgres-utils, action: 'restore', envs: '{{ envs }}', sql_file: '{{ app_data_dir }}/{{ application_name }}.sql' }

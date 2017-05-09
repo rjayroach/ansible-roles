@@ -7,20 +7,21 @@
   with_items: [nginx]
   when: ansible_distribution == 'Debian'
 
-- name: Ensure /srv/www directory exists
-  file:
-    path: /srv/www
-    state: directory
-    owner: www-data
-  become: yes
+# TODO: Move site specific files and templates to a project that needs them. They are not generic
+  # - name: Ensure /srv/www directory exists
+  #   file:
+  #     path: /srv/www
+  #     state: directory
+  #     owner: www-data
+  #   become: yes
 
-- name: Configure nginx to respond to ELB health checks
-  copy:
-    src: index.html
-    dest: /srv/www/index.html
-    mode: 0644
-    owner: www-data
-  become: yes
+# - name: Configure nginx to respond to ELB health checks
+#   copy:
+#     src: index.html
+#     dest: /srv/www/index.html
+#     mode: 0644
+#     owner: www-data
+#   become: yes
 #
 # - name: Configure nginx to forward requests to app server and dashboard
 #   template:

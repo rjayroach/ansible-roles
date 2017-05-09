@@ -1,0 +1,16 @@
+---
+- debug: msg=hello!
+- include_vars:
+    file: '{{ credentials_dir }}/aws/{{ creds_file }}.yml'
+    name: aws_keys
+
+- name: "Set the state of the bastion host to {{ state | default('stopped') }}"
+  ec2:
+    aws_access_key: '{{ aws_keys[key].aws_access_key_id }}'
+    aws_secret_key: '{{ aws_keys[key].aws_secret_access_key }}'
+    instance_tags:
+      Role: bastion-host 
+    state: "{{ state | default('stopped') }}"
+    region: ap-southeast-1
+    wait: yes
+- debug: msg=goodbye!
