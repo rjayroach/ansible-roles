@@ -1,5 +1,0 @@
----
-- name: Write git user info to ~/.gitconfig.user
-  template:
-    src: gitconfig.user.j2
-    dest: '{{ ansible_env.HOME }}/.gitconfig.user'

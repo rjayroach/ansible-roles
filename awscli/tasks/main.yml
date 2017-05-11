@@ -4,17 +4,3 @@
     name: awscli
     state: present
   become: yes
-
-- include_vars:
-    dir: '{{ credentials_dir }}/aws'
-    name: aws_keys
-
-- name: Ensure ~/.aws directory exists
-  file:
-    dest: '{{ ansible_env.HOME }}/.aws'
-    state: directory
-
-- name: Template out the credentials file
-  template:
-    src: credentials.j2
-    dest: '{{ ansible_env.HOME }}/.aws/credentials'
