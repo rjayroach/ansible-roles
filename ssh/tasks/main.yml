@@ -1,0 +1,24 @@
+---
+- name: Generate SSH key pair
+  shell: 'ssh-keygen -b 2048 -t rsa -f {{ private_key_path }} -q -N ""'
+  args:
+    creates: '{{ private_key_path }}'
+
+- name: Update local ssh config
+  blockinfile:
+    create: yes
+    dest: '{{ ssh_config }}'
+    marker: '# {mark} ANSIBLE MANAGED BLOCK ({{ host }})'
+    block: |
+      Host {{ host }}
+        IdentityFile {{ private_key_path }}
+        User {{ host_user }}
+        ControlMaster auto
+        ControlPath ~/.ssh/ansible-%r@%h:%p
+        ControlPersist 1m
+      {% for subnet in subnets.iteritems() %}
+
+      Host {{ subnet.block }}
+        ProxyCommand ssh -W %h:%p {{ host }}
+        IdentityFile {{ subnet.key }}
+      {% endfor %}

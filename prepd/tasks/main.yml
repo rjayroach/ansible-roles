@@ -16,24 +16,3 @@
 # 3) process credentials
 # - credentials/terraform/default.tfvars needs to be generated
 # - write the AWS CSV files into yml in prepd/credentials/aws/*.yml
-
-# Maybe change this role name from prepd to credentials or make this a sub-role, e.g. prepd/credentials
-
-# NOTE: $AWS_PROFILE is used to specify account to access the tf bucket
-# The tfvars file still needs to be used to specifiy different AWS accounts for the acutal plan apply
-
-# TODO: Test creating credentials using this role
-- name: Ensure the terraform credentials directory exists
-  file:
-    path: '{{ credentials_dir }}/terraform'
-    state: directory
-
-- include_vars:
-    file: '{{ credentials_dir }}/aws/terraform.yml'
-    name: aws_keys
-
-- name: Generate tfvars for each terraform credential
-  template:
-    src: terraform.tfvars.j2
-    dest: "{{ credentials_dir }}/terraform/{{ item.key.split('_')[-1] }}.tfvars"
-  with_dict: '{{ aws_keys }}'

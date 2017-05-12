@@ -1,0 +1,6 @@
+---
+private_key_path: '{{ ansible_env.HOME }}/prepd_id_rsa'
+ssh_config: '{{ ansible_env.HOME }}/.ssh/config'
+host: change-me.example.com
+host_user: admin
+subnets: [] # ['192.168.0.*']
