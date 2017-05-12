@@ -5,12 +5,6 @@
     state: directory
     mode: 0755
 
-- name: Copy prepd.yml
-  copy:
-    src: prepd.yml
-    dest: '{{ ansible_env.HOME }}/.tmuxinator/prepd.yml'
-  when: copy_prepd == true
-
 - name: Copy template files
   template:
     dest: '{{ ansible_env.HOME }}/.tmuxinator/{{ item }}.yml'

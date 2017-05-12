@@ -27,6 +27,7 @@
     marker: '# {mark} ANSIBLE MANAGED BLOCK (yadr)'
     block: |
       alias ave='ansible-vault edit'
+      alias avc='ansible-vault create'
       alias du='du -csh *'
 
       # Edit and source this file
