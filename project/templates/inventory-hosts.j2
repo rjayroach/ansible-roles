@@ -6,5 +6,5 @@ provisioner ansible_host=localhost ansible_connection=local
 [{{ item }}:children]
 tag_Environment_{{ item }}
 
-[production:vars]
+[{{ item }}:vars]
 infrastructure_env={{ item }}
