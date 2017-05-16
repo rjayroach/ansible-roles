@@ -16,6 +16,12 @@
     src: dev-servers.yml
     dest: '{{ playbook_dir }}'
 
+- name: Ensure each inventory directory
+  file:
+    path: '{{ playbook_dir }}/inventory/{{ item }}'
+    state: directory
+  with_items: [local, development, staging, production]
+
 - name: Softlink the roles file into each inventory directory
   file:
     src: '../roles'
