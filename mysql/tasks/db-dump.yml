@@ -1,0 +1,14 @@
+---
+# - debug: var=mysql_user_name
+# - debug: var=mysql_user_password
+# - debug: var='{{ item }}'
+#   with_items: '{{ mysql_databases }}'
+
+- name: Dump database to name.sql
+  mysql_db:
+    state: dump
+    name: '{{ item }}'
+    target: '/tmp/{{ item }}.sql'
+    login_user: '{{ mysql_user_name }}'
+    login_password: '{{ mysql_user_password }}'
+  with_items: '{{ mysql_databases }}'

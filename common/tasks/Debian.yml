@@ -1,11 +1,19 @@
 ---
 - name: Install common packages
-  apt: 'name={{ item }} state=present update_cache=yes cache_valid_time={{ cache_valid_time|default(86400) }}'
+  apt:
+    name: '{{ item }}'
+    state: present
+    update_cache: yes
+    cache_valid_time: '{{ cache_valid_time | default(86400) }}'
   with_items: '{{ common_packages }}'
   become: yes
 
 - name: Install debian packages
-  apt: 'name={{ item }} state=present update_cache=yes cache_valid_time={{ cache_valid_time|default(86400) }}'
+  apt:
+    name: '{{ item }}'
+    state: present
+    update_cache: yes
+    cache_valid_time: '{{ cache_valid_time | default(86400) }}'
   with_items: '{{ common_debian_packages }}'
   become: yes
 
@@ -17,12 +25,11 @@
 #    locale: en_US.UTF-8
 #    timezone: Asia/Singapore
 
-- debug: var=machine_env.timezone
 
-- name: Set timezone
-# template: src=../templates/debian/timezone.j2 dest=/etc/timezone
-# TODO: test if this works
-  template: src=debian/timezone.j2 dest=/etc/timezone
+- name: Set time zone
+  template:
+    src: debian/timezone.j2
+    dest: /etc/timezone
   become: yes
 
 - name: update tzdata

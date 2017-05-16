@@ -1,0 +1,35 @@
+---
+- copy:
+    src: ec2.py
+    dest: '{{ playbook_dir }}/inventory/ec2.py'
+    mode: 0755
+
+- template:
+    src: inventory-roles.j2
+    dest: '{{ playbook_dir }}/inventory/roles'
+
+- name: Softlink the roles file into each inventory directory
+  file:
+    src: '../roles'
+    dest: '{{ playbook_dir }}/inventory/{{ item }}/roles'
+    state: link
+  with_items: [local, development, staging, production]
+
+- template:
+    src: ec2.ini.j2
+    dest: '{{ playbook_dir }}/inventory/{{ item }}/ec2.ini'
+  with_items: [development, staging, production]
+
+- name: One time template each inventory hosts file
+  template:
+    src: inventory-hosts.j2
+    dest: '{{ playbook_dir }}/inventory/{{ item }}/hosts'
+    force: no
+  with_items: [development, staging, production]
+
+- name: Softlink the ec2.py file into each inventory directory
+  file:
+    src: '../ec2.py'
+    dest: '{{ playbook_dir }}/inventory/{{ item }}/ec2.py'
+    state: link
+  with_items: [development, staging, production]

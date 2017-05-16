@@ -13,10 +13,6 @@
 # - .ssh/config needs to be updated
 # - inventory_hosts: the ansible_ssh_private_key value needs to be updated
 
-# 3) process credentials
-# - credentials/terraform/default.tfvars needs to be generated
-# - write the AWS CSV files into yml in prepd/credentials/aws/*.yml
-
 - name: Copy prepd.yml to ~/.tmuxinator
   template:
     src: prepd.yml.j2

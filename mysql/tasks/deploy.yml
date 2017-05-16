@@ -1,0 +1,9 @@
+---
+- debug: var=mysql_databases
+
+- name: Create a new database
+  mysql_db:
+    name: '{{ item }}'
+    state: present
+  with_items: '{{ mysql_databases }}'
+  become: yes

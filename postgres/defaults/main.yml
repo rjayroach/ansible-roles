@@ -1,7 +1,8 @@
 ---
-database_username: '{{ ansible_user }}'
-database_password: '{{ ansible_user }}'
-postgres_permitted_network: '192.168.0.0/24'
+postgres_home: /var/lib/postgresql
+postgres_name: '{{ ansible_user }}'
+postgres_password: '{{ ansible_user }}'
+# postgres_permitted_network: '192.168.0.0/24'
 # postgres:
 #   username: '{{ ansible_user }}'
 #   password: '{{ ansible_user }}'

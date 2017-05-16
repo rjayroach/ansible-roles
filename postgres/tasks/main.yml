@@ -12,33 +12,33 @@
 - name: Copy .inputrc to postgres home
   copy:
     src: inputrc
-    dest: /var/lib/postgresql/.inputrc
+    dest: '{{ postgres_home }}/.inputrc'
   become: yes
   become_user: postgres
   when: ansible_distribution == 'Debian'
 
 # NOTE: The location of config can be operating system dependent, e.g. ubuntu is diff from debian
-- name: 'Listen on all interfaces to allow connection from docker'
-  lineinfile:
-    dest: /etc/postgresql/9.4/main/postgresql.conf
-    line: listen_addresses = '*'
-  become: yes
-  notify: Restart PostgreSQL
+# - name: 'Listen on all interfaces to allow connection from docker'
+#   lineinfile:
+#     dest: /etc/postgresql/9.4/main/postgresql.conf
+#     line: listen_addresses = '*'
+#   become: yes
+#   notify: Restart PostgreSQL
 
-- name: 'Create ROLE {{ database_username }} and grant dbcreate and superuser privileges'
+- name: 'Create ROLE {{ postgres_name }} and grant dbcreate and superuser privileges'
   postgresql_user:
-    name: '{{ database_username }}'
-    password: '{{ database_password }}'
+    name: '{{ postgres_name }}'
+    password: '{{ postgres_password }}'
     role_attr_flags: 'SUPERUSER,CREATEDB'
   become: yes
   become_user: postgres
 
-- name: 'Trust connections from docker IP'
-  lineinfile:
-    dest: /etc/postgresql/9.4/main/pg_hba.conf
-    line: 'host    all         all         {{ postgres_permitted_network }}    trust'
-  become: yes
-  notify: Restart PostgreSQL
+  # - name: 'Trust connections from docker IP'
+  #   lineinfile:
+  #     dest: /etc/postgresql/9.4/main/pg_hba.conf
+  #     line: 'host    all         all         {{ postgres_permitted_network }}    trust'
+  #   become: yes
+  #   notify: Restart PostgreSQL
 
 - name: Insert aliases
   blockinfile:
@@ -53,3 +53,4 @@
       pgd() {
         pg_dump $1 -n $2 | gzip -c > $1.sql.gz
       }
+  when: machine_env.shell == 'zsh'

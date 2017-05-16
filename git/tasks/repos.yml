@@ -3,6 +3,12 @@
 # update: yes; when update is yes then the repo will be refreshed
 # version: a specific branch to checkout; default is HEAD
 
+- name: Ensure target directory exists
+  file:
+    dest: '{{ item.dir }}'
+    state: directory
+  with_items: '{{ repos }}'
+
 - name: Checkout git repository
   git:
     repo: '{{ item.account }}/{{ item.repo | default(item.name) }}.git'

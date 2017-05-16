@@ -1,4 +1,14 @@
 ---
+- name: Install Debian packages
+  apt:
+    name: '{{ item }}'
+    state: present
+    update_cache: yes
+    cache_valid_time: 86400
+  become: yes
+  with_items: [python-dev]
+  when: ansible_distribution == 'Debian'
+
 - name: Install python-setuptools
   apt: 
     name: python-setuptools

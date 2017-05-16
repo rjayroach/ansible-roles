@@ -1,0 +1,23 @@
+---
+- name: Install Debian packages
+  apt:
+    name: tmux
+    state: present
+    update_cache: yes
+    cache_valid_time: 86400
+  become: yes
+  when: ansible_distribution == 'Debian'
+
+- name: Create .tmuxinator directory in home
+  file:
+    path: '{{ ansible_env.HOME }}/.tmuxinator'
+    state: directory
+    mode: 0755
+
+- name: Insert aliases
+  blockinfile:
+    create: yes
+    dest: '{{ config.machine.aliases_file }}'
+    marker: '# {mark} ANSIBLE MANAGED BLOCK (tmuxinator)'
+    block: |
+      alias mux='tmuxinator'

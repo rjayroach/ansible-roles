@@ -1,4 +1,4 @@
 ---
-mysql:
-  username: '{{ ansible_user }}'
-  password: '{{ ansible_user }}'
+mysql_user_name: '{{ ansible_user }}'
+mysql_user_password: '{{ ansible_user }}'
+mysql_databases: []
