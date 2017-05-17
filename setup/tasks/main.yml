@@ -1,0 +1,40 @@
+### Setup credentials and data directories
+---
+- name: Check for existence of ~/prepd
+  stat:
+    path: '{{ prepd_dir }}'
+  register: prepd
+
+- name: Ensure data and crendentials directories exist in ~/prepd
+  file:
+    path: '{{ prepd_dir }}/{{ item }}/{{ project_name }}'
+    state: directory
+  with_items: [credentials, data]
+  when: prepd.stat.isdir
+
+- name: Create links to data and credentials directories in ~/prepd
+  file:
+    src: '{{ prepd_dir }}/{{ item }}/{{ project_name }}'
+    dest: '{{ project_dir }}/{{ item }}'
+    state: link
+  with_items: [credentials, data]
+  when: prepd.stat.isdir
+
+- name: Ensure data and crendentials directories exist
+  file:
+    path: '{{ item }}'
+    state: directory
+  with_items:
+    - '{{ credentials_dir }}'
+    - '{{ data_dir }}'
+  when: not prepd.stat.isdir
+
+- name: Create developer.yml
+  template:
+    src: developer.yml.j2
+    dest: '{{ credentials_dir }}/developer.yml'
+
+- name: Create vault password file
+  template:
+    src: vault-password.txt.j2
+    dest: '{{ credentials_dir }}/vault-password.txt'
