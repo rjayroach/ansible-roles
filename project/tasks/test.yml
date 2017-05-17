@@ -1,3 +1,0 @@
----
-- debug: msg="Inside prepd role. The next debug output should be the word 'success!'"
-- debug: var=test
