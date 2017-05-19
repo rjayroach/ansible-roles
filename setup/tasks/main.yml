@@ -1,5 +1,15 @@
 ### Setup credentials and data directories
 ---
+# See: https://github.com/ansible/ansible/pull/23104/files
+- name: Apply patches to Ansible 2.3
+  command: 'patch < {{ role_path }}/{{ item }}'
+  args:
+    chdir: '/usr/local/lib/python2.7/dist-packages/ansible/{{ item.dir }}'
+  with_items:
+    - { dir: 'playbook', file: 'role_include.py.patch' }
+    - { dir: 'executor', file: 'task_executor.py.patch' }
+  become: yes
+
 - name: Check for existence of ~/prepd
   stat:
     path: '{{ prepd_dir }}'
