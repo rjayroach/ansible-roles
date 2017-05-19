@@ -26,16 +26,16 @@
 
 - name: Check if the requested ruby version is already installed
   stat:
-    path: '{{ ansible_env.HOME }}/.rbenv/versions/{{ version }}'
+    path: '{{ ansible_env.HOME }}/.rbenv/versions/{{ properties.version }}'
   register: ruby_dir
 
-- debug: msg='{{ ansible_env.HOME }}/.rbenv/versions/{{ version }}'
-- name: 'Install ruby {{ version }}'
-  shell: '. /etc/profile && rbenv install {{ version }}'
+- debug: msg='{{ ansible_env.HOME }}/.rbenv/versions/{{ properties.version }}'
+- name: 'Install ruby {{ properties.version }}'
+  shell: '. /etc/profile && rbenv install {{ properties.version }}'
   when: ruby_dir.stat.isdir is not defined
 
 - name: Set global rbenv version
-  shell: '. /etc/profile && rbenv global {{ version }}'
+  shell: '. /etc/profile && rbenv global {{ properties.version }}'
   when: ruby_dir.stat.isdir is not defined
 
 
@@ -53,7 +53,7 @@
 - name: Insert aliases
   blockinfile:
     create: yes
-    dest: ~/.zsh.after/aliases.zsh
+    dest: '{{ machine.aliases_file }}'
     marker: '# {mark} ANSIBLE MANAGED BLOCK (ruby)'
     block: |
       alias adc='spring rake app:db:clean'

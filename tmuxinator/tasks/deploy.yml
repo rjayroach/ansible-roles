@@ -4,4 +4,4 @@
     path: '{{ ansible_env.HOME }}/.tmuxinator/{{ item.name }}'
     src: '{{ item.src }}'
     state: link
-  with_items: '{{ files }}'
+  with_items: '{{ properties.files }}'

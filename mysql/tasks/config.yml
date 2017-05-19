@@ -1,4 +1,7 @@
 ---
+# - debug: var=item
+#   with_items: '{{ properties }}'
+
 - name: Install Debian packages
   apt:
     name: '{{ item }}'
@@ -12,14 +15,6 @@
 - name: Install the Python MySQLB module
   pip:
     name: MySQL-python
-
-- name: Create user with full privs for development
-  mysql_user:
-    name: '{{ mysql_config.mysql_user_name | default(ansible_user) }}'
-    password: '{{ mysql_config.mysql_user_password | default(ansible_user) }}'
-    priv: '*.*:ALL'
-    state: present
-  become: yes
 
 
 # TODO: Test this one

@@ -1,9 +1,16 @@
 ---
-- debug: var=mysql_databases
+- name: Create user with full privs for development
+  mysql_user:
+    name: '{{ item.name | default(ansible_user) }}'
+    password: '{{ item.password | default(ansible_user) }}'
+    priv: '*.*:ALL'
+    state: present
+  with_items: '{{ properties.users }}'
+  become: yes
 
 - name: Create a new database
   mysql_db:
-    name: '{{ item }}'
+    name: '{{ item.name }}'
     state: present
-  with_items: '{{ mysql_databases }}'
+  with_items: '{{ properties.databases }}'
   become: yes
