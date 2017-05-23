@@ -1,16 +1,5 @@
 ### Setup credentials and data directories
 ---
-# See: https://github.com/ansible/ansible/pull/23104/files
-- name: Apply patches to Ansible 2.3
-  shell: 'patch < {{ role_path }}/files/{{ item.file }}'
-  args:
-    chdir: '/usr/local/lib/python2.7/dist-packages/ansible/{{ item.dir }}'
-  with_items:
-    - { dir: 'playbook', file: 'role_include.py.patch' }
-    - { dir: 'executor', file: 'task_executor.py.patch' }
-  become: yes
-  ignore_errors: yes
-
 - name: Check for existence of ~/prepd
   stat:
     path: '{{ prepd_dir }}'
@@ -49,3 +38,5 @@
     force: no
     src: vault-password.txt.j2
     dest: '{{ credentials_dir }}/vault-password.txt'
+
+- include: inventory.yml
