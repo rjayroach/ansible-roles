@@ -2,13 +2,14 @@
 ---
 # See: https://github.com/ansible/ansible/pull/23104/files
 - name: Apply patches to Ansible 2.3
-  command: 'patch < {{ role_path }}/{{ item }}'
+  shell: 'patch < {{ role_path }}/files/{{ item.file }}'
   args:
     chdir: '/usr/local/lib/python2.7/dist-packages/ansible/{{ item.dir }}'
   with_items:
     - { dir: 'playbook', file: 'role_include.py.patch' }
     - { dir: 'executor', file: 'task_executor.py.patch' }
   become: yes
+  ignore_errors: yes
 
 - name: Check for existence of ~/prepd
   stat:
@@ -17,14 +18,14 @@
 
 - name: Ensure data and crendentials directories exist in ~/prepd
   file:
-    path: '{{ prepd_dir }}/{{ item }}/{{ project_name }}'
+    path: '{{ prepd_dir }}/projects/{{ project_name }}/{{ item }}'
     state: directory
   with_items: [credentials, data]
   when: prepd.stat.isdir
 
 - name: Create links to data and credentials directories in ~/prepd
   file:
-    src: '{{ prepd_dir }}/{{ item }}/{{ project_name }}'
+    src: '{{ prepd_dir }}/projects/{{ project_name }}/{{ item }}'
     dest: '{{ project_dir }}/{{ item }}'
     state: link
   with_items: [credentials, data]
@@ -32,19 +33,19 @@
 
 - name: Ensure data and crendentials directories exist
   file:
-    path: '{{ item }}'
+    path: '{{ project_dir }}/{{ item }}'
     state: directory
-  with_items:
-    - '{{ credentials_dir }}'
-    - '{{ data_dir }}'
+  with_items: [credentials, data]
   when: not prepd.stat.isdir
 
-- name: Create developer.yml
+- name: Create developer.yml if it does not exist
   template:
+    force: no
     src: developer.yml.j2
-    dest: '{{ credentials_dir }}/developer.yml'
+    dest: '{{ credentials_file }}'
 
-- name: Create vault password file
+- name: Create vault password file if it does not exist
   template:
+    force: no
     src: vault-password.txt.j2
     dest: '{{ credentials_dir }}/vault-password.txt'
