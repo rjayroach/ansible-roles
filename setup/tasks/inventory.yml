@@ -16,29 +16,36 @@
     src: inventory-roles.j2
     dest: '{{ playbook_dir }}/inventory/roles'
 
-- name: Softlink the roles file into each inventory directory
+- name: Softlink the roles file into each environment
   file:
     src: '../roles'
     dest: '{{ playbook_dir }}/inventory/{{ item }}/roles'
     state: link
   with_items: "{{ ['local'] + setup.environments }}"
 
-- name: Softlink the ec2.py file into each inventory directory
+- name: Softlink the ec2.py file into each environment
   file:
     src: '../ec2.py'
     dest: '{{ playbook_dir }}/inventory/{{ item }}/ec2.py'
     state: link
   with_items: '{{ setup.environments }}'
 
-- name: Template an ec2.ini for each role
+- name: Template an ec2.ini for each environment
   template:
     src: ec2.ini.j2
     dest: '{{ playbook_dir }}/inventory/{{ item }}/ec2.ini'
   with_items: '{{ setup.environments }}'
 
-- name: One time template each inventory hosts file
+- name: One time template the hosts file for each environment
   template:
     src: inventory-hosts.j2
     dest: '{{ playbook_dir }}/inventory/{{ item }}/hosts'
     force: no
   with_items: '{{ setup.environments }}'
+
+- name: Template the hosts file for each environment
+  template:
+    src: role-playbook.yml.j2
+    dest: '{{ playbook_dir }}/g-{{ item }}s.yml'
+    mode: 0755
+  with_items: '{{ setup.roles }}'

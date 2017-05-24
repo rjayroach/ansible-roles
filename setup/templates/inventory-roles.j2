@@ -26,19 +26,6 @@ tag_Role_etcd
 {% endif %}
 
 
-# VPC types
-[tag_Vpc_pro_train]
-
-[pro-train:children]
-tag_Vpc_pro_train
-
-
-[tag_Vpc_sales]
-
-[vpc-sales:children]
-tag_Vpc_sales
-
-
 # Roles
 {% for role in setup.roles %}
 {% set role_underscore = role | replace('-', '_') %}

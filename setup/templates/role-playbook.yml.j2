@@ -1,0 +1,18 @@
+#!/usr/bin/env ansible-playbook
+# DO NOT EDIT {{ ansible_managed }}
+---
+{% for task in ['config', 'config-local', 'deploy', 'deploy-local'] %}
+
+- hosts: {{ item }}s
+  vars_files: ['{% raw %}{{{% endraw %} credentials_file }}']
+  tags: {{ task }}
+  vars:
+    - role_group: {{ item | replace('-', '_') }}
+    - task_name: {{ task }}
+  tasks:
+    - include_role:
+        name: prepd/cd
+      with_items: '{% raw %}{{{% endraw %} {{ item | replace('-', '_') }}.{{ task | replace('-', '_') }} }}'
+      loop_control:
+        loop_var: application
+{% endfor %}
