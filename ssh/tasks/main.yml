@@ -22,3 +22,4 @@
         ProxyCommand ssh -W %h:%p {{ host }}
         IdentityFile {{ subnet.key }}
       {% endfor %}
+  when: host != 'change-me.example.com'

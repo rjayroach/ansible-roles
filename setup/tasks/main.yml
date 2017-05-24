@@ -27,6 +27,11 @@
   with_items: [credentials, data]
   when: not prepd.stat.isdir
 
+- name: Ensure ssh dir exists
+  file:
+    path: '{{ ssh_dir }}'
+    state: directory
+
 - name: Create developer.yml if it does not exist
   template:
     force: no
