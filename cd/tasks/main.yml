@@ -1,0 +1,34 @@
+---
+# - debug: var=role_group
+# - debug: var=task_name
+# - debug: var=application
+# - debug: var=roles
+# - debug: var=role_properties
+# - debug: msg='{{ role_properties[role_item] | default({}) }}'
+#   with_items: '{{ roles }}'
+#   loop_control:
+#     loop_var: role_item
+# - debug: msg='{{ role_item }}'
+#   with_items: '{{ roles }}'
+#   loop_control:
+#     loop_var: role_item
+
+- include_role:
+    name: 'prepd/{{ role_item }}'
+    tasks_from: config
+  vars:
+    properties: '{{ role_properties[role_item] | default({}) }}'
+  with_items: '{{ roles }}'
+  loop_control:
+    loop_var: role_item
+  when: task_name == 'config'
+
+- include_role:
+    name: 'prepd/{{ role_item }}'
+    tasks_from: deploy
+  vars:
+    properties: '{{ role_properties[role_item] | default({}) }}'
+  with_items: '{{ roles }}'
+  loop_control:
+    loop_var: role_item
+  when: task_name == 'deploy'

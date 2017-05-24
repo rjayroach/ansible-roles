@@ -1,9 +1,9 @@
 ---
 - name: Log in to docker registry
   docker_login:
-    registry: '{{ docker_logins[container_registry].registry }}'
-    username: '{{ docker_logins[container_registry].username }}'
-    password: '{{ docker_logins[container_registry].password }}'
+    registry: '{{ docker_logins[properties.container_registry].registry }}'
+    username: '{{ docker_logins[properties.container_registry].username }}'
+    password: '{{ docker_logins[properties.container_registry].password }}'
     reauthorize: yes
 
 # NOTE: ansible's docker_service module has a bug that when pull: yes
@@ -15,7 +15,4 @@
   docker_image:
     name: '{{ item.image }}'
     tag: '{{ item.tag }}'
-  with_items:
-    - { image: 'redis', tag: 'latest' }
-    - { image: 'postgres', tag: 'latest' }
-    - { image: '{{ image_name }}', tag: '{{ image_tag }}' }
+  with_items: '{{ properties.images }}'

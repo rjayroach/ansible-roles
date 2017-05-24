@@ -1,11 +1,4 @@
 # prepd/docker/tasks/deploy.yml
 ---
-
-- include_role:
-    name: 'prepd/{{ role_item }}'
-    tasks_from: config
-  vars:
-    properties: '{{ role_properties[role_item] | default({}) }}'
-  with_items: '{{ roles }}'
-  loop_control:
-    loop_var: role_item
+- debug: msg=docker-deploy
+- include: pull-images.yml
