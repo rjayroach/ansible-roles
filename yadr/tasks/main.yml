@@ -4,7 +4,7 @@
     path: '{{ ansible_env.HOME }}/.yadr'
   register: yadr_dir
 
-- include: 'install.yml'
+- include: install.yml
   when: yadr_dir.stat.exists == false
 
 #- include: 'update.yml'
@@ -19,7 +19,6 @@
     - vimrc.after
     - yadr/ctags/ctags
 
-# TODO: move the git alias to Git role if ever there is one
 - name: Insert aliases
   blockinfile:
     create: yes
@@ -35,6 +34,12 @@
 
 - name: Remove bogus line from .vimrc
   lineinfile:
-    dest: '{{ ansible_env.HOME }}/.vimrc'
+    path: '{{ ansible_env.HOME }}/.vimrc'
     state: absent
     regexp: "^set list listchars"
+
+- name: Comment out config that causes vim to suspend
+  lineinfile:
+    path: '{{ ansible_env.HOME }}/.yadr/vim/settings/path.vim'
+    regexp: '^set shell=bash'
+    line: '" set shell=bash\ -i'
