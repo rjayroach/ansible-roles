@@ -4,13 +4,13 @@
   file:
     path: '{{ playbook_dir }}/inventory/{{ item }}'
     state: directory
-  with_items: "{{ ['local'] + setup.environments }}"
+  with_items: "{{ ['local'] + setup_environments }}"
 
 - name: Ensure each group_vars directory exists
   file:
     path: '{{ playbook_dir }}/group_vars/{{ item }}'
     state: directory
-  with_items: "{{ ['local'] + setup.environments }}"
+  with_items: "{{ ['local'] + setup_environments }}"
 
 - template:
     src: inventory-roles.j2
@@ -21,31 +21,32 @@
     src: '../roles'
     dest: '{{ playbook_dir }}/inventory/{{ item }}/roles'
     state: link
-  with_items: "{{ ['local'] + setup.environments }}"
+  with_items: "{{ ['local'] + setup_environments }}"
 
 - name: Softlink the ec2.py file into each environment
   file:
     src: '../ec2.py'
     dest: '{{ playbook_dir }}/inventory/{{ item }}/ec2.py'
     state: link
-  with_items: '{{ setup.environments }}'
+  with_items: '{{ setup_environments }}'
 
 - name: Template an ec2.ini for each environment
   template:
     src: ec2.ini.j2
     dest: '{{ playbook_dir }}/inventory/{{ item }}/ec2.ini'
-  with_items: '{{ setup.environments }}'
+  with_items: '{{ setup_environments }}'
 
 - name: One time template the hosts file for each environment
   template:
     src: inventory-hosts.j2
     dest: '{{ playbook_dir }}/inventory/{{ item }}/hosts'
     force: no
-  with_items: '{{ setup.environments }}'
+  with_items: '{{ setup_environments }}'
 
-- name: Template the hosts file for each environment
+- name: Template a playbook for each role
   template:
     src: role-playbook.yml.j2
     dest: '{{ playbook_dir }}/g-{{ item }}s.yml'
     mode: 0755
-  with_items: '{{ setup.roles }}'
+    force: no
+  with_items: '{{ setup_roles }}'

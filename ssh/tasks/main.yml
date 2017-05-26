@@ -11,15 +11,16 @@
     marker: '# {mark} ANSIBLE MANAGED BLOCK ({{ host }})'
     block: |
       Host {{ host }}
-        IdentityFile {{ private_key_path }}
-        User {{ host_user }}
         ControlMaster auto
         ControlPath ~/.ssh/ansible-%r@%h:%p
         ControlPersist 1m
-      {% for subnet in subnets.iteritems() %}
+        IdentityFile {{ private_key_path }}
+        User {{ host_user }}
+      {% for subnet in access_subnets %}
 
       Host {{ subnet.block }}
-        ProxyCommand ssh -W %h:%p {{ host }}
         IdentityFile {{ subnet.key }}
+        ProxyCommand ssh -W %h:%p {{ host }}
+        User {{ host_user }}
       {% endfor %}
   when: host != 'change-me.example.com'

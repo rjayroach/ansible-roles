@@ -1,0 +1,43 @@
+---
+- include_role:
+    name: prepd/nginx
+
+- apt:
+   name: rsync
+   state: present
+  become: yes
+
+- user:
+    name: admin
+    groups: www-data
+    append: yes
+  become: yes
+
+- file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  become: yes
+
+- name: Template sites available
+  template:
+    src: nginx-site.conf.j2
+    dest: '/etc/nginx/sites-available/{{ properties.site_name }}.conf'
+  become: yes
+
+- name: Enable sites available
+  file:
+    src: '/etc/nginx/sites-available/{{ properties.site_name }}.conf'
+    dest: '/etc/nginx/sites-enabled/{{ properties.site_name }}.conf'
+    state: link
+  become: yes
+  # TOOD: A method to restart nginx which is a handler in the nginx role
+  # notify: Restart Nginx
+
+- name: Ensure application directory exists
+  file:
+    path: '{{ properties.root_directory }}/{{ properties.site_name }}'
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: 0775
+  become: yes

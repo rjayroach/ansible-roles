@@ -1,3 +1,4 @@
+# NOTE: to test with dev-servers config/deploy
 ---
 - name: Install ember
   npm:
