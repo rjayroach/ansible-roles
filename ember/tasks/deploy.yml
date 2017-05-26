@@ -1,0 +1,18 @@
+---
+- template:
+    src: envs.j2
+    dest: '{{ properties.dev_dir }}/.env.deploy.{{ properties.ember_deploy_file }}'
+
+- include_role:
+    name: prepd/ssh
+    tasks_from: open-tunnel
+
+- name: Deploy the ember application and activate it
+  command: 'ember deploy {{ properties.ember_deploy_file }} --verbose --activate=true'
+  args:
+    chdir: '{{ properties.dev_dir }}'
+  register: deploy
+
+- include_role:
+    name: prepd/ssh
+    tasks_from: close-tunnel

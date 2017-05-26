@@ -38,8 +38,9 @@
     state: absent
     regexp: "^set list listchars"
 
-- name: Comment out config that causes vim to suspend
+- name: Remove config that causes vim to suspend
   lineinfile:
     path: '{{ ansible_env.HOME }}/.yadr/vim/settings/path.vim'
-    regexp: '^set shell=bash'
-    line: '" set shell=bash\ -i'
+    line: 'set shell=bash\ -i'
+    state: absent
+  when: ansible_distribution == 'Debian'

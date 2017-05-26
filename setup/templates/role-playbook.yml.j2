@@ -1,7 +1,7 @@
 #!/usr/bin/env ansible-playbook
-# DO NOT EDIT {{ ansible_managed }}
+# CAN EDIT Ansible will not override {{ ansible_managed }}
 ---
-{% for task in ['config', 'config-local', 'deploy', 'deploy-local'] %}
+{% for task in ['config', 'deploy'] %}
 
 - hosts: {{ item }}s
   vars_files: ['{% raw %}{{{% endraw %} credentials_file }}']

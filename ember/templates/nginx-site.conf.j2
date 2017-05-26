@@ -1,0 +1,9 @@
+server {
+  listen 80;
+  root {{ properties.root_directory }}/{{ properties.site_name }};
+  server_name {{ properties.server_name }};
+  index index.html;
+  location / { 
+    try_files $uri $uri/ /index.html;
+  }
+}
