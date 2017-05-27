@@ -14,12 +14,12 @@
 # TODO: Add terraform global files
 - name: Copy user files
   copy:
-    src: '{{ item }}'
+    src: 'ansible/{{ item }}'
     dest: '{{ playbook_dir }}/{{ item }}'
   with_items:
-    - ansible/provisioner.yml
-    - ansible/group_vars/all/provisioner.yml
-    - ansible/group_vars/all/project.yml
+    - provisioner.yml
+    - group_vars/all/provisioner.yml
+    - group_vars/all/project.yml
 
 - name: Check for existence of ~/prepd
   stat:
@@ -64,5 +64,3 @@
     force: no
     src: vault-password.txt.j2
     dest: '{{ credentials_dir }}/vault-password.txt'
-
-- include: inventory.yml
