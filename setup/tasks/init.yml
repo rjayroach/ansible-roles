@@ -17,6 +17,7 @@
     src: 'ansible/{{ item }}'
     dest: '{{ playbook_dir }}/{{ item }}'
   with_items:
+    - ansible.cfg
     - provisioner.yml
     - group_vars/all/provisioner.yml
     - group_vars/all/project.yml
