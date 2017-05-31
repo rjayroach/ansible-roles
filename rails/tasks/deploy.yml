@@ -1,0 +1,14 @@
+---
+- name: Run bundle
+  shell: . /etc/profile && ~/.rbenv/shims/bundle
+  args:
+    chdir: '{{ item.dir | default(properties.dir) }}/{{ item.name }}'
+  with_items: '{{ properties.apps }}'
+  when: item.bundle is defined and item.bundle
+
+- name: Run database migrations
+  shell: . /etc/profile && ~/.rbenv/shims/bundle exec rake {{ 'app:' if item.engine is defined else '' }}db:migrate {{ 'app:' if item.engine is defined else '' }}db:test:prepare
+  args:
+    chdir: '{{ item.dir | default(properties.dir) }}/{{ item.name }}'
+  with_items: '{{ properties.apps }}'
+  when: item.migrate is defined and item.migrate

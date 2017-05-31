@@ -25,25 +25,17 @@
 #   become: yes
 #   notify: Restart PostgreSQL
 
-- name: 'Create ROLE {{ postgres_name }} and grant dbcreate and superuser privileges'
-  postgresql_user:
-    name: '{{ postgres_name }}'
-    password: '{{ postgres_password }}'
-    role_attr_flags: 'SUPERUSER,CREATEDB'
-  become: yes
-  become_user: postgres
-
-  # - name: 'Trust connections from docker IP'
-  #   lineinfile:
-  #     dest: /etc/postgresql/9.4/main/pg_hba.conf
-  #     line: 'host    all         all         {{ postgres_permitted_network }}    trust'
-  #   become: yes
-  #   notify: Restart PostgreSQL
+# - name: 'Trust connections from docker IP'
+#   lineinfile:
+#     dest: /etc/postgresql/9.4/main/pg_hba.conf
+#     line: 'host    all         all         {{ postgres_permitted_network }}    trust'
+#   become: yes
+#   notify: Restart PostgreSQL
 
 - name: Insert aliases
   blockinfile:
     create: yes
-    dest: ~/.zsh.after/aliases.zsh
+    dest: '{{ machine.aliases_file }}'
     marker: '# {mark} ANSIBLE MANAGED BLOCK (postgres)'
     block: |
       alias supg='sudo su - postgres'
@@ -53,4 +45,4 @@
       pgd() {
         pg_dump $1 -n $2 | gzip -c > $1.sql.gz
       }
-  when: machine_env.shell == 'zsh'
+  when: machine.shell == 'zsh'

@@ -21,3 +21,4 @@
     marker: '# {mark} ANSIBLE MANAGED BLOCK (tmuxinator)'
     block: |
       alias mux='tmuxinator'
+  when: machine.shell == 'zsh'

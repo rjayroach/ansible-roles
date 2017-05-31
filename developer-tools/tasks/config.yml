@@ -19,9 +19,10 @@
 - name: Insert aliases
   blockinfile:
     create: yes
-    dest: ~/.zsh.after/aliases.zsh
+    dest: '{{ machine.aliases_file }}'
     marker: '# {mark} ANSIBLE MANAGED BLOCK (developer-tools)'
     block: |
       # Shortcuts for TMux
       alias tl='tmux list-sessions'
       alias ta='tmux a -dt $1'
+  when: machine.shell == 'zsh'
