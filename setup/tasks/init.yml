@@ -29,6 +29,11 @@
     - { src: 'terraform/', dest: '{{ terraform_dir }}' }
     - { src: 'kubernetes/', dest: '{{ kubernetes_dir }}' }
 
+- name: provision.yml is executable
+  file:
+    path: '{{ ansible_dir }}/provisioner.yml'
+    mode: 0755
+
 - name: Ensure data and crendentials directories exist in ~/prepd
   file:
     path: '{{ prepd_dir }}/projects/{{ project_name }}/{{ item }}'
