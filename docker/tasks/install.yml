@@ -1,11 +1,12 @@
 # NOTE: This playbook assumes a Debian based system
+# See: https://blog.docker.com/2015/07/new-apt-and-yum-repos/
 ---
 - name: Install docker APT key
   apt_key:
     keyserver: p80.pool.sks-keyservers.net
     id: 58118E89F3A912897C070ADBF76221572C52609D
 
-- name: Add docker repository into sources list.
+- name: Add docker repository into sources list
   apt_repository:
     repo: 'deb https://apt.dockerproject.org/repo debian-jessie main'
     state: present
@@ -48,7 +49,7 @@
     dest: /etc/bash_completion.d/docker
     mode: 0644
 
-- name: 'Add user {{ ansible_user }} to docker group'
+- name: Add ansible_user to docker group
   user:
     name: '{{ ansible_user }}'
     groups: docker
