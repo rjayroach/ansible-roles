@@ -83,6 +83,7 @@
       alias tgo='terragrunt output'
       alias tgoa='terragrunt output-all'
       alias tgp='terragrunt plan'
+      alias tgpa='terragrunt plan-all'
       alias tgs='terragrunt show'
       alias tgst='terragrunt state'
       alias tgt='terragrunt taint'
