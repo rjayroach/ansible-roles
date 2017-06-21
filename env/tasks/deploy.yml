@@ -1,5 +1,5 @@
 ---
-- name: 'Write envs to item.path'
+- name: Write envs to item.path
   template:
     dest: '{{ item.path }}'
     src: envs.j2

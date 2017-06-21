@@ -1,11 +1,10 @@
----
 # Options:
 # link_env: when yes, a soft link will be made to ../.env
 # engine: when yes, the env file will be linked in spec/dummy
 # local: when yes, the repo will be added to ~/.bundle/config as a local source
 # bundle: when yes, bundle will be run after the repository is downloaded
 # migrate: when yes, bundle exec rake (app:)db:migrate and (app:)db:test:prepare will be run after bundle
-
+---
 - name: Create softlinks to the .env file in the project parent directory
   file:
     path: '{{ item.dir | default(properties.dir) }}/{{ item.name }}/.env'
@@ -29,17 +28,3 @@
     line: 'BUNDLE_LOCAL__{{ item.name.replace("-", "_").upper() }}: "{{ item.dir | default(properties.dir) }}/{{ item.name }}"'
   with_items: '{{ properties.apps }}'
   when: item.local is defined and item.local
-
-- name: Run bundle
-  shell: . /etc/profile && ~/.rbenv/shims/bundle
-  args:
-    chdir: '{{ item.dir | default(properties.dir) }}/{{ item.name }}'
-  with_items: '{{ properties.apps }}'
-  when: item.bundle is defined and item.bundle
-
-- name: Run database migrations
-  shell: . /etc/profile && ~/.rbenv/shims/bundle exec rake {{ 'app:' if item.engine is defined else '' }}db:migrate {{ 'app:' if item.engine is defined else '' }}db:test:prepare
-  args:
-    chdir: '{{ item.dir | default(properties.dir) }}/{{ item.name }}'
-  with_items: '{{ properties.apps }}'
-  when: item.migrate is defined and item.migrate

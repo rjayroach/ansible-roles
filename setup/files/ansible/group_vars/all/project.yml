@@ -5,20 +5,19 @@ application_name: 'tfg'
 
 # Variables for setup.yml
 setup:
-  environments: [development, staging, production]
   roles: [dev-server, app-server, db-server]
   ec2_ini:
     default:
       regions: [ap-southeast-1]
       vpc_destination_variable: ip_address #  private_ip_address
       destination_variable: public_dns_name #  private_dns_name
-      boto_profile: taggo
+      boto_profile: default
+    development: {}
     staging: {}
     production: {}
 
 
-git_account: git@github.com:maxcole
-agit_account: git@github.com:rjayroach
+git_account: git@github.com:rjayroach
 
 machine:
   time_zone: 'Asia/Singapore'
@@ -80,8 +79,7 @@ dev_server:
   config_local:
     tfg: [circleci]
   deploy:
-    tfg: [env]
-    # tfg: [env, mysql, tmuxinator]
+    tfg: [env, mysql, tmuxinator]
   deploy_local: {}
 
 # inventory_role.tag.application_name[prepd_roles]

@@ -119,3 +119,4 @@
       alias sgpl='spring stop; git checkout Gemfile.lock; git pull'
       alias src='spring stop; rc'
       alias ss='spring stop'
+  when: machine.shell == 'zsh'

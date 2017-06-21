@@ -1,5 +1,10 @@
 ### Setup credentials and data directories
 ---
+- name: Check for existence of ~/prepd
+  stat:
+    path: '{{ prepd_dir }}'
+  register: prepd
+
 # See: https://github.com/ansible/ansible/pull/23104/files
 - name: Apply patches to Ansible 2.3
   shell: 'patch < {{ role_path }}/files/{{ item.file }}'
@@ -10,28 +15,30 @@
     - { dir: 'executor', file: 'task_executor.py.patch' }
   become: yes
   ignore_errors: yes
+  when: prepd.stat.isdir
 
-# TODO: Add terraform global files
+# NOTE: Files that may be updated by upstream are in the prepd repo
+# Files that are not updated by upstream are in prepd-roles repos in this role
 - name: Copy user files
   copy:
-    src: 'ansible/{{ item }}'
-    dest: '{{ playbook_dir }}/{{ item }}'
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+    force: no
   with_items:
-    - ansible.cfg
-    - provisioner.yml
-    - group_vars/all/provisioner.yml
-    - group_vars/all/project.yml
+    - { src: 'ansible/', dest: '{{ ansible_dir }}' }
+    - { src: 'terraform/', dest: '{{ terraform_dir }}' }
+    - { src: 'kubernetes/', dest: '{{ kubernetes_dir }}' }
 
-- name: Check for existence of ~/prepd
-  stat:
-    path: '{{ prepd_dir }}'
-  register: prepd
+- name: provision.yml is executable
+  file:
+    path: '{{ ansible_dir }}/provisioner.yml'
+    mode: 0755
 
 - name: Ensure data and crendentials directories exist in ~/prepd
   file:
     path: '{{ prepd_dir }}/projects/{{ project_name }}/{{ item }}'
     state: directory
-  with_items: [credentials, data]
+  with_items: [credentials, data, vault]
   when: prepd.stat.isdir
 
 - name: Create links to data and credentials directories in ~/prepd
@@ -39,14 +46,14 @@
     src: '{{ prepd_dir }}/projects/{{ project_name }}/{{ item }}'
     dest: '{{ project_dir }}/{{ item }}'
     state: link
-  with_items: [credentials, data]
+  with_items: [credentials, data, vault]
   when: prepd.stat.isdir
 
 - name: Ensure data and crendentials directories exist
   file:
     path: '{{ project_dir }}/{{ item }}'
     state: directory
-  with_items: [credentials, data]
+  with_items: [credentials, data, vault]
   when: not prepd.stat.isdir
 
 - name: Ensure ssh dir exists
@@ -64,4 +71,4 @@
   template:
     force: no
     src: vault-password.txt.j2
-    dest: '{{ credentials_dir }}/vault-password.txt'
+    dest: '{{ vault_dir }}/password.txt'

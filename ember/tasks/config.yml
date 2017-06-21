@@ -2,18 +2,21 @@
 - include_role:
     name: prepd/nginx
 
-- apt:
+- name: Install rsync package for app deployment via scp
+  apt:
    name: rsync
    state: present
   become: yes
 
-- user:
+- name: Add the admin user to the group www-data so it can write to web app dir
+  user:
     name: admin
     groups: www-data
     append: yes
   become: yes
 
-- file:
+- name: Disable nginx default web site
+  file:
     path: /etc/nginx/sites-enabled/default
     state: absent
   become: yes
