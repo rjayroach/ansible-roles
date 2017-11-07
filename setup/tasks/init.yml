@@ -1,4 +1,5 @@
 ### Setup credentials and data directories
+#
 ---
 - name: Check for existence of ~/prepd
   stat:
