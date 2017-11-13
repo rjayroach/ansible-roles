@@ -1,0 +1,13 @@
+---
+- name: Ensure the path to the project exists on this machine
+  file:
+    path: '{{ git_dir }}'
+    state: directory
+
+- name: Clone the project repo
+  git:
+    repo: '{{ item.repo }}'
+    dest: '{{ git_dir }}/{{ item.project_name }}'
+    accept_hostkey: yes
+    update: no
+  with_items: '{{ git_repos }}'

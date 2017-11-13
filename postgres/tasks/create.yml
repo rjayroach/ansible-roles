@@ -1,18 +1,22 @@
 ---
 - name: Create ROLE and grant dbcreate and superuser privileges
   postgresql_user:
-    name: '{{ item.name | default(ansible_user) }}'
-    password: '{{ item.password | default(ansible_user) }}'
+    name: '{{ item.name }}'
+    password: '{{ item.password }}'
     role_attr_flags: 'SUPERUSER,CREATEDB'
-  with_items: '{{ properties.users }}'
+  with_items: '{{ postgres_users }}'
   become: yes
   become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
 
 - name: Create a new database
   postgresql_db:
     name: '{{ item.name }}'
     owner: '{{ item.owner }}'
     state: present
-  with_items: '{{ properties.databases }}'
+  with_items: '{{ postgres_databases }}'
   become: yes
   become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true

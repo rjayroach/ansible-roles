@@ -8,9 +8,14 @@
   become: yes
   when: ansible_distribution == 'Debian'
 
+- name: Install tmuxinator gem
+  gem:
+    name: tmuxinator
+    state: present
+
 - name: Create .tmuxinator directory in home
   file:
-    path: '{{ ansible_env.HOME }}/.tmuxinator'
+    path: '{{ tmuxinator_dir }}'
     state: directory
     mode: 0755
 
@@ -22,3 +27,5 @@
     block: |
       alias mux='tmuxinator'
   when: machine.shell == 'zsh'
+
+- include_tasks: session.yml

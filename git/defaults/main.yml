@@ -1,2 +1,4 @@
 ---
 hub_version: 2.2.9
+git_repos: []
+git_dir: '{{ project_dir }}'

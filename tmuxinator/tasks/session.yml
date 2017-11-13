@@ -1,7 +1,7 @@
 ---
 - name: Create softlinks to a tmuxinator file from an external project
   file:
-    path: '{{ ansible_env.HOME }}/.tmuxinator/{{ item.name }}'
+    path: '{{ tmuxinator_dir }}/{{ item.name }}.yml'
     src: '{{ item.src }}'
     state: link
-  with_items: '{{ properties.files }}'
+  with_items: '{{ tmuxinator_sessions }}'

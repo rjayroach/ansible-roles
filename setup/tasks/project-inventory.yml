@@ -44,16 +44,18 @@
   with_items: '{{ setup_environments }}'
 
 - name: One time create vault password file for each environment
-  template:
+  copy:
     force: no
-    src: vault-password.txt.j2
+    content: '{{ 1000000000000 | random | to_uuid }}'
     dest: '{{ vault_dir }}/{{ item }}.txt'
   with_items: '{{ setup_environments }}'
 
-- name: Template a playbook for each role
-  template:
-    src: role-playbook.yml.j2
-    dest: '{{ playbook_dir }}/{{ item }}s.yml'
-    mode: 0755
-    force: no
-  with_items: '{{ setup_roles }}'
+#
+# NOTE: Replace with functionality specific playbooks that target different environments using roles
+# - name: Template a playbook for each role
+#   template:
+#     src: role-playbook.yml.j2
+#     dest: '{{ playbook_dir }}/{{ item }}s.yml'
+#     mode: 0755
+#     force: no
+#   with_items: '{{ setup_roles }}'

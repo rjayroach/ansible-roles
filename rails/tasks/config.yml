@@ -7,24 +7,24 @@
 ---
 - name: Create softlinks to the .env file in the project parent directory
   file:
-    path: '{{ item.dir | default(properties.dir) }}/{{ item.name }}/.env'
-    src: '{{ item.dir | default(properties.dir) }}/.env'
+    path: '{{ item.dir | default(rails_dir) }}/{{ item.name }}/.env'
+    src: '{{ item.dir | default(rails_dir) }}/.env'
     state: link
-  with_items: '{{ properties.apps }}'
+  with_items: '{{ rails_apps }}'
   when: item.link_env is defined and item.link_env
 
 - name: Create softlinks to the project .env file in spec/dummy for engines
   file:
-    path: '{{ item.dir | default(properties.dir) }}/{{ item.name }}/spec/dummy/.env'
-    src: '{{ item.dir | default(properties.dir) }}/{{ item.name }}/.env'
+    path: '{{ item.dir | default(rails_dir) }}/{{ item.name }}/spec/dummy/.env'
+    src: '{{ item.dir | default(rails_dir) }}/{{ item.name }}/.env'
     state: link
-  with_items: '{{ properties.apps }}'
+  with_items: '{{ rails_apps }}'
   when: item.engine is defined and item.engine
 
 - name: Configure repo as a local source in ~/.bundle/config
   lineinfile:
     dest: ~/.bundle/config
     state: present
-    line: 'BUNDLE_LOCAL__{{ item.name.replace("-", "_").upper() }}: "{{ item.dir | default(properties.dir) }}/{{ item.name }}"'
-  with_items: '{{ properties.apps }}'
+    line: 'BUNDLE_LOCAL__{{ item.name.replace("-", "_").upper() }}: "{{ item.dir | default(rails_dir) }}/{{ item.name }}"'
+  with_items: '{{ rails_apps }}'
   when: item.local is defined and item.local
