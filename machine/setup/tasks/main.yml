@@ -1,0 +1,34 @@
+---
+- name: Set prepd environment variables
+  include_role:
+    name: prepd/machine
+
+- include_role:
+    name: prepd/utils
+    tasks_from: debug
+
+# Execute standard tasks
+- name: Include standard developer tasks
+  include_role:
+    name: prepd/machine/setup
+    tasks_from: developer
+
+- name: Include standard machine tasks
+  include_role:
+    name: prepd/machine/setup
+    tasks_from: machine
+
+# Execute custom tasks
+- name: Include custom developer tasks
+  include_tasks: '{{ item }}'
+  with_first_found:
+    - files:
+        - '{{ prepd_developer_dir }}/setup.yml'
+      skip: true
+
+- name: Include custom machine tasks
+  include_tasks: '{{ item }}'
+  with_first_found:
+    - files:
+        - '{{ prepd_machine_dir }}/setup.yml'
+      skip: true

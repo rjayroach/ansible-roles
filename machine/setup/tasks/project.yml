@@ -1,0 +1,18 @@
+# Includes the vars file for each project that should be installed on this machine
+# NOTE: Setup of vault password is done by prepd-gem
+---
+- include_vars:
+    file: '{{ prepd_projects_dir }}/{{ project_name }}/vars/setup.yml'
+    name: project
+
+- debug:
+    var: project
+    # verbosity: 1
+
+- include_role:
+    name: prepd/git
+    tasks_from: clone
+  vars:
+    git_dir: '{{ data.projects_dir }}/{{ project_name }}'
+    git_name: '{{ project.data.name }}'
+    git_repo: '{{ project.data.repo }}'

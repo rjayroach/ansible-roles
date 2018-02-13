@@ -1,5 +1,4 @@
 ---
-- debug: var=properties
 - name: Install awscli
   pip:
     name: awscli

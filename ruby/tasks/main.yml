@@ -4,7 +4,7 @@
     name: '{{ item }}'
     state: present
   become: yes
-  with_items: [libreadline-dev, ruby-dev, rbenv, graphviz, bzip2, libssl1.0.2-dev, libxml2-dev zlib1g-dev, g++, libsqlite3-dev]
+  with_items: [libreadline-dev, ruby-dev, rbenv, graphviz, bzip2, libssl1.0-dev, libxml2-dev, zlib1g-dev, g++, libsqlite3-dev]
   when: ansible_distribution == 'Debian'
 
 - name: Clone ruby-build

@@ -1,0 +1,18 @@
+# Sets up ansible project to use aws inventories
+# It does NOT setup terraform or any other provisioning tool
+---
+- include_role:
+    name: prepd/project
+
+- include_role:
+    name: prepd/utils
+    tasks_from: debug
+
+- include_role:
+    name: prepd/terraform
+
+- include_role:
+    name: terraplate/provider-resources
+  vars:
+    provider: '{{ item }}'
+  with_items: '{{ terraform_providers }}'

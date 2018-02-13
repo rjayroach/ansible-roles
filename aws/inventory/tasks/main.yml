@@ -1,0 +1,15 @@
+### Setup inventory directories
+---
+# - name: Copy the ec2.py file into playbook_dir/inventory directory
+- name: Softlink the ec2.py file into each environment
+  file:
+    src: '../ec2.py'
+    dest: '{{ playbook_dir }}/inventory/{{ item }}/ec2.py'
+    state: link
+  with_items: '{{ setup_environments }}'
+
+- name: Template an ec2.ini for each environment
+  template:
+    src: ec2.ini.j2
+    dest: '{{ playbook_dir }}/inventory/{{ item }}/ec2.ini'
+  with_items: '{{ setup_environments }}'

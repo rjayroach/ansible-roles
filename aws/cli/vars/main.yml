@@ -1,0 +1,4 @@
+---
+aws_cli_dir: '{{ ansible_env.HOME }}/.aws'
+aws_cli_credentials_file: 'credentials'
+aws_cli_credentials: {}

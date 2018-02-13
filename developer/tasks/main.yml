@@ -5,7 +5,7 @@
     state: present
     update_cache: yes
     cache_valid_time: '{{ cache_valid_time | default(86400) }}'
-  with_items: '{{ dev_tools_common_packages + dev_tools_debian_packages }}'
+  with_items: '{{ developer_common_packages + developer_debian_packages }}'
   when: ansible_distribution == 'Debian'
   become: yes
 
@@ -13,7 +13,7 @@
   homebrew:
     name: '{{ item }}'
     state: present
-  with_items: '{{ dev_tools_common_packages + dev_tools_darwin_packages }}'
+  with_items: '{{ developer_common_packages + developer_darwin_packages }}'
   when: ansible_distribution == 'MacOSX'
 
 - name: Insert aliases
@@ -25,4 +25,4 @@
       # Shortcuts for TMux
       alias tl='tmux list-sessions'
       alias ta='tmux a -dt $1'
-  when: machine.shell == 'zsh'
+  when: machine.shell == 'xsh'

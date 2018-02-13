@@ -1,0 +1,33 @@
+# NOTE: prepd_dir is not a fact b/c it should not ever be used in playbooks
+---
+- name: Get the full hostname of the machine
+  command: hostname -f
+  register: hostname
+
+- name: Set the prepd variables
+  set_fact:
+    prepd_developer_dir: '{{ prepd_dir }}/config/developer'
+    prepd_machines_dir: '{{ prepd_dir }}/config/machines'
+    # TODO: The default is hostname.stdout. blah blah, but if this is the host then it has a special name 'host'
+    prepd_machine_name: '{{ hostname.stdout.split(".")[1] }}'
+    prepd_projects_dir: '{{ prepd_dir }}/config/projects'
+- set_fact:
+    prepd_machine_dir: '{{ prepd_machines_dir }}/{{ prepd_machine_name }}'
+
+# All variables are NOT in a hash; that will allow project to override machine and machine to override developer as 
+# appropriate without needing to write the entire hash
+# Then change order of tasks to first source all vars files so they can override before applying the tasks
+- name: Include custom developer variables
+  include_vars: '{{ item }}'
+  with_first_found:
+    - files:
+        - '{{ prepd_developer_dir }}/vars/setup.yml'
+      skip: true
+
+# Custom machine variables would contain project vars
+- name: Include custom machine variables
+  include_vars: '{{ item }}'
+  with_first_found:
+    - files:
+        - '{{ prepd_machine_dir }}/vars/setup.yml'
+      skip: true

@@ -1,0 +1,42 @@
+---
+- include_role:
+    name: prepd/project
+
+- include_role:
+    name: prepd/utils
+    tasks_from: debug
+
+- include_role:
+    name: prepd/git
+    tasks_from: project-repositories
+  vars:
+    - git_dir: '{{ project_dir }}'
+  when: git_repos is defined
+
+- include_role:
+    name: prepd/tmuxinator
+  when: tmuxinator_sessions is defined
+
+- include_role:
+    name: prepd/env
+  with_items: '{{ env_files }}'
+  loop_control:
+    loop_var: env_file
+  when: env_files is defined
+
+- include_role:
+    name: prepd/postgres
+    tasks_from: install
+  when: postgres_users is defined and postgres_databases is defined
+
+- include_role:
+    name: prepd/ruby
+  with_items: '{{ ruby_versions }}'
+  loop_control:
+    loop_var: ruby_version
+  when: ruby_versions is defined
+
+- include_role:
+    name: prepd/rails
+    tasks_from: install
+  when: rails_apps is defined

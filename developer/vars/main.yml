@@ -1,13 +1,13 @@
 ---
-dev_tools_common_packages:
+developer_common_packages:
   - nmap
   - tree
   - wget
 
-dev_tools_darwin_packages:
+developer_darwin_packages:
   - gpg
 
-dev_tools_debian_packages:
+developer_debian_packages:
   - apache2-utils
   - curl
   - dos2unix

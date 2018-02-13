@@ -4,6 +4,7 @@
     path: '{{ git_dir }}'
     state: directory
 
+
 - name: Clone the project repo
   git:
     repo: '{{ item.repo }}'

@@ -5,7 +5,7 @@
 [master:children]
 tag_Role_master
 
-{% if setup.kubernetes is defined %}
+{% if setup_kubernetes is defined %}
 ### Kubernetes Roles
 [tag_Role_controller]
 
@@ -27,7 +27,7 @@ tag_Role_etcd
 
 
 # Roles
-{% for role in setup.roles %}
+{% for role in setup_roles %}
 {% set role_underscore = role | replace('-', '_') %}
 [tag_Role_{{ role_underscore }}_yes]
 

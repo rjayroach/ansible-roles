@@ -1,0 +1,2 @@
+---
+prepd_dir: '{{ ansible_env.HOME }}/prepd'

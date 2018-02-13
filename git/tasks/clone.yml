@@ -1,0 +1,19 @@
+# Clone a reposiotry into a specified directory
+---
+# Options:
+# update: yes; when update is yes then the repo will be refreshed
+# version: a specific branch to checkout; default is HEAD
+# - debug: var=properties
+
+- name: Ensure target directory exists
+  file:
+    dest: '{{ git_dir }}'
+    state: directory
+
+- name: Checkout git repository
+  git:
+    repo: '{{ git_repo }}'
+    dest: '{{ git_dir }}/{{ git_name }}'
+    accept_hostkey: yes
+    update: no
+    # version: "{{ item.branch | default('HEAD') }}"

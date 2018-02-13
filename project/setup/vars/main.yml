@@ -1,4 +1,5 @@
 ---
+# TODO: Decide what to do with this stuff
 # remove 'default' from the list
 setup_environments: "{{ setup.ec2_ini.keys() | difference(['default']) }}"
-setup_roles: '{{ setup.roles }}'
+# setup_roles: '{{ setup.roles }}'
