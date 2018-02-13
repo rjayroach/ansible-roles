@@ -1,0 +1,40 @@
+
+{% if nginx_elb_healthcheck is defined %}
+# Respond to ELB Health Check
+server {
+  listen 80;
+
+  access_log  /var/log/nginx/default.access.log;
+
+  location / {
+    root   /srv/www/;
+    index  index.html;
+  }
+}
+{% endif %}
+
+
+{% for upstream in nginx_upstreams %}
+upstream {{ upstream.name }} {
+  # Path to Puma SOCK file, as defined previously
+  # server unix:/tmp/sockets/api-gateway/puma.sock fail_timeout=0;
+  server {{ upstream.server }};
+}
+
+{% endfor %}
+
+
+{% for server in nginx_servers %}
+server {
+  listen 80;
+  server_name  {{ server.name }};
+
+  location / {
+    proxy_pass {{ server.proxy_pass }};
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+    proxy_redirect off;
+  }
+}
+
+{% endfor %}

@@ -3,30 +3,57 @@
   apt:
     name: '{{ item }}'
     state: present
+    update_cache: yes
+    cache_valid_time: '{{ cache_valid_time | default(86400) }}'
   become: yes
   with_items: [nginx]
   when: ansible_distribution == 'Debian'
 
-# TODO: Move site specific files and templates to a project that needs them. They are not generic
-  # - name: Ensure /srv/www directory exists
-  #   file:
-  #     path: /srv/www
-  #     state: directory
-  #     owner: www-data
+- name: Install common packages
+  homebrew:
+    name: '{{ item }}'
+    state: present
+  with_items: [nginx]
+  when: ansible_distribution == 'MacOSX'
+  notify: Restart Nginx
+
+
+# Sets nginx_config_file
+- include_vars:
+    file: '{{ ansible_os_family }}.yml'
+
+- debug:
+    var: nginx_servers_dir
+    # var: nginx_config_file
+
+- include_role:
+    name: prepd/nginx
+    tasks_from: Darwin
+  when: ansible_os_family == 'Darwin'
+
+- include_role:
+    name: prepd/nginx
+    tasks_from: Debian
+  when: ansible_os_family == 'Debian'
+
+  # - file:
+  #     src: index.html
+  #     dest: '{{ nginx_servers_dir }}/test.conf'
   #   become: yes
 
-# - name: Configure nginx to respond to ELB health checks
-#   copy:
-#     src: index.html
-#     dest: /srv/www/index.html
-#     mode: 0644
-#     owner: www-data
-#   become: yes
-#
-# - name: Configure nginx to forward requests to app server and dashboard
-#   template:
-#     src: nginx-default
+- name: Configure nginx to forward requests to app server and dashboard
+  template:
+    src: nginx-default.j2
+    dest: '{{ nginx_servers_dir }}/test.conf'
 #     dest: /etc/nginx/sites-enabled/default
-#     mode: 0644
-#   become: yes
-#   notify: Restart Nginx
+    mode: 0644
+    # become: yes
+  vars:
+    nginx_upstreams:
+      - { name: 'api_gateway', server: '172.28.128.6:3000' }
+      - { name: 'dashboard', server: '127.0.0.1:4200' }
+    nginx_servers:
+      - { name: 'api.aneace.fred.local', proxy_pass: 'http://api_gateway' }
+      - { name: 'live-cache.ding.dong', proxy_pass: 'http://api_gateway' }
+      - { name: 'testing-cache.ding.dong', proxy_pass: 'http://api_gateway' }
+  #  notify: Restart Nginx

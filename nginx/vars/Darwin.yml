@@ -1,0 +1,4 @@
+---
+nginx_config_dir: /usr/local/etc/nginx
+nginx_config_file: /usr/local/etc/nginx/nginx.conf
+nginx_servers_dir: '{{ nginx_config_dir }}/servers'
