@@ -45,15 +45,8 @@
   template:
     src: nginx-default.j2
     dest: '{{ nginx_servers_dir }}/test.conf'
-#     dest: /etc/nginx/sites-enabled/default
+    # dest: /etc/nginx/sites-enabled/default
     mode: 0644
-    # become: yes
-  vars:
-    nginx_upstreams:
-      - { name: 'api_gateway', server: '172.28.128.6:3000' }
-      - { name: 'dashboard', server: '127.0.0.1:4200' }
-    nginx_servers:
-      - { name: 'api.aneace.fred.local', proxy_pass: 'http://api_gateway' }
-      - { name: 'live-cache.ding.dong', proxy_pass: 'http://api_gateway' }
-      - { name: 'testing-cache.ding.dong', proxy_pass: 'http://api_gateway' }
+  # become: yes
+  when: nginx_servers is defined
   #  notify: Restart Nginx
