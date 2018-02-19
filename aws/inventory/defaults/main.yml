@@ -1,0 +1,16 @@
+---
+# Default values
+aws_inventory_regions: [us-east-1]
+aws_inventory_vpc_destination_variable: ip_address   #  private_ip_address
+aws_inventory_destination_variable: public_dns_name  #  private_dns_name
+aws_inventory_boto_profile: ansible-default
+
+# Example environments declaration overriding the default values
+# aws_inventory_environments:
+#   development:
+#     regions: [ap-southeast-1]
+#     vpc_destination_variable: private_ip_address
+#     destination_variable: private_dns_name
+#     boto_profile: '{{ project_name }}'
+#   staging:
+#   production:

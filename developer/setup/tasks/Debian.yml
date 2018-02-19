@@ -1,30 +1,15 @@
+# NOTE: Timezone is per host / region so should be set at the site/inventory level
 ---
-- name: Install common packages
+- name: Install common and debian specific packages
   apt:
     name: '{{ item }}'
     state: present
     update_cache: yes
     cache_valid_time: '{{ cache_valid_time | default(86400) }}'
-  with_items: '{{ common_packages }}'
+  with_items: '{{ developer_packages + developer_debian_packages }}'
   become: yes
 
-- name: Install debian packages
-  apt:
-    name: '{{ item }}'
-    state: present
-    update_cache: yes
-    cache_valid_time: '{{ cache_valid_time | default(86400) }}'
-  with_items: '{{ common_debian_packages }}'
-  become: yes
-
-# TODO: Timezone is per host / region so should be set at the site/inventory level
-#- name: Set the locale and the time zone
-##  hosts: myhosts
-#  sudo: True
-#  vars:
-#    locale: en_US.UTF-8
-#    timezone: Asia/Singapore
-
+- debug: var=machine_time_zone
 
 - name: Set time zone
   template:
@@ -44,3 +29,4 @@
   copy:
     src: inputrc
     dest: '{{ ansible_env.HOME }}/.inputrc'
+  when: machine_cli_mode == 'vi'

@@ -52,19 +52,6 @@
     force: no
   with_items: '{{ setup_inventories }}'
 
-# NOTE: moved to aws/inventory/tasks/main.yml
-# - name: Softlink the ec2.py file into each environment
-#   file:
-#     src: '../ec2.py'
-#     dest: '{{ playbook_dir }}/inventory/{{ item }}/ec2.py'
-#     state: link
-#   with_items: '{{ setup_inventories }}'
-# 
-# - name: Template an ec2.ini for each environment
-#   template:
-#     src: ec2.ini.j2
-#     dest: '{{ playbook_dir }}/inventory/{{ item }}/ec2.ini'
-#   with_items: '{{ setup_inventories }}'
 
 # NOTE: Not sure if this is really needed; Ansible has a new strategy for multiple environment vault files
 # - name: One time create vault password file for each environment

@@ -5,6 +5,7 @@
 
 - name: Set prepd project name
   set_fact:
+    prepd_run_context: project
     project_name: '{{ playbook_dir.split("/")[-4] }}'
     prepd_project_name: '{{ playbook_dir.split("/")[-3] }}'
 

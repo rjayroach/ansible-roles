@@ -1,7 +1,6 @@
 # DO NOT EDIT {{ ansible_managed }}
 # Ansible EC2 external inventory script settings
-{%- set values = setup.ec2_ini.default | combine(setup.ec2_ini[item] | default({})) %}
-#
+{%- set environment = aws_inventory_environments[item] %}
 
 [ec2]
 
@@ -13,7 +12,7 @@
 # AWS regions to make calls to. Set this to 'all' to make request to all regions
 # in AWS and merge the results together. Alternatively, set this to a comma
 # separated list of regions. E.g. 'us-east-1,us-west-1,us-west-2'
-regions = {{ values.regions | join(',') | default('us-east-1') }}
+regions = {{ (environment.regions | default(aws_inventory_regions)) | join(',') }}
 regions_exclude = us-gov-west-1,cn-north-1
 
 # When generating inventory, Ansible needs to know how to address a server.
@@ -29,7 +28,7 @@ regions_exclude = us-gov-west-1,cn-north-1
 # address, and should set this to 'private_dns_name'. The key of an EC2 tag
 # may optionally be used; however the boto instance variables hold precedence
 # in the event of a collision.
-destination_variable = {{ values.destination_variable | default('public_dns_name') }}
+destination_variable = {{ environment.destination_variable | default(aws_inventory_destination_variable) }}
 # destination_variable = private_dns_name
 
 # This allows you to override the inventory_name with an ec2 variable, instead
@@ -45,7 +44,7 @@ destination_variable = {{ values.destination_variable | default('public_dns_name
 # the boto instance variables hold precedence in the event of a collision.
 # WARNING: - instances that are in the private vpc, _without_ public ip address
 # will not be listed in the inventory until You set:
-vpc_destination_variable = {{ values.vpc_destination_variable | default('ip_address') }}
+vpc_destination_variable = {{ environment.vpc_destination_variable | default(aws_inventory_vpc_destination_variable) }}
 # vpc_destination_variable = private_ip_address
 
 # The following two settings allow flexible ansible host naming based on a
@@ -105,7 +104,7 @@ all_elasticache_nodes = False
 # will be written to this directory:
 #   - ansible-ec2.cache
 #   - ansible-ec2.index
-cache_path = ~/.ansible/tmp/{{ project_name }}/{{ item }}
+cache_path = ~/.ansible/tmp/{{ environment.boto_profile | default(aws_inventory_boto_profile) }}/{{ item }}
 
 # The number of seconds a cache file is considered valid. After this many
 # seconds, a new API call will be made, and the cache file will be updated.
@@ -171,7 +170,7 @@ instance_filters = tag:Environment={{ item }}
 # A boto configuration profile may be used to separate out credentials
 # see http://boto.readthedocs.org/en/latest/boto_config_tut.html
 # boto_profile = some-boto-profile-name
-boto_profile = {{ values.boto_profile | default('ansible-default') }}
+boto_profile = {{ environment.boto_profile | default(aws_inventory_boto_profile) }}
 
 
 [credentials]

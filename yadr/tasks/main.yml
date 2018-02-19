@@ -4,10 +4,10 @@
     path: '{{ ansible_env.HOME }}/.yadr'
   register: yadr_dir
 
-- include: install.yml
+- include_tasks: install.yml
   when: yadr_dir.stat.exists == false
 
-#- include: 'update.yml'
+#- include_tasks: 'update.yml'
 #  when: yadr_dir.stat.exists == true
 
 - name: Copy home directory hidden files

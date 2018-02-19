@@ -1,0 +1,12 @@
+---
+- name: Show prepd_machine variables
+  debug:
+    var: '{{ item }}'
+    verbosity: 1
+  with_items:
+    - prepd_machines_dir
+    - prepd_projects_dir
+    - prepd_machine_name
+    - prepd_machine_dir
+    - prepd_machine
+    - prepd_machine_project_names

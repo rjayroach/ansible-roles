@@ -7,28 +7,26 @@
     name: prepd/utils
     tasks_from: debug
 
-# Execute standard tasks
-- name: Include standard developer tasks
-  include_role:
-    name: prepd/machine/setup
-    tasks_from: developer
+# TODO: Developer role is intended to be a one-off setup per machine
+# so common should probably go there
+# however the timezone needs to be able to be set per machine so ???
+- include_role:
+    name: prepd/common
+  vars:
+    machine_time_zone: '{{ prepd_developer.machine_time_zone }}'
 
-- name: Include standard machine tasks
-  include_role:
-    name: prepd/machine/setup
-    tasks_from: machine
+- name: Configure the machine projects as defined in the machines vars/setup.yml file
+  include_tasks: project.yml
+  with_items: '{{ prepd_machine.data.projects }}'
+  loop_control:
+    loop_var: project_name
+  when: prepd_machine.data.projects is defined
 
-# Execute custom tasks
-- name: Include custom developer tasks
-  include_tasks: '{{ item }}'
-  with_first_found:
-    - files:
-        - '{{ prepd_developer_dir }}/setup.yml'
-      skip: true
+- name: Check if custom machine tasks file exist
+  stat:
+    path: '{{ prepd_machine_dir }}/setup.yml'
+  register: machine_setup_file
 
 - name: Include custom machine tasks
-  include_tasks: '{{ item }}'
-  with_first_found:
-    - files:
-        - '{{ prepd_machine_dir }}/setup.yml'
-      skip: true
+  include_tasks: '{{ prepd_machine_dir }}/setup.yml'
+  when: machine_setup_file.stat.exists

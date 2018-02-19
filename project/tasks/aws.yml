@@ -1,5 +1,5 @@
-# Sets up ansible project to use aws inventories
-# It does NOT setup terraform or any other provisioning tool
+# Setup AWS cli tool and write credentials file if the source file is provided
+# Configure the prepd project's ansible inventories to use AWS (boto's ec2.py and ec2.ini) if project_environments is defined
 ---
 - include_role:
     name: prepd/project
@@ -8,21 +8,15 @@
     name: prepd/utils
     tasks_from: debug
 
-# NOTE: moved to aws/inventory/tasks/main.yml
-
-# TODO: This is maybe not the file or there are more than one files
-- include_vars:
-    file: '{{ prepd_project_dir }}/vault/credentials/global.yml'
-
 - include_role:
-    name: prepd/aws/cli
-    tasks_from: credentials
+    name: prepd/aws/credentials
   vars:
-    aws_cli_context: '{{ project_name }}'
-    aws_cli_credentials: '{{ credentials_aws }}'
+    project_names: "{{ project_name | join('') }}"
+    aws_credentials_dir: '{{ prepd_projects_dir }}'
 
-# TODO: Tset this; what it should do is put an ec2.py in the inventory and softlink it to each of the ec2_ini.keys()
 - include_role:
     name: prepd/aws/inventory
   vars:
-    # setup_environments: "{{ setup.ec2_ini.keys() | difference(['default']) }}"
+    aws_inventory_environments: '{{ project_environments }}'
+    aws_inventory_boto_profile: '{{ project_name }}-ansible'
+  when: project_environments is defined

@@ -1,6 +1,0 @@
----
-# NOTE: The role 'common' does not mean that it installs common packages and configs across OSes
-#       It means that for a given OS it installs a common set of packages and configs regardless of role
-#       So all other roles can depend on common and have a known config to base off of
-
-- include_tasks: '{{ ansible_os_family }}.yml'

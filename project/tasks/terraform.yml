@@ -10,9 +10,3 @@
 
 - include_role:
     name: prepd/terraform
-
-- include_role:
-    name: terraplate/provider-resources
-  vars:
-    provider: '{{ item }}'
-  with_items: '{{ terraform_providers }}'

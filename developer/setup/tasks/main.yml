@@ -1,0 +1,19 @@
+---
+- name: Set prepd environment variables
+  include_role:
+    name: prepd/developer
+
+- include_role:
+    name: prepd/utils
+    tasks_from: debug
+
+- name: Check if custom developer tasks file exist
+  stat:
+    path: '{{ prepd_developer_dir }}/setup.yml'
+  register: developer_setup_file
+
+- name: Include custom developer tasks
+  include_tasks: '{{ prepd_developer_dir }}/setup.yml'
+  when: developer_setup_file.stat.exists
+
+- include_tasks: '{{ ansible_os_family }}.yml'

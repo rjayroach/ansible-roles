@@ -1,0 +1,96 @@
+---
+- name: Install graphiz to make graphs of infrastructure
+  apt: 
+    name: '{{ item }}'
+  with_items:
+    - graphviz
+    - unzip
+    - direnv
+  become: yes
+
+- name: Check if Terraform binary exists
+  stat:
+    path: /usr/local/bin/terraform
+  register: terraform_binary
+
+- name: Get terraform binary
+  get_url:
+    url: 'https://releases.hashicorp.com/terraform/{{ terraform_version }}/{{ terraform_file }}.zip'
+    dest: '{{ ansible_env.HOME }}/{{ terraform_file }}.zip'
+  when: terraform_binary.stat.exists == false
+  register: new_archive
+
+- name: Install Terraform
+  unarchive:
+    src: '{{ ansible_env.HOME }}/{{ terraform_file }}.zip'
+    dest: /usr/local/bin
+    copy: no
+  when: new_archive|changed
+  become: yes
+
+- name: Remove Terraform zip
+  file:
+    path: '{{ ansible_env.HOME }}/{{ terraform_file }}.zip'
+    state: absent
+
+- name: Check if Terragrunt binary exists
+  stat:
+    path: /usr/local/bin/terragrunt
+  register: terragrunt_binary
+
+- name: Get terragrunt binary
+  get_url:
+    url: 'https://github.com/gruntwork-io/terragrunt/releases/download/v{{ terragrunt_version }}/terragrunt_linux_amd64'
+    dest: /usr/local/bin/terragrunt
+  when: terragrunt_binary.stat.exists == false
+  register: terragrunt_archive
+  become: yes
+
+- name: Set terragrunt permissions
+  file:
+    path: /usr/local/bin/terragrunt
+    mode: 0755
+  become: yes
+
+- stat:
+    path: '{{ ansible_env.HOME }}/.zsh.after/aliases.zsh'
+  register: zsh_aliases
+
+- name: Insert aliases
+  blockinfile:
+    create: yes
+    dest: ~/.zsh.after/aliases.zsh
+    marker: '# {mark} ANSIBLE MANAGED BLOCK (terraform)'
+    block: |
+      alias tfa='terraform apply'
+      alias tfd='terraform destroy'
+      alias tfg='terraform get'
+      alias tfgr='terraform graph'
+      alias tfgrp='terraform graph | dot -Tpng > '
+      alias tfi='terraform import'
+      alias tfo='terraform output'
+      alias tfp='terraform plan'
+      alias tfs='terraform show'
+      alias tfst='terraform state'
+      alias tft='terraform taint'
+
+      alias tga='terragrunt apply'
+      alias tgaa='terragrunt apply-all'
+      alias tgd='terragrunt destroy'
+      alias tgda='terragrunt destroy-all'
+      alias tgg='terragrunt get'
+      alias tggr='terragrunt graph'
+      alias tggrp='terragrunt graph | dot -Tpng > '
+      alias tgo='terragrunt output'
+      alias tgoa='terragrunt output-all'
+      alias tgp='terragrunt plan'
+      alias tgpa='terragrunt plan-all'
+      alias tgs='terragrunt show'
+      alias tgst='terragrunt state'
+      alias tgt='terragrunt taint'
+
+      alias ta='./terraform.yml -e task=deploy'
+      alias tl='./terraform.yml -e task=blueprints'
+      alias tr='./terraform.yml -e task=resources'
+      alias ts='./terraform.yml -e task=setup'
+  when: zsh_aliases.stat.exists == true

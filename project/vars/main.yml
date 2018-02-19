@@ -1,0 +1,2 @@
+---
+credentials_source: '{{ prepd_project_dir }}/vault/credentials/aws.yml'

@@ -22,10 +22,13 @@
 - name: Insert aliases
   blockinfile:
     create: yes
-    dest: '{{ machine.aliases_file }}'
+    dest: '{{ machine_aliases_file }}'
     marker: '# {mark} ANSIBLE MANAGED BLOCK (tmuxinator)'
     block: |
+      # Shortcuts for TMux
+      alias tl='tmux list-sessions'
+      alias ta='tmux a -dt $1'
       alias mux='tmuxinator'
-  when: machine.shell == 'zsh'
+  when: machine_shell == 'zsh'
 
 - include_tasks: session.yml

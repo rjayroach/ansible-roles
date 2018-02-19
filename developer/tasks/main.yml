@@ -1,28 +1,17 @@
+# NOTE: prepd_dir is not a fact b/c it should not ever be used in playbooks
+# Setup variables are in a hash which means that machine and project variables must be merged in order to have precendence
+# for project to override machine and machine to override developer as 
+# Then change order of tasks to first source all vars files so they can override before applying the tasks
 ---
-- name: Install Debian specific packages
-  apt:
-    name: '{{ item }}'
-    state: present
-    update_cache: yes
-    cache_valid_time: '{{ cache_valid_time | default(86400) }}'
-  with_items: '{{ developer_common_packages + developer_debian_packages }}'
-  when: ansible_distribution == 'Debian'
-  become: yes
+- name: Set the prepd variables
+  set_fact:
+    prepd_run_context: developer
+    # prepd_dir value comes from this role's vars/main.yml
+    # It is set as a fact so that roles that include this role will see the var
+    prepd_dir: '{{ prepd_dir }}'
+    prepd_developer_dir: '{{ prepd_dir }}/config/developer'
 
-- name: Install common packages on MacOSX
-  homebrew:
-    name: '{{ item }}'
-    state: present
-  with_items: '{{ developer_common_packages + developer_darwin_packages }}'
-  when: ansible_distribution == 'MacOSX'
-
-- name: Insert aliases
-  blockinfile:
-    create: yes
-    dest: '{{ machine.aliases_file }}'
-    marker: '# {mark} ANSIBLE MANAGED BLOCK (developer-tools)'
-    block: |
-      # Shortcuts for TMux
-      alias tl='tmux list-sessions'
-      alias ta='tmux a -dt $1'
-  when: machine.shell == 'xsh'
+- name: Include developer variables
+  include_vars:
+    file: '{{ prepd_developer_dir }}/vars/setup.yml'
+    name: prepd_developer

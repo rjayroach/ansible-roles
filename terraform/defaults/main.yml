@@ -2,3 +2,4 @@
 terraform_version: 0.9.8
 terraform_file: 'terraform_{{ terraform_version }}_linux_amd64'
 terragrunt_version: 0.12.24
+task: noop

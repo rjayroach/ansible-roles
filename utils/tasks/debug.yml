@@ -1,18 +1,15 @@
 ---
-- debug:
+- name: Show prepd_developer variables
+  debug:
     var: '{{ item }}'
     verbosity: 1
   with_items:
+    - prepd_run_context
     - prepd_developer_dir
-    - prepd_machines_dir
-    - prepd_projects_dir
-    - prepd_machine_name
-    - prepd_machine_dir
-    - prepd_project_name
-    - prepd_project_dir
-    - prepd_project_data_dir
-    - project_name
-    - project_dir
-    - project_config_dir
-    - setup_inventories
-    - setup_roles
+    - prepd_developer
+
+- include_tasks: debug-machine.yml
+  when: prepd_run_context == 'machine' or prepd_run_context == 'project'
+
+- include_tasks: debug-project.yml
+  when: prepd_run_context == 'project'

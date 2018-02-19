@@ -1,0 +1,4 @@
+---
+machine_time_zone: 'Asia/Singapore'
+machine_shell: zsh
+machine_aliases_file: '{{ ansible_env.HOME }}/.zsh.after/aliases.zsh'
