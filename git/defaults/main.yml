@@ -1,3 +1,7 @@
 ---
 hub_version: 2.2.9
 git_repos: []
+
+# Next lines not currently in use
+git_provider: github
+git_creds_file: '{{ ansible_env.HOME }}/.gitconfig.user'

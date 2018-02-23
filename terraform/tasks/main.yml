@@ -1,15 +1,15 @@
 ---
 - include_tasks: install.yml
-  when: task == 'setup'
+  when: task == 'install'
 
 - include_role:
-    name: terraplate/provider-resources
+    name: terraplate/setup
   vars:
     provider: '{{ item }}'
   with_items: '{{ terraform_resource_providers }}'
-  when: task == 'resources'
+  when: task == 'setup'
 
 - name: Setup lib or app directory for service
   include_role:
-    name: terraplate/setup
-  when: task == 'blueprints' or task == 'deploy'
+    name: terraplate/service
+  when: task == 'lib' or task == 'app'

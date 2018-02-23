@@ -81,6 +81,7 @@
       alias tgg='terragrunt get'
       alias tggr='terragrunt graph'
       alias tggrp='terragrunt graph | dot -Tpng > '
+      alias tgi='terragrunt init'
       alias tgo='terragrunt output'
       alias tgoa='terragrunt output-all'
       alias tgp='terragrunt plan'
@@ -89,8 +90,8 @@
       alias tgst='terragrunt state'
       alias tgt='terragrunt taint'
 
-      alias ta='./terraform.yml -e task=deploy'
-      alias tl='./terraform.yml -e task=blueprints'
-      alias tr='./terraform.yml -e task=resources'
+      alias ta='./terraform.yml -e task=app'
+      alias ti='./terraform.yml -e task=install'
+      alias tl='./terraform.yml -e task=lib'
       alias ts='./terraform.yml -e task=setup'
   when: zsh_aliases.stat.exists == true
