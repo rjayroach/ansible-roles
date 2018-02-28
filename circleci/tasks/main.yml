@@ -1,6 +1,11 @@
 ---
-- name: Follow the project
+# We do this by hitting the “follow” endpoint in the CircleCI API
+# (POST: /project/:vcs-type/:username/:project/follow). To bootstrap a new repo in CircleCI, you’ll need to use a CircleCI token for a user that has Github “admin” permissions for that repo.
+#
+# As you pointed out, calling “follow” kicks off an initial build (I think there might be a flag you can configure to skip that, but we haven’t done so).
+
+- name: Follow projects
   uri:
-    url: 'https://circleci.com/api/v1.1/project/{{ item.provider }}/{{ item.account }}/{{ item.repo }}/follow?circle-token={{ circleci_token }}'
+    url: '{{ circleci_base_url }}/project/{{ item.provider }}/{{ item.account }}/{{ item.repo }}/follow?circle-token={{ circleci_token }}'
     method: POST
-  with_items: '{{ projects }}'
+  with_items: '{{ circleci_projects }}'

@@ -1,4 +1,4 @@
-# Setup AWS cli tool and write credentials file if the source file is provided
+# Setup AWS cli tool
 # Configure the prepd project's ansible inventories to use AWS (boto's ec2.py and ec2.ini) if project_environments is defined
 ---
 - include_role:
@@ -7,12 +7,6 @@
 - include_role:
     name: prepd/utils
     tasks_from: debug
-
-- include_role:
-    name: prepd/aws/credentials
-  vars:
-    project_names: "{{ project_name | join('') }}"
-    aws_credentials_dir: '{{ prepd_projects_dir }}'
 
 - include_role:
     name: prepd/aws/inventory

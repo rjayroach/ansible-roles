@@ -1,0 +1,14 @@
+---
+- include_role:
+    name: prepd/python
+
+- name: Install awscli
+  pip:
+    name: awscli
+    state: present
+  become: yes
+
+- name: Ensure the ~/.aws directory exists
+  file:
+    dest: '{{ aws_cli_dir }}'
+    state: directory

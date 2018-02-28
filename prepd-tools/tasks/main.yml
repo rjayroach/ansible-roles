@@ -1,14 +1,8 @@
 ---
-- name: Create directory for tools
-  file:
-    path: '{{ ansible_env.HOME }}/prepd-tools'
-    state: directory
-    mode: 0755
-
-- name: "Checkout git repositories"
+- name: Checkout git repositories
   git:
     repo: '{{ item.account }}/{{ item.name }}.git'
-    dest: '{{ ansible_env.HOME }}/prepd-tools/{{ item.name }}'
+    dest: '{{ prepd_tools_dir }}/{{ item.name }}'
     accept_hostkey: yes
     update: no
     version: "{{ item.version | default('HEAD') }}"
