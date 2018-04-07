@@ -1,56 +1,49 @@
 # NOTE: This playbook assumes a Debian based system
-# See: https://blog.docker.com/2015/07/new-apt-and-yum-repos/
 ---
-- name: Install docker APT key
-  apt_key:
-    keyserver: p80.pool.sks-keyservers.net
-    id: 58118E89F3A912897C070ADBF76221572C52609D
+- name: Include python role
+  include_role:
+    name: python
 
-- name: Add docker repository into sources list
-  apt_repository:
-    repo: 'deb https://apt.dockerproject.org/repo debian-jessie main'
-    state: present
-
-- name: Install docker
+- name: Install dependencies
   apt:
     name: '{{ item }}'
     state: present
-  with_items: [docker-engine, bash-completion]
+    update_cache: yes
+  with_items: [apt-transport-https, ca-certificates, wget, software-properties-common, bash-completion]
 
-# NOTE: Get new docker-swarm mode working and see about any modifications to docker service config
-# NOTE: Including writing images out to a system partition rather than inside the VM directly
-# - name: Update docker daemon config
-#   lineinfile:
-#     dest: /lib/systemd/system/docker.service
-#     regexp: '^ExecStart=/usr/bin/docker'
-#     line: 'ExecStart=/usr/bin/docker daemon -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock'
-#   notify:
-#     - Reload docker service
-#     - Start docker
-
- 
-- name: Install docker-py
-  pip:
-    name: docker-py
+- name: Install docker debian gpg key
+  apt_key:
+    url: https://download.docker.com/linux/debian/gpg
     state: present
-    # NOTE: See: https://github.com/ansible/ansible/issues/21348
-    version: 1.10.6
 
-- name: Install docker-compose
-  pip:
-    name: docker-compose
+- name: Add docker repo to apt
+  apt_repository:
+    repo: 'deb [arch=amd64] https://download.docker.com/linux/debian stretch stable'
+
+- name: Install docker
+  apt:
+    name: docker-ce
     state: present
-    # NOTE: See: https://github.com/ansible/ansible/issues/21348
-    version: 1.9.0
-
-- name: Install bash completion for docker
-  get_url:
-    url: https://raw.githubusercontent.com/docker/docker/master/contrib/completion/bash/docker
-    dest: /etc/bash_completion.d/docker
-    mode: 0644
 
 - name: Add ansible_user to docker group
   user:
     name: '{{ ansible_user }}'
     groups: docker
     append: yes
+
+- name: Make sure docker service is running
+  systemd:
+    name: docker
+    state: started
+
+- name: Install docker python libs
+  pip:
+    name: '{{ item }}'
+    state: present
+  with_items: [docker, docker-compose]
+
+- name: Install bash completion for docker
+  get_url:
+    url: https://raw.githubusercontent.com/docker/machine/master/contrib/completion/bash/docker-machine.bash
+    dest: /etc/bash_completion.d/docker
+    mode: 0644

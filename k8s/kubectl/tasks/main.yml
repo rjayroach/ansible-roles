@@ -1,45 +1,9 @@
 ---
 - name: Check if kubectl binary exists
   stat:
-    path: '{{ kubernetes_bin_path }}/kubectl'
+    path: '{{ k8s_kubectl_bin_path }}'
   register: binary
 
-- name: Get latest stable binary
-  get_url:
-    url: '{{ kubernetes_download_path }}/kubectl'
-    dest: '{{ kubernetes_bin_path }}/kubectl'
+- name: Install kubectl
+  include_tasks: install.yml
   when: binary.stat.exists == false
-  register: new_archive
-  become: yes
-
-- name: Set permissions
-  file:
-    path: '{{ kubernetes_bin_path }}/kubectl'
-    mode: 0755
-  become: yes
-  when: new_archive|changed
-
-- name: Install shell completion and aliases for zsh
-  blockinfile:
-    create: yes
-    dest: ~/.zsh.after/aliases.zsh
-    marker: '# {mark} ANSIBLE MANAGED BLOCK (kubernetes-client)'
-    block: |
-      source <(kubectl completion zsh)
-      alias kdd='kubectl describe deployment'
-      alias kdj='kubectl describe job'
-      alias kdn='kubectl describe node'
-      alias kdp='kubectl describe pod'
-      alias kds='kubectl describe service'
-
-      alias kgd='kubectl get deployment'
-      alias kgj='kubectl get job'
-      alias kgn='kubectl get node'
-      alias kgp='kubectl get pod'
-      alias kgs='kubectl get service'
-
-      alias kl='kubectl logs'
-
-      alias ksgd='kubectl get deployments --namespace=kube-system'
-      alias ksgp='kubectl get pods --namespace=kube-system'
-

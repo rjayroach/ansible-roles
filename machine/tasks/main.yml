@@ -1,7 +1,12 @@
+# NOTE: prepd_dir is not a fact b/c it should not ever be used in playbooks
+# Setup variables are in a hash which means that machine and project variables must be merged in order to have precendence
+# for project to override machine and machine to override developer as 
+# Then change order of tasks to first source all vars files so they can override before applying the tasks
 ---
-- name: Set prepd developer vars
-  include_role:
-    name: prepd/developer
+- name: Include machine variables
+  include_vars:
+    file: '{{ prepd_machine_dir }}/prepd.yml'
+    name: prepd_machine
 
 - name: Get the full hostname of the machine
   command: hostname -f
@@ -11,17 +16,14 @@
 - name: Set the prepd variables
   set_fact:
     prepd_run_context: machine
-    prepd_machines_dir: '{{ prepd_dir }}/config/machines'
-    prepd_machine_name: '{{ hostname.stdout.split(".")[1] }}'
-    prepd_projects_dir: '{{ prepd_dir }}/config/projects'
-- set_fact:
-    prepd_machine_dir: '{{ prepd_machines_dir }}/{{ prepd_machine_name }}'
+    # prepd_machine_dir: '{{ prepd_dir }}/machine'
+    # prepd_machine_name: '{{ hostname.stdout.split(".")[1] }}'
+    # prepd_projects_dir: '{{ prepd_dir }}/config/projects'
+    #- set_fact:
+    # prepd_machine_dir: '{{ prepd_machines_dir }}/{{ prepd_machine_name }}'
 
-- name: Include machine variables
-  include_vars:
-    file: '{{ prepd_machine_dir }}/vars/setup.yml'
-    name: prepd_machine
-
+# TODO: This value is used somewhere. if it is still necessary then use find to get a directory listing
 - name: Set prepd_machine_project_names
   set_fact:
     prepd_machine_project_names: "{{ prepd_machine.data.projects | map(attribute='name') | list }}"
+  when: false

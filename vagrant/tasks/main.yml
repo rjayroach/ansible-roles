@@ -1,51 +1,47 @@
 ---
 - name: Install Vagrant and related packages
-  homebrew_cask: 'name={{ item }} state=present'
+  homebrew_cask:
+    name: '{{ item }}'
+    state: present
   with_items:
     - vagrant
     - vagrant-manager
     - virtualbox
   when: ansible_os_family == 'Darwin'
 
-# TODO: Add an 'unless' clause that checks if the plugin is already installed, otherwise it installs every time
-- command: vagrant plugin install vagrant-vbguest      # keep your VirtualBox Guest Additions up to date
-- command: vagrant plugin install vagrant-cachier      # caches guest packages
-- command: vagrant plugin install vagrant-hostmanager  # updates /etc/hosts file when machines go up/down
+# TODO: tasks to install vagrant on Linux/Ubuntu
+
+- name: Install Vagrant plugins
+  include_tasks: plugin.yml
+  with_items:
+    - vagrant-vbguest      # keep your VirtualBox Guest Additions up to date
+    - vagrant-cachier      # caches guest packages
+    - vagrant-hostmanager  # updates /etc/hosts file when machines go up/down
+  loop_control:
+    loop_var: plugin
  
 # NOTE: http://stackoverflow.com/questions/23874260/error-when-trying-vagrant-up
-- name: "Remove vagrant's built in curl which fails to download boxes on Mac"
+- name: "Remove Vagrant's built in curl which fails to download boxes on Mac"
   file:
     path: /opt/vagrant/embedded/bin/curl
     state: absent
   become: yes
   when: ansible_os_family == 'Darwin'
 
-- name: Check if zsh aliases file exists
-  stat:
-    path: ~/.zsh.after/aliases.zsh
-  register: zsh_aliases
-
 - name: Insert aliases
-  blockinfile:
-    create: yes
-    dest: ~/.zsh.after/aliases.zsh
-    marker: '# {mark} ANSIBLE MANAGED BLOCK (vagrant)'
-    block: |
+  include_role:
+    name: prepd/aliases
+  vars:
+    aliases_marker: vagrant
+    aliases_block: |
       alias v='vagrant'
       alias vb='vagrant box'
       alias vd='vagrant destroy'
-      alias vd0='vagrant destroy --force node0'
-      alias vg='vagrant global-status'
-      alias vh='vagrant halt'
-      alias vh0='vagrant halt node0'
-      alias vp='vagrant provision'
-      alias vp0='vagrant provision node0'
-      alias vs='vagrant ssh'
-      alias vs0='vagrant ssh node0'
-      alias vst='vagrant status'
-      alias vu='vagrant up'
-      alias vu0='vagrant up node0'
-      alias vup='vagrant up --provision'
-      alias vhn="bash -lc 'vagrant halt /node[1-9]/'"
-      alias vun="bash -lc 'vagrant up /node[1-9]/'"
-  when: zsh_aliases.stat.exists
+      vh() { vagrant halt "${1:=node0}" }
+      # Halt all vagrant machines
+      alias vha='vagrant halt'
+      vp() { vagrant provision "${1:=node0}" }
+      vsh() { vagrant ssh "${1:=node0}" }
+      vst() { vagrant status "${1:=node0}" }
+      alias vstg='vagrant global-status'
+      vu() { vagrant up "${1:=node0}" }

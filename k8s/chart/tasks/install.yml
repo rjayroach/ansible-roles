@@ -1,0 +1,48 @@
+# manage charts on a k8s cluster
+---
+- name: Helm install docker-registry
+  # command: "helm install stable/docker-registry --set {{ lookup('template', './helm-vars.j2') }}"
+  command: "helm install stable/docker-registry --set {{ lookup('template', 'values.yaml.j2') }}"
+  when: false
+
+- name: Helm install prometheus
+  command: 'helm install stable/prometheus'
+  when: false
+
+- name: Debug chart values
+  debug: var=k8s_chart
+  verbosity: 0
+
+- name: Install chart on cluster
+  command: 'helm install {{ k8s_chart.name }}'
+
+
+# NOTE: The Ansible helm module doesn't seem to work
+- name: Install helm chart
+  helm:
+    host: '{{ k8s_chart.host }}'
+    chart:
+      name: '{{ k8s_chart.chart_name }}'
+      version: '{{ k8s_chart.chart_version }}'
+      source:
+        type: '{{ k8s_chart.chart_source_type }}'
+        location: '{{ k8s_chart.chart_source_location }}'
+    state: installed
+    name: '{{ k8s_chart.name }}'
+    namespace: '{{ k8s_chart.namespace }}'
+    values: '{{ k8s_chart.values }}'
+  when: false
+
+- name: Install docker-registry chart
+  helm:
+    host: 172.28.128.19 # localhost
+    chart:
+      name: docker-registry
+      version: 1.0.5
+      source:
+        type: repo
+        location: https://kubernetes-charts.storage.googleapis.com
+    state: present
+    name: my-docker-registry
+    namespace: default
+  when: false

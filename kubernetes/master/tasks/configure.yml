@@ -45,12 +45,12 @@
   when: ssl_config|changed
 
 
-- name: Insert ssh aliases for each node
-  blockinfile:
-    create: yes
-    dest: ~/.zsh.after/aliases.zsh
-    marker: '# {mark} ANSIBLE MANAGED BLOCK (config-local.yml)'
-    block: |
+- name: Insert aliases
+  include_role:
+    name: prepd/aliases
+  vars:
+    aliases_marker: kubernetes-master-configure
+    aliases_block: |
       alias n1='ssh node1.local'
       alias n2='ssh node2.local'
       alias n3='ssh node3.local'

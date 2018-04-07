@@ -1,0 +1,3 @@
+---
+prepd_dir: '{{ ansible_env.HOME }}'
+prepd_machine_dir: '{{ prepd_dir }}/clusters'

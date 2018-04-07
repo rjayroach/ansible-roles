@@ -2,3 +2,8 @@
 circleci_base_url: https://circleci.com/api/v1.1
 circleci_projects: []
 circleci_token: ''
+
+circleci:
+  base_url: '{{ circleci_base_url }}'
+  projects: '{{ circleci_projects }}'
+  token: '{{ circleci_token }}'

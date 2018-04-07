@@ -1,0 +1,10 @@
+---
+# - hosts: provisioner
+#   vars:
+#     - creds_file: terraform
+#     - key: terraform_default
+#   tasks:
+- include_role:
+    name: prepd/bastion
+  vars:
+    # state: running

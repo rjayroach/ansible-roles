@@ -1,0 +1,44 @@
+---
+- name: 'Nuke {{ terraform_lib_dir }}'
+  file:
+    path: '{{ terraform_lib_dir }}/{{ service }}'
+    state: absent
+  when: false # terraplate.task == 'lib'
+
+- name: 'Nuke {{ terraform_app_dir }}'
+  file:
+    path: '{{ terraform_app_dir }}/{{ service }}'
+    state: absent
+  when: false # terraplate.task == 'app'
+
+- name: Include terraplate vars
+  include_vars:
+    file: terraplate/vars/main.yml
+    name: tpl_app
+
+- debug:
+    var: tpl_app
+    verbosity: 0
+
+- debug:
+    msg: "{{ tpl_app.remote_state.buckets[tpl_app.remote_state.buckets.default] }}"
+    verbosity: 0
+
+- name: Stat service vars
+  stat:
+    path: 'terraplate/vars/{{ terraplate.service }}.yml'
+  register: service_vars_file
+
+- name: 'Include vars for service {{ terraplate.service }}'
+  include_vars:
+    file: 'terraplate/vars/{{ terraplate.service }}.yml'
+    name: service_vars
+  when: service_vars_file.stat.exists
+
+- name: Setup lib or app directory for service
+  include_role:
+    name: terraplate/service
+
+- name: 'Render component defined in playbook terraplate/{{ terraplate.service }}/{{ terraplate.component }}.yml'
+  include_tasks: 'terraplate/{{ terraplate.service }}/{{ terraplate.component }}.yml'
+  when: false

@@ -20,15 +20,13 @@
     mode: 0755
 
 - name: Insert aliases
-  blockinfile:
-    create: yes
-    dest: '{{ machine_aliases_file }}'
-    marker: '# {mark} ANSIBLE MANAGED BLOCK (tmuxinator)'
-    block: |
-      # Shortcuts for TMux
+  include_role:
+    name: prepd/aliases
+  vars:
+    aliases_marker: tmuxinator
+    aliases_block: |
       alias tl='tmux list-sessions'
       alias ta='tmux a -dt $1'
       alias mux='tmuxinator'
-  when: machine_shell == 'zsh'
 
 - include_tasks: session.yml

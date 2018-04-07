@@ -1,30 +1,33 @@
-name: {{ project_name }}-ops
-root:  {{ project_dir }}/ops
+name: {{ project_name }}-ansible
+root: {{ playbook_dir }}
 
 windows:
   - ansible:
       layout: even-horizontal
       panes:
-        - cd ansible
-        - cd terraform/instances
-  - playbooks:
+        - pwd
+  - prepd-roles:
       layout: main-horizontal
+      root: /usr/share/ansible/roles/prepd
       panes:
-        - cd ansible
-  - roles:
+        - pwd
+  - prepd-roles2:
       layout: main-horizontal
+      root: /usr/share/ansible/roles/prepd
       panes:
-        - cd ansible/roles
-  - prepd:
+        - pwd
+  - prepd-ansible:
       layout: main-horizontal
+      root: ~/prepd/app/ansible
       panes:
-        - cd ansible/community-roles/prepd
-  - terraplate:
+        - pwd
+  - prepd-roles3:
       layout: main-horizontal
+      root: /usr/share/ansible/roles/prepd
       panes:
-        - cd ansible/community-roles/terraplate
-  - terraform:
-      layout: even-horizontal
+        - pwd
+  - prepd-roles4:
+      layout: main-horizontal
+      root: /usr/share/ansible/roles/prepd
       panes:
-        - cd terraform/components
-        - cd terraform/resources
+        - pwd

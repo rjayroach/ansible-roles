@@ -1,4 +1,4 @@
-# AWS Credentials
+# Credentials
 
 Credentials can belong to either the developer or the project itself and are encrypted with either the developer's ansible vault password or the project's ansible vault password
 

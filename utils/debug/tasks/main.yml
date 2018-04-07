@@ -8,8 +8,8 @@
     - prepd_developer_dir
     - prepd_developer
 
-- include_tasks: debug-machine.yml
+- include_tasks: machine.yml
   when: prepd_run_context == 'machine' or prepd_run_context == 'project'
 
-- include_tasks: debug-project.yml
+- include_tasks: project.yml
   when: prepd_run_context == 'project'

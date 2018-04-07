@@ -1,17 +1,18 @@
-# NOTE: prepd_dir is not a fact b/c it should not ever be used in playbooks
-# Setup variables are in a hash which means that machine and project variables must be merged in order to have precendence
-# for project to override machine and machine to override developer as 
-# Then change order of tasks to first source all vars files so they can override before applying the tasks
 ---
+- name: Set prepd machine vars
+  include_role:
+    name: prepd/machine
+
 - name: Set the prepd variables
   set_fact:
     prepd_run_context: developer
     # prepd_dir value comes from this role's vars/main.yml
     # It is set as a fact so that roles that include this role will see the var
     prepd_dir: '{{ prepd_dir }}'
-    prepd_developer_dir: '{{ prepd_dir }}/config/developer'
+    prepd_developer_dir: '{{ prepd_dir }}/developer'
 
 - name: Include developer variables
   include_vars:
-    file: '{{ prepd_developer_dir }}/vars/setup.yml'
+    file: '{{ prepd_developer_dir }}/prepd.yml'
     name: prepd_developer
+  when: false

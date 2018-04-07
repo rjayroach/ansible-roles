@@ -3,17 +3,10 @@
   include_role:
     name: prepd/project
 
-- include_role:
-    name: prepd/utils
-    tasks_from: debug
+#
+# - include_role:
+#     name: prepd/utils
+#     tasks_from: debug
 
-- name: Parse developer credentials, write and encrypt them
-  include_role:
-    name: prepd/credentials
-  vars:
-    credentials_src_dirs: ['{{ credentials_src_dir }}']
-    credentials_action: parse
-
-- name: Setup ansible inventory
-  include_tasks: inventory.yml
-  when: false
+- name: Execute the requested task
+  include_tasks: '{{ project_setup_task }}.yml'

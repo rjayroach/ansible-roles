@@ -1,0 +1,17 @@
+---
+- name: Install Ansible dependencies
+  apt:
+    name: '{{ item }}'
+  with_items: [apt-transport-https, libssl-dev, libffi-dev, python-dev, build-essential, python-setuptools, git]
+  become: yes
+
+- name: Install pip
+  easy_install:
+    name: pip
+  become: yes
+
+- name: Install Ansible
+  pip:
+    name: '{{ item }}'
+  with_items: [setuptools, cryptography, markupsafe, ansible, boto]
+  become: yes

@@ -1,0 +1,120 @@
+---
+# - name: Download the latest version text file
+#   get_url:
+#     url: '{{ k8s_kubectl_release_path }}/stable.txt'
+#     dest: '{{ k8s_kubectl_latest_version_file }}'
+# 
+# - name: Copy the version file to the control machine
+#   fetch:
+#     src: '{{ k8s_kubectl_latest_version_file }}'
+#     dest: '{{ k8s_kubectl_latest_version_file_control }}'
+#     flat: yes
+# 
+# - set_fact:
+#     kubectl_version: "{{ lookup('file', k8s_kubectl_latest_version_file_control) }}"
+# 
+# - debug:
+#     var: kubectl_version
+#     verbosity: 0
+
+- debug:
+    msg: '{{ k8s_kubectl_release_path }}/{{ k8s_kubectl_version }}/bin/{{ k8s_kubectl_bin_type }}/amd64/kubectl'
+
+- debug:
+    msg: '{{ k8s_kubectl_bin_path }}'
+
+- name: Get latest stable binary
+  get_url:
+    url: '{{ k8s_kubectl_release_path }}/{{ k8s_kubectl_version }}/bin/{{ k8s_kubectl_bin_type }}/amd64/kubectl'
+    dest: '{{ k8s_kubectl_bin_path }}'
+  become: yes
+
+- name: Set permissions
+  file:
+    path: '{{ k8s_kubectl_bin_path }}'
+    mode: 0755
+  become: yes
+
+- name: Setup kubectl config
+  file:
+    path: '{{ item.path }}'
+    state: '{{ item.state }}'
+  with_items:
+    - { path: '{{ ansible_env.HOME }}/.kube', state: 'directory' }
+    - { path: '{{ ansible_env.HOME }}/.kube/config', state: 'touch' }
+    # when: false
+
+  # - name: Setup kubectl config
+  #   file:
+  #     path: '{{ ansible_env.HOME }}/.kube/config'
+  #     state: touch
+  #   when: false
+
+- name: Insert aliases
+  include_role:
+    name: prepd/aliases
+  vars:
+    aliases_marker: k8s-kubectl
+    aliases_block: |
+      source <(kubectl completion zsh)
+      alias ka='kubectl apply -f'
+      alias kc='kubectl create -f'
+
+      # describe
+      alias kd='kubectl describe'
+      alias kdcm='kubectl describe configmap'
+      alias kdd='kubectl describe deployment'
+      alias kdep='kubectl describe endpoints'
+      alias kdi='kubectl describe ingress'
+      alias kdj='kubectl describe job'
+      alias kdn='kubectl describe node'
+      alias kdp='kubectl describe pod'
+      alias kdrs='kubectl describe replicaset'
+      alias kdser='kubectl describe service'
+      alias kdsec='kubectl describe secret'
+
+      # delete
+      alias kdel='kubectl delete'
+      alias kdelcm='kubectl delete configmap'
+      alias kdeld='kubectl delete deployment'
+      alias kdeli='kubectl delete ingress'
+      alias kdelj='kubectl delete job'
+      alias kdelp='kubectl delete pod'
+      alias kdelpv='kubectl delete persistentvolume'
+      alias kdelpvc='kubectl delete persistentvolumeclaim'
+      alias kdelrs='kubectl delete replicaset'
+      alias kdelser='kubectl delete service'
+      alias kdelsec='kubectl delete secret'
+
+      # get
+      alias kg='kubectl get'
+      alias kgcm='kubectl get configmap'
+      alias kgcr='kubectl get cronjob'
+      alias kgd='kubectl get deployment'
+      alias kgi='kubectl get ingress'
+      alias kgj='kubectl get job'
+      alias kgn='kubectl get node'
+      alias kgp='kubectl get pod --show-labels'
+      alias kgpv='kubectl get persistentvolume --show-labels'
+      alias kgpvc='kubectl get persistentvolumeclaim --show-labels'
+      alias kgrs='kubectl get replicaset'
+      alias kgrsy='kubectl get replicaset --output=yaml'
+      alias kgser='kubectl get service'
+      alias kgsec='kubectl get secret'
+
+      alias kl='kubectl logs'
+
+      alias kr='kubectl rollout'
+      alias krs='kubectl rollout status'
+      alias krsd='kubectl rollout status deployment'
+
+      alias ksgd='kubectl get deployments --namespace=kube-system'
+      alias ksgp='kubectl get pods --namespace=kube-system'
+      alias ksgpy='kubectl get pods --namespace=kube-system --output=yaml'
+
+      ke() {
+        kubectl exec -it $@
+      }
+      ksh() {
+        kubectl exec -it $1 sh
+      }

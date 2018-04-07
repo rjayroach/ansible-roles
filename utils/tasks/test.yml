@@ -1,0 +1,14 @@
+---
+- include_role:
+    name: prepd/project
+
+- name: Test some new stuff
+  include_role:
+    name: prepd/circleci
+  vars:
+    circleci_token: '{{ prepd_credentials.circleci.admin.token }}'
+    circleci_projects:
+      hashapp:
+        vcs_type: github
+        account: my-git-account
+        repository: my-git-repo

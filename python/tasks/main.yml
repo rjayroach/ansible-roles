@@ -12,6 +12,7 @@
 - name: Install python-setuptools
   apt: 
     name: python-setuptools
+  when: ansible_distribution == 'Debian'
   become: yes
 
 - name: Install pip

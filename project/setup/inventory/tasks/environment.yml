@@ -1,0 +1,36 @@
+---
+- name: Ensure each inventory directory exists
+  file:
+    path: '{{ playbook_dir }}/inventory/{{ env }}'
+    state: directory
+
+- name: Ensure each group_vars directory exists
+  file:
+    path: '{{ playbook_dir }}/group_vars/{{ env }}'
+    state: directory
+
+- name: Softlink the roles file into each env
+  file:
+    src: '../roles'
+    dest: '{{ playbook_dir }}/inventory/{{ env }}/roles'
+    state: link
+
+# TODO: decide if this really is a one off or should be run each time
+- name: One time template the hosts file for each env
+  template:
+    src: hosts.j2
+    force: no
+    dest: '{{ playbook_dir }}/inventory/{{ env }}/hosts'
+
+- name: Ensure each group_vars directory exists
+  file:
+    path: '{{ playbook_dir }}/setup/credentials/vars/{{ env }}'
+    state: directory
+
+# TODO: The location of the password.txt should be outside of the project repo
+- name: One time create vault password file for each env
+  copy:
+    force: no
+    content: '{{ 1000000000000 | random | to_uuid }}'
+    dest: '{{ playbook_dir }}/setup/credentials/vars/{{ env }}/password.txt'
+  when: false

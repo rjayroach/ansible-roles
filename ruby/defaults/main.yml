@@ -1,2 +1,5 @@
 ---
-ruby_version: 2.3.0
+ruby_version: 2.5.0
+ruby_rbenv_dir: '{{ ansible_env.HOME }}/.rbenv'
+ruby_rbenv_plugin_dir: '{{ ansible_env.HOME }}/.rbenv/plugins'
+ruby_bundle_dir: '{{ ansible_env.HOME }}/.bundle'

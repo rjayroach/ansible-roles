@@ -10,3 +10,4 @@
     - { name: 'rails-templates', account: 'git@github.com:rjayroach' }
     - { name: 'docker-rails', account: 'git@github.com:rjayroach' }
     - { name: 'lego', account: 'git@github.com:rjayroach' }
+    - { name: 'packer', account: 'git@github.com:rjayroach' }

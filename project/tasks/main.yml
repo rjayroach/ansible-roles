@@ -18,3 +18,9 @@
 - name: Set prepd project vars
   set_fact:
     project_config_dir: '{{ project_dir }}/{{ prepd_project_name }}/config'
+
+- name: Set prepd credentials
+  include_role:
+    name: prepd/credentials
+  vars:
+    credentials_action: load

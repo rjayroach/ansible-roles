@@ -1,0 +1,19 @@
+---
+# NOTE: terraplate/provider-resources/vars/main.yml uses role_path to get directory to read resoruces from
+# TODO: do the same computation for terraform_resources_dir
+terraform_resources_dir: /usr/share/prepd/terraform/resources
+terraform_app_dir: '{{ playbook_dir.split("/")[0:-1] | join("/") }}/terraform'
+terraform_lib_dir: '{{ playbook_dir.split("/")[0:-2] | join("/") }}/lib/terraform'
+
+terraplate_app: '{{ project_name }}'
+terraplate_task: "{{ task | default('info') }}"
+terraplate_env: "{{ env | default('development') }}"
+terraplate_service: "{{ service | default('default') }}"
+terraplate_component: "{{ component | default('main') }}"
+
+terraplate:
+  app: '{{ terraplate_app }}'
+  task: '{{ terraplate_task }}'
+  env: '{{ terraplate_env }}'
+  service: '{{ terraplate_service }}'
+  component: '{{ terraplate_component }}'

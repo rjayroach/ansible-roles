@@ -1,0 +1,15 @@
+---
+- name: Get the user shell
+  command: echo $SHELL
+  register: shell
+  changed_when: false
+
+- set_fact:
+    aliases_file: { '/bin/zsh': '.zsh.after/aliases.zsh', '/bin/bash': '.bash_aliases' }
+
+- name: Insert aliases
+  blockinfile:
+    create: yes
+    dest: "{{ ansible_env.HOME }}/{{ aliases_file[shell.stdout] | default('/tmp/test') }}"
+    marker: '# {mark} ANSIBLE MANAGED BLOCK ({{ aliases_marker }})'
+    block: '{{ aliases_block }}'

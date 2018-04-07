@@ -1,12 +1,5 @@
 ---
 - include_role:
-    name: prepd/project
-
-- include_role:
-    name: prepd/utils
-    tasks_from: debug
-
-- include_role:
     name: prepd/git
     tasks_from: project-repositories
   vars:

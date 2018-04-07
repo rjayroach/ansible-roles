@@ -10,9 +10,9 @@
   when: ansible_distribution == 'Debian'
 
 - name: Insert aliases
-  blockinfile:
-    create: yes
-    dest: ~/.zsh.after/aliases.zsh
-    marker: '# {mark} ANSIBLE MANAGED BLOCK (redis)'
-    block: |
+  include_role:
+    name: prepd/aliases
+  vars:
+    aliases_marker: redis
+    aliases_block: |
       alias redis-cli='rlwrap -a -- redis-cli'

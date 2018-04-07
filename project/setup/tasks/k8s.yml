@@ -1,0 +1,7 @@
+---
+- include_role:
+    name: prepd/k8s/kubectl
+
+- include_role:
+    name: prepd/k8s/kubectl
+    tasks_from: node0

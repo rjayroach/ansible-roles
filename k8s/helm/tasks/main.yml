@@ -1,0 +1,13 @@
+---
+- debug:
+    var: k8s_helm
+    verbosity: 1
+
+- name: Check if binary exists
+  stat:
+    path: '{{ k8s_helm.bin_dir }}/helm'
+  register: binary
+
+- name: Install helm
+  include_tasks: install.yml
+  when: binary.stat.exists == false

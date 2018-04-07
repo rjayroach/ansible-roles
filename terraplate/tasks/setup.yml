@@ -1,0 +1,6 @@
+---
+- include_role:
+    name: terraplate/setup
+  vars:
+    provider: '{{ item }}'
+  with_items: '{{ tpl_app.resource_providers }}'

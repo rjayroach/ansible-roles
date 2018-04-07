@@ -1,0 +1,14 @@
+---
+# - include_role:
+#     name: prepd/project
+
+- stat:
+    path: '{{ playbook_dir }}/utils/{{ utils_task }}/vars'
+  register: vars_dir
+
+- include_vars:
+    dir: '{{ playbook_dir }}/utils/{{ utils_task }}/vars'
+    files_matching: .yml
+  when: vars_dir.stat.exists
+
+- include_tasks: '{{ utils_task }}.yml'

@@ -1,0 +1,18 @@
+---
+- debug:
+    var: k8s_minikube
+    verbosity: 1
+
+- debug:
+    var: ansible_env
+    verbosity: 0
+
+- name: Check if minikube binary exists
+  stat:
+    path: '{{ k8s_minikube_bin_file }}'
+  register: binary
+
+- name: Install minikube
+  import_tasks: install.yml
+  become: yes
+  when: binary.stat.exists == false

@@ -1,0 +1,14 @@
+# Clone a prepd project repository into a specified directory
+---
+- name: Ensure target directory exists
+  file:
+    dest: '{{ projects_dir }}/{{ project.value.dir | default(project.key) }}'
+    state: directory
+
+- name: Checkout git repository
+  git:
+    repo: '{{ project.value.repo.url }}'
+    dest: '{{ projects_dir }}/{{ project.value.dir | default(project.key) }}/{{ project.value.repo.name }}'
+    accept_hostkey: yes
+    update: no
+    version: "{{ project.value.repo.branch | default('HEAD') }}"

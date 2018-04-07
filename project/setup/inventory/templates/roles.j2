@@ -27,11 +27,11 @@ tag_Role_etcd
 
 
 # Roles
-{% for role in setup_roles %}
+{% for role in setup_inventory_roles %}
 {% set role_underscore = role | replace('-', '_') %}
-[tag_Role_{{ role_underscore }}_yes]
+[tag_Role_{{ role_underscore }}]
 
 [{{ role }}s:children]
-tag_Role_{{ role_underscore }}_yes
+tag_Role_{{ role_underscore }}
 
 {% endfor %}

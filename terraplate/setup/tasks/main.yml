@@ -17,7 +17,7 @@
   get_url:
     url: 'https://releases.hashicorp.com/terraform/{{ terraform_version }}/{{ terraform_file }}.zip'
     dest: '{{ ansible_env.HOME }}/{{ terraform_file }}.zip'
-  when: terraform_binary.stat.exists == false
+  when: not terraform_binary.stat.exists
   register: new_archive
 
 - name: Install Terraform
@@ -42,7 +42,7 @@
   get_url:
     url: 'https://github.com/gruntwork-io/terragrunt/releases/download/v{{ terragrunt_version }}/terragrunt_linux_amd64'
     dest: /usr/local/bin/terragrunt
-  when: terragrunt_binary.stat.exists == false
+  when: not terragrunt_binary.stat.exists
   register: terragrunt_archive
   become: yes
 
@@ -52,16 +52,12 @@
     mode: 0755
   become: yes
 
-- stat:
-    path: '{{ ansible_env.HOME }}/.zsh.after/aliases.zsh'
-  register: zsh_aliases
-
 - name: Insert aliases
-  blockinfile:
-    create: yes
-    dest: ~/.zsh.after/aliases.zsh
-    marker: '# {mark} ANSIBLE MANAGED BLOCK (terraform)'
-    block: |
+  include_role:
+    name: prepd/aliases
+  vars:
+    aliases_marker: terraplate
+    aliases_block: |
       alias tfa='terraform apply'
       alias tfd='terraform destroy'
       alias tfg='terraform get'
@@ -90,8 +86,9 @@
       alias tgst='terragrunt state'
       alias tgt='terragrunt taint'
 
-      alias ta='./terraform.yml -e task=app'
-      alias ti='./terraform.yml -e task=install'
-      alias tl='./terraform.yml -e task=lib'
-      alias ts='./terraform.yml -e task=setup'
-  when: zsh_aliases.stat.exists == true
+      alias pta='./terraplate.yml -e task=app'
+      alias ptl='./terraplate.yml -e task=lib'
+      alias pts='./terraplate.yml -e task=setup'
+      ptt() {
+        ./terraplate.yml -e task=$1
+      }

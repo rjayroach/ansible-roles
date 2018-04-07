@@ -20,7 +20,7 @@
   with_items: '{{ prepd_machine.data.projects }}'
   loop_control:
     loop_var: project_name
-  when: prepd_machine.data.projects is defined
+  when: false # prepd_machine.data.projects is defined
 
 - name: Check if custom machine tasks file exist
   stat:

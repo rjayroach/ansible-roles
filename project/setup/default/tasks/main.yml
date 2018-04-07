@@ -1,0 +1,40 @@
+---
+- name: Insert aliases
+  include_role:
+    name: prepd/aliases
+  vars:
+    aliases_marker: project-setup
+    aliases_block: |
+      # prepd setup task
+      pst() {
+        ./setup.yml -e task=$@
+      }
+      # prepd utility task
+      put() {
+        ./utils.yml -e task=$@
+      }
+
+- name: Install Tmuxinator ansible templates
+  template:
+    src: tmuxinator-ansible.yml.j2
+    dest: '{{ ansible_env.HOME }}/.tmuxinator/{{ project_name }}-ansible.yml'
+
+- name: Install Tmuxinator terraplate template
+  template:
+    src: tmuxinator-terraplate.yml.j2
+    dest: '{{ ansible_env.HOME }}/.tmuxinator/{{ project_name }}-terraplate.yml'
+
+# TODO: Relook at how data is shared with the host
+- name: Ensure data and crendentials directories exist
+  file:
+    path: '{{ project_data_dir }}/{{ item }}'
+    state: directory
+  with_items: [credentials, data, vault]
+  when: false
+
+# TODO: Relook if this is necessary
+- name: Ensure ssh keys directory exists
+  file:
+    path: '{{ ssh_dir }}'
+    state: directory
+  when: false

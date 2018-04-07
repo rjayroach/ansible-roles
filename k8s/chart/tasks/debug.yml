@@ -1,0 +1,4 @@
+---
+- debug: var=chart_vars
+- debug: var=chart_vars.user_values
+- debug: msg="{{ lookup('template', 'values.yaml.j2') | replace(',\n', '')}}"

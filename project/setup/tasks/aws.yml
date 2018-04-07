@@ -1,14 +1,10 @@
-# Setup AWS cli tool
-# Configure the prepd project's ansible inventories to use AWS (boto's ec2.py and ec2.ini) if project_environments is defined
 ---
-- include_role:
-    name: prepd/project
+- name: Setup AWS cli tool
+  include_role:
+    name: prepd/aws/cli
 
-- include_role:
-    name: prepd/utils
-    tasks_from: debug
-
-- include_role:
+- name: Configure the prepd project's ansible inventories to use AWS (boto's ec2.py and ec2.ini) if project_environments is defined
+  include_role:
     name: prepd/aws/inventory
   vars:
     aws_inventory_environments: '{{ project_environments }}'

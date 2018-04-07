@@ -1,0 +1,30 @@
+---
+- name: Install package dependencies
+  apt:
+    name: '{{ package }}'
+    state: present
+  with_items: [socat, net-tools]
+  loop_control:
+    loop_var: package
+
+# NOTE: deb will not install when running in virtualbox so not using for now
+- name: Download minikube
+  get_url: 
+    url: '{{ k8s_minikube.deb_url }}'
+    dest: '{{ k8s_minikube.deb_file }}'
+  when: false
+
+- name: Install minikube
+  apt:
+    deb: '{{ k8s_minikube.deb_file }}'
+  when: false
+
+- name: Install minikube
+  get_url:
+    url: '{{ k8s_minikube.bin_url }}'
+    dest: '{{ k8s_minikube.bin_file }}'
+
+- name: Set permissions
+  file:
+    path: '{{ k8s_minikube.bin_file }}'
+    mode: 0755

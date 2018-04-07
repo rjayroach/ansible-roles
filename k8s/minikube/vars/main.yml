@@ -1,0 +1,17 @@
+---
+k8s_minikube_version: 0.25-0
+k8s_minikube_deb_name: 'minikube_{{ k8s_minikube_version }}.deb'
+k8s_minikube_deb_url: "https://github.com/kubernetes/minikube/releases/download/v{{ k8s_minikube_version | replace('-', '.')}}/{{ k8s_minikube_deb_name }}"
+k8s_minikube_deb_file: "{{ ansible_env.TMPDIR | default('/tmp') }}/{{ k8s_minikube_deb_name }}.deb"
+k8s_minikube_bin_url: "https://storage.googleapis.com/minikube/releases/v{{ k8s_minikube_version | replace('-', '.')}}/minikube-linux-amd64"
+k8s_minikube_bin_file: /usr/local/bin/minikube
+k8s_minikube_apiserver_ips: 192.168.21.12
+
+k8s_minikube:
+  version: '{{ k8s_minikube_version }}'
+  deb_name: '{{ k8s_minikube_deb_name }}'
+  deb_url: '{{ k8s_minikube_deb_url }}'
+  deb_file: '{{ k8s_minikube_deb_file }}'
+  bin_url: '{{ k8s_minikube_bin_url }}'
+  bin_file: '{{ k8s_minikube_bin_file }}'
+  apiserver_ips: '{{ k8s_minikube_apiserver_ips }}'

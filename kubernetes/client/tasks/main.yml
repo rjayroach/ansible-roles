@@ -19,12 +19,12 @@
   become: yes
   when: new_archive|changed
 
-- name: Install shell completion and aliases for zsh
-  blockinfile:
-    create: yes
-    dest: ~/.zsh.after/aliases.zsh
-    marker: '# {mark} ANSIBLE MANAGED BLOCK (kubernetes-client)'
-    block: |
+- name: Insert aliases
+  include_role:
+    name: prepd/aliases
+  vars:
+    aliases_marker: kubernetes-client
+    aliases_block: |
       source <(kubectl completion zsh)
       alias kdd='kubectl describe deployment'
       alias kdj='kubectl describe job'

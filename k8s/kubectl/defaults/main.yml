@@ -1,6 +1,9 @@
 ---
-kubernetes_version: 1.5.5
-
-bin_type: "{{ 'darwin' if ansible_os_family == 'Darwin' else 'linux' }}"
-kubernetes_bin_path: /usr/local/bin
-kubernetes_download_path: 'https://storage.googleapis.com/kubernetes-release/release/v{{ kubernetes_version }}/bin/{{ bin_type }}/amd64'
+k8s_kubectl_release_path: https://storage.googleapis.com/kubernetes-release/release
+k8s_kubectl_bin_type: "{{ 'darwin' if ansible_os_family == 'Darwin' else 'linux' }}"
+k8s_kubectl_bin_path: /usr/local/bin/kubectl
+k8s_kubectl_latest_version_file: "{{ ansible_env.TMPDIR | default('/tmp') }}/kubectl-version.txt"
+# k8s_kubectl_latest_version_file_control: "{{ playbook_dir }}/kubectl-version.txt"
+k8s_kubectl_version: v1.9.3
+k8s_kubectl_kube_dir: '{{ ansible_env.HOME }}/.kube'
+k8s_kubectl_minikube_dir: '{{ ansible_env.HOME }}/.minikube'

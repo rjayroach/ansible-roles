@@ -1,4 +1,14 @@
 ---
+- name: Install Ruby
+  apt:
+    name: '{{ item }}'
+  with_items: [ruby, ruby-dev, sqlite3, libsqlite3-dev, ruby-bundler]
+  become: yes
+
+- name: Update rubygems
+  command: gem update --system
+  become: yes
+
 - name: Install package dependencies for debian 
   apt:
     name: '{{ item }}'
@@ -7,29 +17,30 @@
   with_items: [libreadline-dev, ruby-dev, rbenv, graphviz, bzip2, libssl1.0-dev, libxml2-dev, zlib1g-dev, g++, libsqlite3-dev]
   when: ansible_distribution == 'Debian'
 
-- name: Clone ruby-build
+- name: Clone rbenv ruby-build
   git:
     repo: https://github.com/rbenv/ruby-build.git
-    dest: '{{ ansible_env.HOME }}/.rbenv/plugins/ruby-build'
+    dest: '{{ ruby_rbenv_plugin_dir }}/ruby-build'
     update: no
 
-- name: Clone ruby-default-gems
+- name: Clone rbenv ruby-default-gems
   git:
     repo: https://github.com/rbenv/rbenv-default-gems.git
-    dest: '{{ ansible_env.HOME }}/.rbenv/plugins/rbenv-default-gems'
+    dest: '{{ ruby_rbenv_plugin_dir }}/rbenv-default-gems'
     update: no
 
 - name: Copy rbenv default-gems
   copy:
     src: default-gems
-    dest: '{{ ansible_env.HOME }}/.rbenv/default-gems'
+    dest: '{{ ruby_rbenv_dir }}/default-gems'
 
 - name: Check if the requested ruby version is already installed
   stat:
-    path: '{{ ansible_env.HOME }}/.rbenv/versions/{{ ruby_version }}'
+    path: '{{ ruby_rbenv_dir }}/versions/{{ ruby_version }}'
   register: ruby_dir
 
-- debug: msg='{{ ansible_env.HOME }}/.rbenv/versions/{{ ruby_version }}'
+- debug: msg='{{ ruby_rbenv_dir }}/versions/{{ ruby_version }}'
+
 - name: 'Install ruby {{ ruby_version }}'
   shell: '. /etc/profile && rbenv install {{ ruby_version }}'
   when: ruby_dir.stat.isdir is not defined
@@ -41,21 +52,21 @@
 
 - name: Ensure the ~/.bundle directory exists
   file:
-    path: '{{ ansible_env.HOME }}/.bundle'
+    path: '{{ ruby_bundle_dir }}'
     state: directory
 
 - name: Create ~/.bundle/config unless it already exists
   template:
     src: bundle_config.j2
-    dest: '{{ ansible_env.HOME }}/.bundle/config'
+    dest: '{{ ruby_bundle_dir }}/config'
     force: no
 
 - name: Insert aliases
-  blockinfile:
-    create: yes
-    dest: '{{ machine.aliases_file }}'
-    marker: '# {mark} ANSIBLE MANAGED BLOCK (ruby)'
-    block: |
+  include_role:
+    name: prepd/aliases
+  vars:
+    aliases_marker: ruby
+    aliases_block: |
       alias adc='spring rake app:db:clean'
       alias adcm='spring rake app:db:clean:migrate'
       alias adcms='spring rake app:db:clean:migrate:seed'
@@ -119,4 +130,3 @@
       alias sgpl='spring stop; git checkout Gemfile.lock; git pull'
       alias src='spring stop; rc'
       alias ss='spring stop'
-  when: machine.shell == 'zsh'

@@ -1,0 +1,34 @@
+name: {{ project_name }}-terraplate
+root: {{ playbook_dir.split('/')[0:-2].join('/') }}
+
+windows:
+  - terraplate:
+      layout: even-horizontal
+      panes:
+        - cd app/terraform
+        - cd lib/terraform
+  - ansible:
+      layout: even-horizontal
+      panes:
+        - cd app/ansible
+  - terraplate:
+      layout: main-horizontal
+      root: /usr/share/ansible/roles/terraplate
+      panes:
+        - cd component
+        - cd resource
+  - terraplate-components:
+      layout: main-horizontal
+      root: /usr/share/ansible/roles/terraplate-components
+      panes:
+        - pwd
+  - terraplate-resources:
+      layout: main-horizontal
+      root: /usr/share/ansible/roles/terraplate/providers
+      panes:
+        - cd component
+  - resource:
+      layout: main-horizontal
+      root: /usr/share/prepd/terraform/resources/
+      panes:
+        - pwd

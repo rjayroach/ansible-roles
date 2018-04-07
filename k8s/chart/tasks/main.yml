@@ -1,0 +1,7 @@
+# manage charts on a k8s cluster
+---
+- include_vars:
+    file: 'helm/{{ chart }}.yml'
+    name: chart_vars
+
+- include_tasks: '{{ task }}.yml'

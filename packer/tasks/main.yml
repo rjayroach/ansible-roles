@@ -1,24 +1,21 @@
 ---
-- homebrew:
+- name: Install packer on Debian
+  include_tasks: debian.yml
+  when: ansible_os_family == 'Debian'
+
+- name: Install packer on MacOS
+  homebrew:
     name: packer
     state: present
   when: ansible_os_family == 'Darwin'
 
-- apt:
-    name: packer
-    state: present
-  when: ansible_os_family == 'Debian'
+- name: Ensure packer plugins directory exists
+  file:
+    path: '{{ packer_plugin_dir }}'
+    state: directory
 
-- file: path=~/.bash_profile state=touch
-
-#- command: export PATH=$PATH:$GOPATH/bin && go get github.com/lmars/packer-post-processor-vagrant-s3
-- command: go get github.com/lmars/packer-post-processor-vagrant-s3
-- file: path=~/.packer.d/plugins state=directory
-- command: cp ~/go/bin/packer-post-processor-vagrant-s3 ~/.packer.d/plugins
-
-#go get github.com/lmars/packer-post-processor-vagrant-s3
-#Copy the plugin into packer.d directory:
-#
-#$ mkdir $HOME/.packer.d/plugins
-#$ cp $GOPATH/bin/packer-post-processor-vagrant-s3 $HOME/.packer.d/plugins
-
+- name: Install plugins
+  include_tasks: plugin.yml
+  with_dict: '{{ packer_plugins }}'
+  loop_control:
+    loop_var: plugin
