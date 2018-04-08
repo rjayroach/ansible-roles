@@ -33,6 +33,4 @@ developer_darwin_packages:
   - gpg
   - cask
 
-developer_darwin_cask_packages:
-  - iterm2
-  # - insomniax
+developer_darwin_cask_packages: []

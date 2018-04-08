@@ -17,13 +17,17 @@
   loop_control:
     loop_var: plugin
 
+- stat:
+    path: /opt/vagrant/embedded/bin/curl
+  register: curl
+
 # NOTE: http://stackoverflow.com/questions/23874260/error-when-trying-vagrant-up
 - name: "Remove Vagrant's built in curl which fails to download boxes on Mac"
   file:
     path: /opt/vagrant/embedded/bin/curl
     state: absent
   become: yes
-  when: ansible_os_family == 'Darwin'
+  when: curl.stat.exists and ansible_os_family == 'Darwin'
 
 - name: Insert aliases
   include_role:
