@@ -1,13 +1,4 @@
 ---
-# NOTE: This item will fail the first time
-# User first needs to open Security Settings and allow kernel externsions from Oracle America.
-# Then re-run this playbook
-- name: Install Virtualbox
-  homebrew_cask:
-    name: virtualbox
-    state: present
-  when: ansible_os_family == 'Darwin'
-
 - name: Install Vagrant and related packages
   homebrew_cask:
     name: '{{ item }}'
@@ -25,7 +16,7 @@
     - vagrant-hostmanager  # updates /etc/hosts file when machines go up/down
   loop_control:
     loop_var: plugin
- 
+
 # NOTE: http://stackoverflow.com/questions/23874260/error-when-trying-vagrant-up
 - name: "Remove Vagrant's built in curl which fails to download boxes on Mac"
   file:
@@ -48,6 +39,23 @@
       alias vha='vagrant halt'
       vp() { vagrant provision "${1:=node0}" }
       vsh() { vagrant ssh "${1:=node0}" }
-      vst() { vagrant status "${1:=node0}" }
+      alias vst='vagrant status'
       alias vstg='vagrant global-status'
       vu() { vagrant up "${1:=node0}" }
+
+- name: Ensure User's .ssh directory exists
+  file:
+    path: '{{ ansible_env.HOME }}/.ssh'
+    state: directory
+    mode: 0755
+
+- name: Set IP address type and allow ssh agent forwarding to local virtual machines in ~/.ssh/config
+  blockinfile:
+    create: yes
+    dest: ~/.ssh/config
+    marker: '# {mark} ANSIBLE MANAGED BLOCK (vagrant)'
+    block: |
+      Host *.local
+        User vagrant
+        ForwardAgent yes
+        AddressFamily inet

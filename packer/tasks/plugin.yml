@@ -19,7 +19,7 @@
     src: '{{ packer_archive_file }}'
     dest: '{{ packer_plugin_dir }}'
     copy: no
-  when: new_archive|changed
+  when: new_archive is changed
 
 - name: Remove zip
   file:

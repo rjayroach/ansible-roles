@@ -16,7 +16,7 @@
     src: '{{ ansible_env.HOME }}/{{ packer_file }}.zip'
     dest: /usr/local/bin
     copy: no
-  when: new_archive|changed
+  when: new_archive is changed
   become: yes
 
 - name: Remove zip

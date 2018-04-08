@@ -11,3 +11,8 @@
     - { name: 'docker-rails', account: 'git@github.com:rjayroach' }
     - { name: 'lego', account: 'git@github.com:rjayroach' }
     - { name: 'packer', account: 'git@github.com:rjayroach' }
+
+- name: Copy tmuxinator files
+  copy:
+    src: tmuxinator/
+    dest: '{{ ansible_env.HOME }}/.tmuxinator/'

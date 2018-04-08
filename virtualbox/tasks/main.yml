@@ -1,0 +1,11 @@
+---
+# NOTE: This item will fail the first time
+# User first needs to open Security Settings and allow kernel externsions from Oracle America.
+# Then re-run this playbook
+- name: Install Virtualbox
+  homebrew_cask:
+    name: virtualbox
+    state: present
+  when: ansible_os_family == 'Darwin'
+
+# TODO: tasks to install virtualbox on Linux/Ubuntu
