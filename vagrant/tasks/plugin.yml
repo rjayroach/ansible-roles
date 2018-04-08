@@ -1,6 +1,9 @@
 ---
-- command: 'vagrant plugin list | grep {{ plugin }}'
+- name: Check if plugin is installed
+  shell: 'vagrant plugin list | grep {{ plugin }}'
   register: result
+  failed_when: false
+  changed_when: false
 
 - command: 'vagrant plugin install {{ plugin }}'
-  when: result == 1 # plugin is not installed
+  when: result.rc == 1 # plugin is not installed
