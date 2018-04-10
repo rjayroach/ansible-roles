@@ -5,5 +5,6 @@
   failed_when: false
   changed_when: false
 
-- command: 'vagrant plugin install {{ plugin }}'
+- name: 'Install {{ plugin }} plugin'
+  command: 'vagrant plugin install {{ plugin }}'
   when: result.rc == 1 # plugin is not installed
