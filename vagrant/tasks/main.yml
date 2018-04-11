@@ -12,10 +12,7 @@
 
 - name: Install Vagrant plugins
   include_tasks: plugin.yml
-  with_items:
-    - vagrant-vbguest      # keep your VirtualBox Guest Additions up to date
-    - vagrant-cachier      # caches guest packages
-    - vagrant-hostmanager  # updates /etc/hosts file when machines go up/down
+  with_items: '{{ vagrant_plugins }}'
   loop_control:
     loop_var: plugin
 

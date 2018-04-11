@@ -1,3 +1,8 @@
 ---
 vagrant_version: 2.0.3
 vagrant_checksum: sha256:47ea8af7644616caf36d421ecf2e0aceb1f5095933a2bfc2d50b7b8bae35d93f
+vagrant_plugins:
+  - vagrant-vbguest      # keep your VirtualBox Guest Additions up to date
+  - vagrant-cachier      # caches guest packages
+  - vagrant-hostmanager  # updates /etc/hosts file when machines go up/down
+  - vagrant-share        # share your Vagrant environment with anyone in the world
