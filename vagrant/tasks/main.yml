@@ -1,32 +1,12 @@
 ---
-- name: Install Vagrant on Debian
-  include_tasks: debian.yml
-  when: ansible_os_family == 'Debian'
-
-- name: Install Vagrant on MacOS
-  homebrew_cask:
-    name: '{{ item }}'
-    state: present
-  with_items: [vagrant, vagrant-manager]
-  when: ansible_os_family == 'Darwin'
+- name: 'Install Vagrant on detected OS ({{ ansible_os_family }})'
+  include_tasks: '{{ ansible_os_family | lower }}.yml'
 
 - name: Install Vagrant plugins
   include_tasks: plugin.yml
   with_items: '{{ vagrant_plugins }}'
   loop_control:
     loop_var: plugin
-
-- stat:
-    path: /opt/vagrant/embedded/bin/curl
-  register: curl
-
-# NOTE: http://stackoverflow.com/questions/23874260/error-when-trying-vagrant-up
-- name: "Remove Vagrant's built in curl which fails to download boxes on Mac"
-  file:
-    path: /opt/vagrant/embedded/bin/curl
-    state: absent
-  become: yes
-  when: curl.stat.exists and ansible_os_family == 'Darwin'
 
 - name: Insert aliases
   include_role:

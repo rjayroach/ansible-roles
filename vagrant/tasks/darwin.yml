@@ -1,0 +1,18 @@
+---
+- name: Install Vagrant on MacOS
+  homebrew_cask:
+    name: '{{ item }}'
+    state: present
+  with_items: [vagrant, vagrant-manager]
+
+- stat:
+    path: /opt/vagrant/embedded/bin/curl
+  register: curl
+
+# NOTE: http://stackoverflow.com/questions/23874260/error-when-trying-vagrant-up
+- name: "Remove Vagrant's built in curl which fails to download boxes on Mac"
+  file:
+    path: /opt/vagrant/embedded/bin/curl
+    state: absent
+  become: yes
+  when: curl.stat.exists

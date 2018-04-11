@@ -1,8 +1,9 @@
 ---
 - name: Install dependencies
   apt:
-    name: nfs-kernel-server
+    name: '{{ item }}'
     state: present
+  with_items: [nfs-kernel-server, ngrok-client]
   become: yes
 
 - name: Check if Vagrant is installed
