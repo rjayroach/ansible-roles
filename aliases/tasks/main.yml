@@ -5,10 +5,15 @@
   changed_when: false
 
 - debug:
-    msg: 'User shell value is {{ shell }}'
+    msg: 'User shell value is {{ shell.stdout }}'
 
 - set_fact:
-    aliases_file: { '/usr/local/bin/zsh': '.zsh.after/aliases.zsh', '/bin/zsh': '.zsh.after/aliases.zsh', '/bin/bash': '.bash_aliases' }
+    aliases_file: {
+      '/bin/zsh': '.zsh.after/aliases.zsh',
+      '/usr/bin/zsh': '.zsh.after/aliases.zsh',
+      '/usr/local/bin/zsh': '.zsh.after/aliases.zsh',
+      '/bin/bash': '.bash_aliases'
+    }
 
 - name: Insert aliases
   blockinfile:
