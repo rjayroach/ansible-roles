@@ -17,10 +17,11 @@
     dest: '{{ ansible_env.TMPDIR }}/vagrant_{{ vagrant_version }}_x86_64.deb'
     checksum: '{{ vagrant_checksum }}'
   register: new_archive
+  become: yes
   when: result.rc == 1 # binary is not installed
 
 - name: Install Vagrant .deb
   apt:
     deb: '{{ ansible_env.TMPDIR }}/vagrant_{{ vagrant_version }}_x86_64.deb'
   become: yes
-  when: result.rc == 1
+  when: new_archive is changed
