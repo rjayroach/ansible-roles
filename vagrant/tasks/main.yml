@@ -1,33 +1,12 @@
 ---
-- name: Install Vagrant and related packages
-  homebrew_cask:
-    name: '{{ item }}'
-    state: present
-  with_items: [vagrant, vagrant-manager]
-  when: ansible_os_family == 'Darwin'
-
-# TODO: tasks to install vagrant on Linux/Ubuntu
+- name: 'Install Vagrant on detected OS ({{ ansible_os_family }})'
+  include_tasks: '{{ ansible_os_family | lower }}.yml'
 
 - name: Install Vagrant plugins
   include_tasks: plugin.yml
-  with_items:
-    - vagrant-vbguest      # keep your VirtualBox Guest Additions up to date
-    - vagrant-cachier      # caches guest packages
-    - vagrant-hostmanager  # updates /etc/hosts file when machines go up/down
+  with_items: '{{ vagrant_plugins }}'
   loop_control:
     loop_var: plugin
-
-- stat:
-    path: /opt/vagrant/embedded/bin/curl
-  register: curl
-
-# NOTE: http://stackoverflow.com/questions/23874260/error-when-trying-vagrant-up
-- name: "Remove Vagrant's built in curl which fails to download boxes on Mac"
-  file:
-    path: /opt/vagrant/embedded/bin/curl
-    state: absent
-  become: yes
-  when: curl.stat.exists and ansible_os_family == 'Darwin'
 
 - name: Insert aliases
   include_role:

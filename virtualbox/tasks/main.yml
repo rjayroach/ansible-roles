@@ -1,11 +1,14 @@
 ---
-# NOTE: This item will fail the first time
-# User first needs to open Security Settings and allow kernel externsions from Oracle America.
+# NOTE: Installations on a Mac will fail the first time
+# After running this task the first time you need to open Security Settings and click 'allow kernel externsions from Oracle America.'
 # Then re-run this playbook
-- name: Install Virtualbox
+- name: Install Virtualbox on Mac
   homebrew_cask:
     name: virtualbox
     state: present
   when: ansible_os_family == 'Darwin'
 
-# TODO: tasks to install virtualbox on Linux/Ubuntu
+- name: Install Virtualbox on Debian/Ubuntu
+  import_tasks: debian.yml
+  when: ansible_os_family == 'Debian'
+  become: yes
