@@ -1,2 +1,2 @@
 ---
-prepd_tools_dir: /usr/share/prepd
+prepd_tools_dir: '{{ ansible_env.HOME }}/.prepd/share/projects'

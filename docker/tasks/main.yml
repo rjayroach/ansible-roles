@@ -14,8 +14,11 @@
     aliases_marker: docker
     aliases_block: |
       alias di='docker images'
+      alias drmi='docker rmi'
       alias dps='docker ps'
+      alias dpsa='docker ps -a'
       drma() {
         docker stop $(docker ps -a -q)
         docker rm $(docker ps -a -q)
       }
+      alias dup='docker-compose up'
