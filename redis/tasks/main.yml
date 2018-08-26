@@ -1,12 +1,14 @@
 ---
 - name: Install Debian packages
   apt:
-    name: '{{ item }}'
+    name: '{{ package }}'
     state: present
   become: yes
   with_items:
     - redis-server
     - rlwrap
+  loop_control:
+    loop_var: package
   when: ansible_distribution == 'Debian'
 
 - name: Insert aliases
