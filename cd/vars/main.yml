@@ -1,3 +1,0 @@
----
-role_properties: '{{ hostvars[inventory_hostname][application] | default({}) }}'
-roles: '{{ hostvars[inventory_hostname][role_group][task_name][application] }}'
