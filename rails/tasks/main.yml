@@ -1,0 +1,17 @@
+---
+- name: Install rails
+  include_tasks: install.yml
+  when: spec.install
+
+- name: Configure the projects
+  include_tasks: project.yml
+  vars:
+    bundle: '{{ project.value.bundle | default(False) }}'
+    migrate: '{{ project.value.migrate | default(False) }}'
+    link_env: '{{ project.value.link_env | default(False) }}'
+    engine: '{{ project.value.engine | default(False) }}'
+    local: '{{ project.value.local | default(False) }}'
+    chdir: "{{ project.value.path | default(spec.project_dir + '/' + project.key) }}"
+  with_dict: '{{ spec.projects }}'
+  loop_control:
+    loop_var: project
