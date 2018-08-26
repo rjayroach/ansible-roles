@@ -1,64 +1,39 @@
 ---
-- name: Install Ruby
-  apt:
-    name: '{{ item }}'
-  with_items: [ruby, ruby-dev, sqlite3, libsqlite3-dev, ruby-bundler]
+- import_tasks: system-install.yml
   become: yes
-
-- name: Update rubygems
-  command: gem update --system
-  become: yes
-
-- name: Install package dependencies for debian 
-  apt:
-    name: '{{ item }}'
-    state: present
-  become: yes
-  with_items: [libreadline-dev, ruby-dev, rbenv, graphviz, bzip2, libssl1.0-dev, libxml2-dev, zlib1g-dev, g++, libsqlite3-dev]
   when: ansible_distribution == 'Debian'
 
 - name: Clone rbenv ruby-build
   git:
     repo: https://github.com/rbenv/ruby-build.git
-    dest: '{{ ruby_rbenv_plugin_dir }}/ruby-build'
+    dest: '{{ spec.rbenv_plugin_dir }}/ruby-build'
     update: no
 
 - name: Clone rbenv ruby-default-gems
   git:
     repo: https://github.com/rbenv/rbenv-default-gems.git
-    dest: '{{ ruby_rbenv_plugin_dir }}/rbenv-default-gems'
+    dest: '{{ spec.rbenv_plugin_dir }}/rbenv-default-gems'
     update: no
 
 - name: Copy rbenv default-gems
   copy:
     src: default-gems
-    dest: '{{ ruby_rbenv_dir }}/default-gems'
+    dest: '{{ spec.rbenv_dir }}/default-gems'
 
-- name: Check if the requested ruby version is already installed
-  stat:
-    path: '{{ ruby_rbenv_dir }}/versions/{{ ruby_version }}'
-  register: ruby_dir
-
-- debug: msg='{{ ruby_rbenv_dir }}/versions/{{ ruby_version }}'
-
-- name: 'Install ruby {{ ruby_version }}'
-  shell: '. /etc/profile && rbenv install {{ ruby_version }}'
-  when: ruby_dir.stat.isdir is not defined
-
-- name: Set global rbenv version
-  shell: '. /etc/profile && rbenv global {{ ruby_version }}'
-  when: ruby_dir.stat.isdir is not defined
-
+- include_tasks: install.yml
+  with_items: '{{ spec.versions }}'
+  loop_control:
+    loop_var: version
 
 - name: Ensure the ~/.bundle directory exists
   file:
-    path: '{{ ruby_bundle_dir }}'
+    path: '{{ spec.bundle_dir }}'
     state: directory
 
 - name: Create ~/.bundle/config unless it already exists
   template:
     src: bundle_config.j2
-    dest: '{{ ruby_bundle_dir }}/config'
+    dest: '{{ spec.bundle_dir }}/config'
     force: no
 
 - name: Insert aliases

@@ -1,0 +1,22 @@
+---
+- name: Install Ruby
+  apt:
+    name: '{{ package }}'
+    update_cache: yes
+    cache_valid_time: 86400
+  with_items: [ruby, ruby-dev, sqlite3, libsqlite3-dev, ruby-bundler]
+  loop_control:
+    loop_var: package
+
+- name: Update rubygems
+  command: gem update --system
+
+- name: Install package dependencies for debian 
+  apt:
+    name: '{{ package }}'
+    state: present
+    update_cache: yes
+    cache_valid_time: 86400
+  with_items: [libreadline-dev, ruby-dev, rbenv, graphviz, bzip2, libssl1.0-dev, libxml2-dev, zlib1g-dev, g++, libsqlite3-dev]
+  loop_control:
+    loop_var: package
