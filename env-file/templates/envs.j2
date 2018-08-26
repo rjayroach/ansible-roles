@@ -1,3 +1,3 @@
-{% for key, value in env_file.vars.iteritems() %}
+{% for key, value in file.value.vars.iteritems() %}
 {{ key }}={{ value }}
 {% endfor %}

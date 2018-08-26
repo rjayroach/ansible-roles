@@ -1,6 +1,17 @@
 ---
-- name: 'Write envs to {{ env_file.name }}'
+- name: Create path
+  file:
+    path: "{{ (file.value.path if file.value.path.startswith('/') else spec.project_dir + '/' + file.value.path).split('/')[0:-1] | join('/') }}"
+    state: directory
+  with_dict: '{{ spec.files }}'
+  loop_control:
+    loop_var: file
+
+- name: Write env file
   template:
-    dest: '{{ env_file.name }}'
+    dest: "{{ file.value.path if file.value.path.startswith('/') else spec.project_dir + '/' + file.value.path }}"
     src: envs.j2
     mode: 0600
+  with_dict: '{{ spec.files }}'
+  loop_control:
+    loop_var: file
