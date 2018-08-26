@@ -1,52 +1,26 @@
 ---
-- name: Install Debian packages
-  apt:
-    name: '{{ item }}'
-    state: present
-    update_cache: yes
-    cache_valid_time: '{{ cache_valid_time | default(86400) }}'
-  become: yes
-  with_items: [nginx]
-  when: ansible_distribution == 'Debian'
-
-- name: Install common packages
-  homebrew:
-    name: '{{ item }}'
-    state: present
-  with_items: [nginx]
-  when: ansible_distribution == 'MacOSX'
-  notify: Restart Nginx
-
-
-# Sets nginx_config_file
 - include_vars:
     file: '{{ ansible_os_family }}.yml'
 
-- debug:
-    var: nginx_servers_dir
-    # var: nginx_config_file
+- name: Install nginx
+  include_tasks: '{{ ansible_distribution }}.yml'
 
-- include_role:
-    name: prepd/nginx
-    tasks_from: Darwin
-  when: ansible_os_family == 'Darwin'
+- name: 'Create {{ spec.sites_dir }}'
+  file:
+    path: '{{ spec.sites_dir }}'
+    state: directory
+    owner: '{{ spec.owner }}'
+  become: yes
 
-- include_role:
-    name: prepd/nginx
-    tasks_from: Debian
-  when: ansible_os_family == 'Debian'
+- name: Configure nginx sites
+  include_tasks: site.yml
+  notify: Restart Nginx
+  with_dict: '{{ spec.sites }}'
+  loop_control:
+    loop_var: site
 
-  # - file:
-  #     src: index.html
-  #     dest: '{{ nginx_servers_dir }}/test.conf'
-  #   become: yes
-
-- name: Configure nginx to forward requests to app server and dashboard
-  template:
-    src: nginx-default.j2
-    dest: '{{ nginx_servers_dir }}/test.conf'
-    # dest: /etc/nginx/sites-enabled/default
-    mode: 0644
-  # become: yes
-  when: nginx_servers is defined
-  #  notify: Restart Nginx
+- name: Configure nginx to respond to health checks
+  import_tasks: health-check.yml
+  become: yes
+  notify: Restart Nginx
+  when: spec.healthcheck

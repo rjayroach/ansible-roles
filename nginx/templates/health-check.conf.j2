@@ -1,0 +1,12 @@
+#jinja2: lstrip_blocks: True
+# Respond to ELB Health Check
+server {
+  listen 80;
+
+  access_log  /var/log/nginx/default.access.log;
+
+  location / {
+    root   {{ spec.sites_dir }}/;
+    index  index.html;
+  }
+}

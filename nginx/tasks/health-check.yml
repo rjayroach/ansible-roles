@@ -1,0 +1,20 @@
+---
+- name: Respond with index.html
+  copy:
+    src: index.html
+    dest: '{{ spec.sites_dir }}/index.html'
+    mode: 0644
+    owner: '{{ spec.owner }}'
+
+- name: Template the health check config
+  template:
+    src: health-check.conf.j2
+    dest: '{{ spec.config_dir }}/health-check.conf'
+    mode: 0644
+    owner: '{{ spec.owner }}'
+
+- file:
+    src: '{{ spec.config_dir }}/health-check.conf'
+    path: '/etc/nginx/sites-enabled/health-check.conf'
+    state: link
+  when: ansible_distribution == 'Debian'

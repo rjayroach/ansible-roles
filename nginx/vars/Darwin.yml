@@ -1,4 +1,6 @@
 ---
-nginx_config_dir: /usr/local/etc/nginx
-nginx_config_file: /usr/local/etc/nginx/nginx.conf
-nginx_servers_dir: '{{ nginx_config_dir }}/servers'
+dist_spec:
+  config_dir: /usr/local/etc/nginx
+  config_file: nginx.conf
+  sites_dir: /usr/local/etc/nginx/servers
+  owner: '{{ ansible_user }}'

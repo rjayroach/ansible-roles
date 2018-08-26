@@ -1,16 +1,11 @@
 ---
-- name: Ensure /srv/www directory exists
-  file:
-    path: /srv/www
-    state: directory
-    owner: www-data
+- name: Install Debian packages
+  apt:
+    name: '{{ package }}'
+    state: present
+    update_cache: yes
+    cache_valid_time: '{{ cache_valid_time | default(86400) }}'
   become: yes
-
-- name: Configure nginx to respond to ELB health checks
-  copy:
-    src: index.html
-    dest: /srv/www/index.html
-    mode: 0644
-    owner: www-data
-  become: yes
-  when: nginx_elb_healthcheck is defined
+  with_items: [nginx]
+  loop_control:
+    loop_var: package

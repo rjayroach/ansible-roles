@@ -1,40 +1,23 @@
+#jinja2: lstrip_blocks: True
+{% if site.value.upstream is defined %}
 
-{% if nginx_elb_healthcheck is defined %}
-# Respond to ELB Health Check
-server {
-  listen 80;
-
-  access_log  /var/log/nginx/default.access.log;
-
-  location / {
-    root   /srv/www/;
-    index  index.html;
-  }
+upstream {{ site.key }} {
+  # Path to Puma SOCK file, as defined previously
+  # server unix:/tmp/sockets/api-gateway/puma.sock fail_timeout=0;
+  server {{ site.value.upstream }};
 }
 {% endif %}
 
-
-{% for upstream in nginx_upstreams %}
-upstream {{ upstream.name }} {
-  # Path to Puma SOCK file, as defined previously
-  # server unix:/tmp/sockets/api-gateway/puma.sock fail_timeout=0;
-  server {{ upstream.server }};
-}
-
-{% endfor %}
-
-
-{% for server in nginx_servers %}
 server {
   listen 80;
-  server_name  {{ server.name }};
+  server_name  {{ site.value.server_name }};
 
+{% if site.value.upstream is defined %}
   location / {
-    proxy_pass {{ server.proxy_pass }};
+    proxy_pass http://{{ site.key }};
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header Host $http_host;
     proxy_redirect off;
   }
 }
-
-{% endfor %}
+{% endif %}

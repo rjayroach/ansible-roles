@@ -1,0 +1,10 @@
+---
+- name: Install Darwin packages
+  homebrew:
+    name: '{{ package }}'
+    state: present
+  with_items: [nginx]
+  loop_control:
+    loop_var: package
+  notify: Restart Nginx
+
