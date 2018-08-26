@@ -6,7 +6,17 @@
 
 - import_tasks: install.yml
   become: yes
-  when: binary.stat.exists == false
+  when: not binary.stat.exists
+
+- name: Login to docker repositories
+  docker_login:
+    registry: "{{ login.value.registry | default('https://index.docker.io/v1/') }}"
+    username: '{{ login.value.username }}'
+    password: '{{ login.value.password }}'
+    email: '{{ login.value.email }}'
+  with_dict: '{{ spec.logins }}'
+  loop_control:
+    loop_var: login
 
 - include_role:
     name: prepd/aliases
