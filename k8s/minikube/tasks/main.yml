@@ -1,18 +1,13 @@
 ---
-- debug:
-    var: k8s_minikube
-    verbosity: 1
+- name: Get the current status of minikube
+  command: minikube status
+  register: mks
+  changed_when: false
+  failed_when: false
 
-- debug:
-    var: ansible_env
-    verbosity: 0
+- set_fact:
+    minikube_running: "{{ mks.stdout_lines[0].split(' ')[-1] == 'Running' }}"
 
-- name: Check if minikube binary exists
-  stat:
-    path: '{{ k8s_minikube_bin_file }}'
-  register: binary
-
-- name: Install minikube
-  import_tasks: install.yml
-  become: yes
-  when: binary.stat.exists == false
+- name: Start minikube
+  include_tasks: start.yml
+  when: not minikube_running

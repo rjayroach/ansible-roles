@@ -1,5 +1,0 @@
-{%- for key, values in chart_vars.user_values.iteritems() %}
-  {%- for subkey, subvalue in values.iteritems() %}
-{{ key }}.{{ subkey }}={{ subvalue }},
-  {%- endfor %}
-{%- endfor %}

@@ -1,0 +1,34 @@
+---
+# TODO move this out of here to a higher level role
+- name: Insert aliases
+  include_role:
+    name: prepd/aliases
+  vars:
+    aliases_marker: host-ssh
+    aliases_block: |
+      {{ prepd_machine.cluster.ssh }}() { ssh {{ prepd_machine.cluster.host }} $@ }
+  when: false
+
+- name: Ensure directories exist
+  file:
+    path: '{{ item }}'
+    state: directory
+  with_items:
+    - '{{ spec.kube_dir }}'
+    - '{{ spec.minikube_dir }}'
+
+- name: Copy kubectl config from cluster_host to master
+  command: '{{ spec.scp }} {{ spec.cluster_host }}:{{ spec.kube_dir }}/config .'
+  args:
+    chdir: '{{ spec.kube_dir }}'
+    creates: '{{ spec.kube_dir }}/config'
+
+- name: Copy minikube certs from cluster_host to master
+  command: '{{ spec.scp }} {{ spec.cluster_host }}:{{ spec.minikube_dir }}/{{ item }} .'
+  args:
+    chdir: '{{ spec.minikube_dir }}'
+    creates: '{{ spec.minikube_dir }}/{{ item }}'
+  with_items:
+    - ca.crt
+    - client.crt
+    - client.key

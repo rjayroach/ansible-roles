@@ -1,26 +1,33 @@
 ---
 - debug:
-    var: k8s_minikube
-    verbosity: 0
+    var: '{{ debug_item }}'
+    verbosity: 1
+  with_items:
+    - spec
+    - inventory_hostname
+    - hostvars[inventory_hostname]['ansible_' + spec.spoof_intf]
+  loop_control:
+    loop_var: debug_item
 
 - set_fact:
-    minikube_env:
-      MINIKUBE_WANTUPDATENOTIFICATION: false
-      MINIKUBE_WANTREPORTERRORPROMPT: false
-      MINIKUBE_HOME: '{{ ansible_env.HOME }}'
-      CHANGE_MINIKUBE_NONE_USER: true
-      KUBECONFIG: '{{ ansible_env.HOME }}/.kube/config'
+    minikube_temp_gw: "{{ hostvars[inventory_hostname]['ansible_' + spec.spoof_intf]['ipv4']['network'] | replace('.0', '.1') }}"
+  when: spec.spoof_intf is defined
 
 - set_fact:
-    minikube_dg: "{{ hostvars[inventory_hostname][minikube_spoof_intf]['ipv4']['network'] | replace('.0', '.1') }}"
-  when: minikube_spoof_intf is defined
+    minikube_temp_gw: '{{ spec.default_gw }}'
+  when: spec.default_dg is defined
+
+- debug:
+    var: minikube_temp_gw
+    verbosity: 1
+
 
 # NOTE: On vagrant the first interface is *always* NATed and minikube *always* binds to the default gateway
 # in order to get around this we add a default route before starting minikube and delete the route right after it starts
 - name: Spoof the default route to the host-only interface if it has been specified
-  command: 'route add default gw {{ minikube_dg }}'
+  command: 'route add default gw {{ minikube_temp_gw }}'
   become: yes
-  when: minikube_spoof_intf is defined
+  when: minikube_temp_gw is defined
 
 - name: Start minikube
   command: '{{ command }}'
@@ -34,6 +41,6 @@
     loop_var: command
 
 - name: Remove the spoofed default route so the machine can connect to the outside world again
-  command: 'route del default gw {{ minikube_dg }}'
+  command: 'route del default gw {{ minikube_temp_gw }}'
   become: yes
-  when: minikube_spoof_intf is defined
+  when: minikube_temp_gw is defined

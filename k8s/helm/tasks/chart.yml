@@ -1,0 +1,10 @@
+---
+- name: 'Check if {{ chart }} is already installed'
+  command: 'helm ls {{ chart }}'
+  register: chart_ls
+
+# - debug: var=chart_ls
+
+- name: 'Install {{ chart }} into cluster'
+  command: '{{ commands[chart] }}'
+  when: chart_ls.stdout_lines | length == 0

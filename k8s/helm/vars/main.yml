@@ -1,13 +1,9 @@
 ---
-k8s_helm_version: v2.8.2
-k8s_helm_archive_dir: '{{ ansible_env.TMPDIR }}'
-k8s_helm_archive_file: '{{ k8s_helm_archive_dir }}/{{ k8s_helm_version }}-linux-amd64.tar.gz'
-k8s_helm_archive_url: 'https://storage.googleapis.com/kubernetes-helm/helm-{{ k8s_helm_version }}-linux-amd64.tar.gz'
-k8s_helm_bin_dir: /usr/local/bin
+base_spec:
+  cluster_host: node1
+  cluster_registry_port: 30005
+  cluster_grafana_port: 30006
+  charts:
+    - registry
 
-k8s_helm:
-  version: '{{ k8s_helm_version }}'
-  archive_url: '{{ k8s_helm_archive_url }}'
-  archive_dir: '{{ k8s_helm_archive_dir }}'
-  archive_file: '{{ k8s_helm_archive_file }}'
-  bin_dir: '{{ k8s_helm_bin_dir }}'
+spec: '{{ base_spec | combine(role_spec, recursive=True) }}'

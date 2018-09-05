@@ -1,13 +1,27 @@
 ---
-- debug:
-    var: k8s_helm
-    verbosity: 1
+- name: Configure docker to allow push to insecure registry running in local cluster
+  include_role:
+    name: prepd/docker
+    tasks_from: insecure-registry
+  vars:
+    registry: '{{ spec.cluster_host }}:{{ spec.cluster_registry_port }}'
 
-- name: Check if binary exists
-  stat:
-    path: '{{ k8s_helm.bin_dir }}/helm'
-  register: binary
+- name: Initialize helm and wait for tiller to be available
+  command: helm init --wait
 
-- name: Install helm
-  include_tasks: install.yml
-  when: binary.stat.exists == false
+# - debug: var=spec
+
+- set_fact:
+    commands:
+      registry: 'helm install stable/docker-registry --name registry --set service.type=NodePort,service.nodePort={{ spec.cluster_registry_port }}'
+      fluent-bit: 'helm install stable/fluent-bit --name fluent-bit --set on_minikube=true'
+      prometheus: 'helm install stable/prometheus --name prometheus --namespace prometheus --set rbac.create=false'
+      grafana: 'helm install stable/grafana --name grafana --set server.adminPassword=test,server.service.type=NodePort,server.service.nodePort={{ spec.cluster_grafana_port }}'
+      redis: 'helm install stable/redis --name redis --values {{ role_path }}/files/redis-values-production.yaml'
+      postgresql: 'helm install stable/postgresql --name postgresql -f {{ role_path }}/files/postgres-values.yml'
+
+- name: Install charts
+  include_tasks: chart.yml
+  with_items: '{{ spec.charts }}'
+  loop_control:
+    loop_var: chart

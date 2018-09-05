@@ -1,0 +1,9 @@
+---
+base_spec:
+  # version: "{{ lookup('url', 'https://storage.googleapis.com/kubernetes-release/release/stable.txt') }}"
+  version: v1.9.3
+  arch: "{{ 'darwin' if ansible_os_family == 'Darwin' else 'linux' }}/amd64"
+  bin_file: /usr/local/bin/kubectl
+  kube_dir: '{{ ansible_env.HOME }}/.kube'
+
+spec: '{{ base_spec | combine(role_spec, recursive=True) }}'

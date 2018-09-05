@@ -1,30 +1,25 @@
 ---
 - name: Get Helm
-  get_url:
-    url: '{{ k8s_helm.archive_url }}'
-    dest: '{{ k8s_helm.archive_file }}'
-  register: new_archive
-
-- name: Install Helm
   unarchive:
-    src: '{{ k8s_helm.archive_file }}'
-    dest: '{{ k8s_helm.archive_dir }}'
-    copy: no
+    src: 'https://storage.googleapis.com/kubernetes-helm/helm-{{ spec.version }}-{{ spec.arch }}.tar.gz'
+    dest: '{{ spec.bin_dir }}'
+    remote_src: yes
+    creates: '{{ spec.bin_dir }}/helm'
+    exclude: [LICENSE, README.md]
+  become: yes
 
 - name: Move binary to path
-  command: 'mv {{ k8s_helm.archive_dir }}/linux-amd64/helm {{ k8s_helm.bin_dir }}'
+  command: 'mv {{ spec.arch }}/helm {{ spec.bin_dir }}'
+  args:
+    chdir: '{{ spec.bin_dir }}'
+    creates: '{{ spec.bin_dir }}/helm'
   become: yes
 
-- name: Set permissions
+- name: 'Remove {{ spec.arch }}'
   file:
-    path: '{{ k8s_helm.bin_dir }}/helm'
-    mode: 0755
-  become: yes
-
-- name: Remove Archive
-  file:
-    path: '{{ k8s_helm.archive_file }}'
+    path: '{{ spec.bin_dir }}/{{ spec.arch }}'
     state: absent
+  become: yes
 
 - name: Insert aliases
   include_role:
@@ -33,21 +28,3 @@
     aliases_marker: k8s-helm
     aliases_block: |
       source <(helm completion zsh) 
-
-# NOTE: This is not working; there seems to be a bug in Ansible helm module
-# but it may be due to version issues of pygit2 and pyhelm
-# NOTE: so for now, use the helm binary rather than the Ansible helm module
-- name: Install Ansible helm module dependencies
-  apt:
-    name: '{{ item }}'
-    state: installed
-  with_items: ['libgit2-dev', 'python-pygit2']
-  become: yes
-  when: false
-
-- name: Install pip depdendencies
-  pip:
-    name: '{{ item }}'
-  with_items: ['pyhelm', 'grpcio']
-  become: yes
-  when: false
