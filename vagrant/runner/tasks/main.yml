@@ -1,0 +1,10 @@
+---
+- include_role:
+    name: prepd-cli/prompt
+  vars:
+    role_config: '{{ prepd_cli.config.vagrant }}'
+    label: vagrant
+
+- name: Include vagrant/new
+  include_role:
+    name: prepd/vagrant/new

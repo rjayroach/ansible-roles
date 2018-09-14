@@ -1,0 +1,40 @@
+---
+base_spec:
+  domain: test.local
+  work_dir: '/tmp'
+  machines:
+    node0:
+      hardware:
+        cpus: 1
+        memory: 1024
+      vm:
+        autostart: true
+        box: '{{ role_spec.owner }}/stretch64-developer'
+        box_url: '{{ role_spec.box_url_base }}/{{ role_spec.owner }}/stretch64-developer.json'
+      mounts:
+        prepd:
+          host: .
+          guest: '/home/{{ role_spec.ssh_username }}/prepd'
+        roles:
+          host: '{{ ansible_env.HOME }}/.ansible/roles'
+          guest: '/home/{{ role_spec.ssh_username }}/.ansible/roles'
+        share:
+          host: '{{ ansible_env.HOME }}/share'
+          guest: '/home/{{ role_spec.ssh_username }}/share'
+      ssh:
+        interface: enp0s8
+      ansible:
+        groups: ['dev-servers']
+        playbook: 'hashers-world/dev-servers.yml'
+    node1:
+      vm:
+        box: '{{ role_spec.owner }}/stretch64-minikube'
+        box_url: '{{ role_spec.box_url_base }}/{{ role_spec.owner }}/stretch64-minikube.json'
+      ssh:
+        interface: enp0s8
+      ansible:
+        groups: ['minikube']
+        playbook: 'root/packer.yml'
+
+
+spec: '{{ base_spec | combine(role_spec, recursive=True) }}'

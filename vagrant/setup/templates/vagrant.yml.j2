@@ -1,0 +1,18 @@
+#jinja2: lstrip_blocks: True
+{% set dbl = '{{' %}
+---
+commands:
+  vagrant: prepd/vagrant
+
+config:
+  vagrant:
+    _select: [work_dir, owner, domain]
+    domain: {{ role_spec.domain }}
+    owner: {{ role_spec.owner }}
+    ssh_username: {{ role_spec.ssh_username }}
+    ssh_private_key_path: '{{ dbl }} ansible_env.HOME }}/.ssh/id_rsa'
+    # box_url_base: packer/boxes
+    box_url_base: '{{ dbl }} ansible_env.HOME }}/packer3/boxes'
+    # box_url_base: 'http://boxes.{{ role_spec.domain }}'
+    work_dir: '.'
+    inventory_path: inventory/local

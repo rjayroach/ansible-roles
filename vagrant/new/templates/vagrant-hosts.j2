@@ -1,0 +1,3 @@
+{% for key, config in spec.machines.iteritems() %}
+{{ key }} ansible_host={{ key }}.{{ spec.domain }}
+{% endfor %}

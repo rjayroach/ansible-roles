@@ -1,12 +1,23 @@
 ---
+- include_role:
+    name: prepd-cli/prompt
+  vars:
+    role_config:
+      domain: ''
+      owner: ''
+      ssh_username: ''
+    label: vagrant
+
 - name: 'Install Vagrant on detected OS ({{ ansible_os_family }})'
   include_tasks: '{{ ansible_os_family | lower }}.yml'
+  when: false
 
 - name: Install Vagrant plugins
   include_tasks: plugin.yml
   with_items: '{{ vagrant_plugins }}'
   loop_control:
     loop_var: plugin
+  when: false
 
 - name: Insert aliases
   include_role:
@@ -26,19 +37,13 @@
       alias vstg='vagrant global-status'
       vu() { vagrant up "${1:=node0}" }
 
-- name: Ensure User's .ssh directory exists
+- name: "Ensure User's .ssh directory exists"
   file:
     path: '{{ ansible_env.HOME }}/.ssh'
     state: directory
     mode: 0755
 
-- name: Set IP address type and allow ssh agent forwarding to local virtual machines in ~/.ssh/config
-  blockinfile:
-    create: yes
-    dest: ~/.ssh/config
-    marker: '# {mark} ANSIBLE MANAGED BLOCK (vagrant)'
-    block: |
-      Host *.local
-        User vagrant
-        ForwardAgent yes
-        AddressFamily inet
+- name: 'Template config to {{ cli_vars_dir }}/vagrant.yml'
+  template:
+    src: vagrant.yml.j2
+    dest: '{{ cli_vars_dir }}/vagrant.yml'

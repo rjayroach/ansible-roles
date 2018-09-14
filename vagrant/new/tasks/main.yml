@@ -1,0 +1,38 @@
+---
+- name: 'Create {{ spec.work_dir }}'
+  file:
+    path: '{{ spec.work_dir }}'
+    state: directory
+
+- stat:
+    path: '{{ spec.work_dir }}/.gitignore'
+  register: gitignore
+
+- name: 'Ignore the {{ spec.work_dir }}/.vagrant directory'
+  lineinfile:
+    path: '{{ spec.work_dir }}/.gitignore'
+    line: .vagrant
+    state: present
+  when: gitignore.stat.exists
+
+- name: Template the Vagrantfile
+  template:
+    src: Vagrantfile.j2
+    dest: '{{ spec.work_dir }}/Vagrantfile'
+
+- name: Template the inventory vagrant-hosts file
+  template:
+    src: vagrant-hosts
+    dest: '{{ spec.work_dir }}/{{ spec.inventory_path }}/vagrant-hosts'
+
+- name: Set IP address type and allow ssh agent forwarding to local virtual machines in ~/.ssh/config
+  blockinfile:
+    create: yes
+    dest: ~/.ssh/config
+    marker: '# {mark} ANSIBLE MANAGED BLOCK (vagrant-{{ spec.domain }})'
+    block: |
+      Host *.{{ spec.domain }}
+        AddressFamily inet
+        ForwardAgent yes
+        IdentityFile {{ ansible_env.HOME }}/.ssh/id_rsa
+        User {{ spec.ssh_username }}
