@@ -18,3 +18,18 @@
 - name: set locale
   command: /usr/sbin/update-locale LANG={{locale}} LC_ALL={{locale}}
   when: false
+
+- name: Create a 'wheel' group
+  group:
+    name: wheel
+    state: present
+  become: yes
+
+- name: Allow 'wheel' group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
+  become: yes
