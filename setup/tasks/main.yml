@@ -1,0 +1,5 @@
+---
+- name: 'Template config to {{ cli_vars_dir }}/prepd.yml'
+  template:
+    src: prepd.yml.j2
+    dest: '{{ cli_vars_dir }}/prepd.yml'

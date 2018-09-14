@@ -1,0 +1,13 @@
+---
+# - debug: var=module_spec
+# - meta: end_play
+
+- name: Invoke module roles
+  include_role:
+    name: 'prepd/{{ module_role }}'
+  vars:
+    role_spec: '{{ module_spec[module_role] | default({}) | combine(module_spec.module | default({}), recursive=True) }}'
+  when: module_spec[module_role] is not defined or module_spec[module_role].skip is not defined or not module_spec[module_role].skip
+  with_items: "{{ module_spec.roles | default(module_spec.keys() | difference(['module'])) }}"
+  loop_control:
+    loop_var: module_role

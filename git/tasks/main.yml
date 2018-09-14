@@ -1,9 +1,10 @@
 ---
+- include_tasks: clone.yml
+
 - name: Insert aliases
-  blockinfile:
-    create: yes
-    dest: '{{ machine.aliases_file }}'
-    marker: '# {mark} ANSIBLE MANAGED BLOCK (git)'
-    block: |
+  include_role:
+    name: prepd/aliases
+  vars:
+    aliases_marker: git
+    aliases_block: |
       alias gsu='git submodule update --remote --merge'
-  when: machine.shell == 'zsh'

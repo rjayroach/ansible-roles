@@ -5,7 +5,7 @@
   register: yadr_dir
 
 - include_tasks: install.yml
-  when: yadr_dir.stat.exists == false
+  when: not yadr_dir.stat.exists
 
 #- include_tasks: 'update.yml'
 #  when: yadr_dir.stat.exists == true
@@ -19,13 +19,12 @@
     - vimrc.after
     - yadr/ctags/ctags
 
-# TODO: Test if this will work with prepd/aliases role b/c it is not known if the user's shell is zsh yet?
 - name: Insert aliases
-  blockinfile:
-    create: yes
-    dest: ~/.zsh.after/aliases.zsh
-    marker: '# {mark} ANSIBLE MANAGED BLOCK (yadr)'
-    block: |
+  include_role:
+    name: prepd/aliases
+  vars:
+    aliases_marker: yadr
+    aliases_block: |
       alias ave='ansible-vault edit'
       alias avc='ansible-vault create'
       alias du='du -csh *'
@@ -33,12 +32,11 @@
       # Edit and source this file
       alias via='vi ~/.zsh.after/aliases.zsh; source ~/.zsh.after/aliases.zsh'
 
-### git creds
 - name: Write git user info to ~/.gitconfig.user
   template:
     src: gitconfig.user.j2
     dest: '{{ ansible_env.HOME }}/.gitconfig.user'
-  when: git_user is defined
+  when: spec.git_user is defined
 
 - name: Remove bogus line from .vimrc
   lineinfile:

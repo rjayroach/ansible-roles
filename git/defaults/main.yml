@@ -1,7 +1,9 @@
 ---
-hub_version: 2.2.9
-git_repos: []
+base_spec:
+  hub_version: 2.2.9
+  repositories: {}
 
-# Next lines not currently in use
-git_provider: github
-git_creds_file: '{{ ansible_env.HOME }}/.gitconfig.user'
+  # Next line not currently in use
+  # creds_file: '{{ ansible_env.HOME }}/.gitconfig.user'
+
+spec: '{{ base_spec | combine(role_spec, recursive=True) }}'

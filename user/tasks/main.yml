@@ -1,0 +1,29 @@
+---
+- name: Add the user
+  user:
+    name: '{{ spec.username }}'
+    shell: '{{ spec.shell }}'
+  become: yes
+
+- name: Install zsh if that is the user shell
+  apt:
+    name: zsh
+    state: present
+  become: yes
+  when: spec.shell == '/bin/zsh'
+
+- name: Add the user to groups
+  user:
+    name: '{{ spec.username }}'
+    groups: '{{ spec.groups }}' # admins,developers
+    append: yes
+  become: yes
+  when: spec.groups is defined
+
+- name: Set authorized key
+  authorized_key:
+    user: '{{ spec.username }}'
+    state: present
+    key: '{{ spec.authorized_key }}'
+  become: yes
+  when: spec.authorized_key is defined

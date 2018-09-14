@@ -1,0 +1,23 @@
+#jinja2: lstrip_blocks: True
+{% set dbl = '{{' %}
+---
+commands:
+  prepd: prepd
+
+config:
+  plugin:
+    inventory:
+      role: prepd/inventory
+    docker:
+      role: prepd/docker
+    vagrant:
+      role: prepd/vagrant
+  prepd:
+    inventory:
+      development:
+        aws:
+          boto_profile: default
+          regions:
+            - ap-southeast-1
+        digital_ocean:
+          region: sgp1

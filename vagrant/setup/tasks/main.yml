@@ -43,7 +43,7 @@
     state: directory
     mode: 0755
 
-- name: 'Template config to {{ cli_vars_dir }}/vagrant.yml'
+- name: 'Template config to {{ config.cli_vars_dir }}/vagrant.yml'
   template:
     src: vagrant.yml.j2
-    dest: '{{ cli_vars_dir }}/vagrant.yml'
+    dest: '{{ config.cli_vars_dir }}/vagrant.yml'

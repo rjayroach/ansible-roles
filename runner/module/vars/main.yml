@@ -1,0 +1,10 @@
+---
+_m:
+  0: '{{ manifest0 | default({}) }}'
+  1: '{{ manifest1 | default({}) }}'
+  2: '{{ manifest2 | default({}) }}'
+  3: '{{ manifest3 | default({}) }}'
+  4: '{{ manifest4 | default({}) }}'
+  m: '{{ manifest | default({}) }}'
+
+module_spec: '{{ _m.0 | combine(_m.1, recursive=True) | combine(_m.2, recursive=True) | combine(_m.3, recursive=True) | combine(_m.4, recursive=True) | combine(_m.m, recursive=True) }}'
