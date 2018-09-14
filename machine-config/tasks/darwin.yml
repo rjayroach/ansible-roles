@@ -3,16 +3,15 @@
   homebrew:
     name: '{{ item }}'
     state: present
-  with_items: '{{ developer_packages + developer_darwin_packages }}'
+  with_items: '{{ spec.packages + spec.dist_packages }}'
 
 # NOTE: cask requires to become root, but not to run cask as root so don't use become: yes here
 - name: Install packages via cask
   homebrew_cask:
     name: '{{ item }}'
     state: present
-  with_items: '{{ developer_darwin_cask_packages }}'
+  with_items: '{{ spec.cask_packages }}'
 
-# TODO: only if the file doesn't exist
 - name: Copy in custom inputrc
   copy:
     src: inputrc
@@ -20,4 +19,4 @@
     owner: '{{ ansible_env.USER }}'
     group: staff
     mode: 0644
-  when: machine_cli_mode == 'vi'
+    force: no
