@@ -2,11 +2,23 @@
 # NOTE: Installations on a Mac will fail the first time
 # After running this task the first time you need to open Security Settings and click 'allow kernel externsions from Oracle America.'
 # Then re-run this playbook
+- name: Disable spctl
+  command: spctl --master-disable
+  become: yes
+  when: ansible_os_family == 'Darwin'
+
 - name: Install Virtualbox on Mac
   homebrew_cask:
     name: virtualbox
     state: present
+  # become: yes
   when: ansible_os_family == 'Darwin'
+
+- name: Enable spctl
+  command: spctl --master-enable
+  become: yes
+  when: ansible_os_family == 'Darwin'
+
 
 - name: Install Virtualbox on Debian/Ubuntu
   import_tasks: debian.yml
