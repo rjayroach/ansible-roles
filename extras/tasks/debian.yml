@@ -3,6 +3,7 @@
   apt_repository:
     repo: 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main'
     state: present
+  become: yes
   when: "'google-chrome-stable' in extra_items.debian"
 
 - apt:
@@ -10,4 +11,5 @@
     state: present
     update_cache: yes
     cache_valid_time: 3600
+  become: yes
   with_items: '{{ extra_items.debian }}'

@@ -2,4 +2,4 @@
 - homebrew_cask:
     name: '{{ item }}'
     state: present
-  with_items: '{{ extra_items.mac }}'
+  with_items: '{{ spec.mac }}'
