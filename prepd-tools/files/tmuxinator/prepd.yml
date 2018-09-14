@@ -1,39 +1,44 @@
 name: prepd
-root: ~/projects/rjayroach
+root: ~/.ansible/roles
 
 windows:
-  - ansible:
+  - c2p4:
       layout: main-horizontal
-      root: ~/projects/rjayroach/prepd-project/ansible
+      root: ~/projects/c2p4
       panes:
         -
-  - playbooks:
+  - rok8s:
       layout: main-horizontal
-      root: ~/projects/rjayroach/prepd-project/ansible
+      root: ~/projects/rok8s
       panes:
         -
-  - roles:
+  - prepd-cli:
       layout: main-horizontal
-      root: ~/projects/rjayroach/ansible-roles
+      root: ~/.ansible/roles/prepd-cli
       panes:
         -
-  - terraform:
+  - packer:
       layout: main-horizontal
-      root: ~/projects/rjayroach/prepd-project/terraform
+      root: ~/.ansible/roles/packer
       panes:
         -
-  - templates:
+  - prepd_1:
       layout: main-horizontal
-      root: ~/projects/rjayroach/prepd-project/terraform
+      root: ~/.ansible/roles/prepd
       panes:
         -
-  - modules:
+  - prepd_2:
       layout: main-horizontal
-      root: ~/projects/rjayroach/terraform-modules
+      root: ~/.ansible/roles/prepd
       panes:
         - 
-  - prepd-project:
+  - terraplate_1:
       layout: main-horizontal
-      root: ~/projects/rjayroach/prepd-project
+      root: ~/.ansible/roles/terraplate-playbooks/roles
+      panes:
+        -
+  - terraplate_2:
+      layout: main-horizontal
+      root: ~/.ansible/roles/terraplate-playbooks/roles
       panes:
         -

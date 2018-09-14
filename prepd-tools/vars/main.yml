@@ -1,2 +1,5 @@
 ---
-prepd_tools_dir: '{{ ansible_env.HOME }}/.prepd/share/projects'
+base_spec:
+  dir: '{{ ansible_env.HOME }}/share'
+
+spec: '{{ base_spec | combine(role_spec, recursive=True) }}'

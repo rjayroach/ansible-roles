@@ -2,16 +2,15 @@
 - name: Checkout git repositories
   git:
     repo: '{{ item.account }}/{{ item.name }}.git'
-    dest: '{{ prepd_tools_dir }}/{{ item.name }}'
+    dest: '{{ spec.dir }}/{{ item.name }}'
     accept_hostkey: yes
     update: no
     version: "{{ item.version | default('HEAD') }}"
   with_items:
     - { name: 'prepd', account: 'git@github.com:rjayroach' }
-    - { name: 'prepd-container', account: 'git@github.com:rjayroach' }
     - { name: 'rails-templates', account: 'git@github.com:rjayroach' }
     - { name: 'lego', account: 'git@github.com:rjayroach' }
-    # - { name: 'packer', account: 'git@github.com:rjayroach' }
+    - { name: 'tf', account: 'git@github.com:rjayroach' }
 
 - name: Copy tmuxinator files
   copy:

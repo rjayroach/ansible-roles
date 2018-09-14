@@ -1,36 +1,11 @@
 ---
-locale: en_US.UTF-8
-machine_time_zone: 'Etc/UTC'
-machine_cli_mode: vi
+base_spec:
+  locale: en_US.UTF-8
+  cache_valid_time: 86400
+  packages:
+    - nmap
+    - tree
+    - wget
+    - htop
 
-developer_packages:
-  - nmap
-  - tree
-  - wget
-  - htop
-
-developer_debian_packages:
-  - apache2-utils
-  - curl
-  - dos2unix
-  - exuberant-ctags
-  - git
-  - ipcalc
-  - libcurl4-openssl-dev
-  - libreadline-dev
-  - libsqlite3-dev
-  - rake
-  - sqlite3
-  - tcpdump
-  - tmux
-  - unzip
-  - vim
-  - lsof
-  - ntp
-  - bash-completion
-
-developer_darwin_packages:
-  - gpg
-  - cask
-
-developer_darwin_cask_packages: []
+spec: '{{ base_spec | combine(dist_spec, recursive=True) | combine(role_spec, recursive=True) }}'

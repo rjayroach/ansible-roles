@@ -1,19 +1,27 @@
 ---
-- name: Set prepd environment variables
-  include_role:
-    name: prepd/developer
+- include_vars:
+    file: '{{ ansible_os_family | lower }}.yml'
 
-- include_role:
-    name: prepd/utils
-    tasks_from: debug
+# - debug: var=spec
 
-- name: Check if custom developer tasks file exist
-  stat:
-    path: '{{ prepd_developer_dir }}/setup.yml'
-  register: developer_setup_file
+- include_tasks: '{{ ansible_os_family | lower }}.yml'
 
-- name: Include custom developer tasks
-  include_tasks: '{{ prepd_developer_dir }}/setup.yml'
-  when: developer_setup_file.stat.exists
+- name: Create a 'wheel' group
+  group:
+    name: wheel
+    state: present
+  become: yes
 
-- include_tasks: '{{ ansible_os_family }}.yml'
+- name: Allow 'wheel' group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
+  become: yes
+
+- name: Set shell mode to vi
+  copy:
+    src: inputrc
+    dest: '{{ ansible_env.HOME }}/.inputrc'

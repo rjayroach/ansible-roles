@@ -1,32 +1,20 @@
-# NOTE: Timezone is per host / region so should be set at the site/inventory level
 ---
 - name: Install common and debian specific packages
   apt:
-    name: '{{ item }}'
+    name: '{{ package }}'
     state: present
     update_cache: yes
-    cache_valid_time: '{{ cache_valid_time | default(86400) }}'
-  with_items: '{{ developer_packages + developer_debian_packages }}'
+    cache_valid_time: '{{ spec.cache_valid_time }}'
+  with_items: '{{ spec.packages + spec.dist_packages }}'
+  loop_control:
+    loop_var: package
   become: yes
-
-- debug: var=machine_time_zone
 
 - name: Set time zone
-  template:
-    src: debian/timezone.j2
-    dest: /etc/timezone
+  command: 'timedatectl set-timezone {{ spec.time_zone }}'
+  when: spec.time_zone is defined
   become: yes
 
-- name: update tzdata
-  command: /usr/sbin/dpkg-reconfigure --frontend noninteractive tzdata
-  become: yes
-
-#- name: set locale
-#  command: /usr/sbin/update-locale LANG={{locale}} LC_ALL={{locale}}
-#  sudo: true
-
-- name: Set shell mode to vi
-  copy:
-    src: inputrc
-    dest: '{{ ansible_env.HOME }}/.inputrc'
-  when: machine_cli_mode == 'vi'
+- name: set locale
+  command: /usr/sbin/update-locale LANG={{locale}} LC_ALL={{locale}}
+  when: false
