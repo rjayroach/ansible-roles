@@ -10,14 +10,12 @@
 
 - name: 'Install Vagrant on detected OS ({{ ansible_os_family }})'
   include_tasks: '{{ ansible_os_family | lower }}.yml'
-  when: false
 
 - name: Install Vagrant plugins
   include_tasks: plugin.yml
-  with_items: '{{ vagrant_plugins }}'
+  with_items: '{{ spec.plugins }}'
   loop_control:
     loop_var: plugin
-  when: false
 
 - name: Insert aliases
   include_role:

@@ -22,7 +22,7 @@
 
 - name: Template the inventory vagrant-hosts file
   template:
-    src: vagrant-hosts
+    src: vagrant-hosts.j2
     dest: '{{ spec.work_dir }}/{{ spec.inventory_path }}/vagrant-hosts'
 
 - name: Set IP address type and allow ssh agent forwarding to local virtual machines in ~/.ssh/config

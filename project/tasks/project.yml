@@ -1,0 +1,6 @@
+---
+- include_vars:
+    file: '{{ project_manifest }}'
+
+- include_role:
+    name: prepd/runner/module
