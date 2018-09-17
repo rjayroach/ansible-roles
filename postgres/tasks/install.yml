@@ -5,7 +5,7 @@
     state: present
     update_cache: yes
     cache_valid_time: 86400
-  with_items: [libpq-dev, postgresql, postgresql-client, postgresql-contrib, python-psycopg2]
+  with_items: [libpq-dev, postgresql, postgresql-client, postgresql-contrib, python-psycopg2, acl]
   loop_control:
     loop_var: package
   when: ansible_distribution == 'Debian'
