@@ -1,35 +1,18 @@
 ---
 - name: Install Debian packages
   apt:
-    name: '{{ item }}'
+    name: '{{ package }}'
     state: present
     update_cache: yes
     cache_valid_time: 86400
-  become: yes
   with_items: [libpq-dev, postgresql, postgresql-client, postgresql-contrib, python-psycopg2]
+  loop_control:
+    loop_var: package
   when: ansible_distribution == 'Debian'
 
 - name: Copy .inputrc to postgres home
   copy:
     src: inputrc
-    dest: '{{ postgres_home }}/.inputrc'
-  become: yes
-  become_user: postgres
+    dest: '{{ spec.home }}/.inputrc'
+    owner: postgres
   when: ansible_distribution == 'Debian'
-
-- name: Insert aliases
-  blockinfile:
-    create: yes
-    dest: '{{ machine.aliases_file }}'
-    marker: '# {mark} ANSIBLE MANAGED BLOCK (postgres)'
-    block: |
-      alias supg='sudo su - postgres'
-      alias psqld='psql -d postgres'
-
-      # Dump a schema named $2 from a database named $1
-      pgd() {
-        pg_dump $1 -n $2 | gzip -c > $1.sql.gz
-      }
-  when: machine.shell == 'zsh'
-
-- include_tasks: create.yml

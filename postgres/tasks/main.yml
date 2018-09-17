@@ -1,0 +1,23 @@
+---
+- debug: var=spec
+
+- import_tasks: install.yml
+  become: yes
+
+- import_tasks: create.yml
+  become: yes
+  become_user: postgres
+  # when: spec.users | length > 0 or spec.databases 
+
+- include_role:
+    name: prepd/aliases
+  vars:
+    aliases_marker: postgres
+    aliases_block: |
+      alias supg='sudo su - postgres'
+      alias psqld='psql -d postgres'
+
+      # Dump a schema named $2 from a database named $1
+      pgd() {
+        pg_dump $1 -n $2 | gzip -c > $1.sql.gz
+      }
