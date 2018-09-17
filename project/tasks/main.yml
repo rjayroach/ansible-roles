@@ -1,26 +1,12 @@
 ---
-- name: Set prepd machine vars
-  include_role:
-    name: prepd/machine
+- name: Get project files
+  find:
+    path: '{{ spec.project_root }}'
+    patterns: '*.yml'
+  register: project_files
+  delegate_to: 127.0.0.1
 
-- name: Set prepd project name
-  set_fact:
-    prepd_run_context: project
-    project_name: '{{ playbook_dir.split("/")[-4] }}'
-    prepd_project_name: '{{ playbook_dir.split("/")[-3] }}'
-
-- name: Set prepd project vars
-  set_fact:
-    prepd_project_dir: '{{ prepd_projects_dir }}/{{ prepd_project_name }}'
-    prepd_project_data_dir: '{{ prepd_projects_dir }}/{{ prepd_project_name }}/data'
-    project_dir: '{{ playbook_dir.split("/")[0:-3] | join("/") }}'
-
-- name: Set prepd project vars
-  set_fact:
-    project_config_dir: '{{ project_dir }}/{{ prepd_project_name }}/config'
-
-- name: Set prepd credentials
-  include_role:
-    name: prepd/credentials
-  vars:
-    credentials_action: load
+- include_tasks: project.yml
+  with_items: "{{ project_files.files | map(attribute='path') | list }}"
+  loop_control:
+    loop_var: project_manifest

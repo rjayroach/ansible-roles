@@ -81,7 +81,7 @@ Vagrant.configure(2) do |config|
       ansible.playbook = '{{ config.ansible.playbook }}'
       { #}
       ansible.inventory_path = '{{ spec.inventory_path }}'
-      ansible.playbook = provision.yml
+      ansible.playbook = 'vagrant.yml'
       # ansible.vault_password_file = vault_password_file if File.exists?(vault_password_file)
       # ansible.verbose = false # '-vvv'
     end
