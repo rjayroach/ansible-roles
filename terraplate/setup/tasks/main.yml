@@ -25,7 +25,7 @@
     src: '{{ ansible_env.HOME }}/{{ terraform_file }}.zip'
     dest: /usr/local/bin
     copy: no
-  when: new_archive|changed
+  when: new_archive is changed
   become: yes
 
 - name: Remove Terraform zip
@@ -63,7 +63,8 @@
       alias tfg='terraform get'
       alias tfgr='terraform graph'
       alias tfgrp='terraform graph | dot -Tpng > '
-      alias tfi='terraform import'
+      alias tfi='terraform init'
+      alias tfim='terraform import'
       alias tfo='terraform output'
       alias tfp='terraform plan'
       alias tfs='terraform show'

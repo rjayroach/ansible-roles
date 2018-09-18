@@ -7,6 +7,8 @@
 - import_tasks: install.yml
   become: yes
   when: not binary.stat.exists
+  # TODO: try this sometime:
+  # creates: /usr/bin/docker
 
 - name: Login to docker repositories
   docker_login:

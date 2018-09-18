@@ -1,4 +1,5 @@
 ---
+# NOTE: List repoistories in registry: curl -X GET http://{{ spec.cluster_host }}:{{ spec.cluster_registry_port }}/v2/_catalog
 base_spec:
   cluster_host: node1
   cluster_registry_port: 30005
