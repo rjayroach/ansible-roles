@@ -1,0 +1,10 @@
+---
+base_spec:
+  version: 0.40.2
+
+derived_spec: '{{ base_spec | combine(role_spec, recursive=True) }}'
+
+spec:
+  version: '{{ derived_spec.version }}'
+  package_url: 'https://github.com/gohugoio/hugo/releases/download/v{{ derived_spec.version }}/hugo_{{ derived_spec.version }}_Linux-64bit.deb'
+  package_name: 'hugo_{{ derived_spec.version }}_Linux-64bit.deb'
