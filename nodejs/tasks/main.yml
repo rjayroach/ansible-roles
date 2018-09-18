@@ -4,22 +4,39 @@
     path: /usr/local/bin/node
   register: node
 
+- package:
+   name: xz-utils
+   state: present
+  when: ansible_os_family == 'Debian'
+
 - name: Get nodejs
   get_url:
-    url: 'https://nodejs.org/dist/v{{ nodejs_version }}/node-v{{ nodejs_version }}-linux-x64.tar.xz'
-    dest: '/tmp/node-v{{ nodejs_version }}-linux-x64.tar.gz'
+    url: 'https://nodejs.org/dist/v{{ spec.version }}/node-v{{ spec.version }}-linux-x64.tar.gz'
+    dest: '/tmp/node-v{{ spec.version }}-linux-x64.tar.gz'
   register: new_archive
   when: ansible_os_family == 'Debian' and node.stat.exists == false
 
 - name: Install nodesjs
-  command: 'tar -C /usr/local --strip-components 1 -xJf /tmp/node-v{{ nodejs_version }}-linux-x64.tar.xz'
+  command: 'tar -C /usr/local --strip-components 1 -xf /tmp/node-v{{ spec.version }}-linux-x64.tar.gz'
+  args:
+    warn: no
   become: yes
-  when: new_archive|changed and ansible_os_family == 'Debian'
+  when: ansible_os_family == 'Debian' and new_archive is changed
 
 - name: Install Node via Homebrew
   homebrew:
-    name: '{{ item }}'
+    name: '{{ package }}'
     state: present
   with_items:
     - npm
+  loop_control:
+    loop_var: package
   when: ansible_os_family == 'Darwin'
+
+- npm:
+    name: '{{ npm_package }}'
+    global: yes
+  with_items: '{{ spec.npm }}'
+  loop_control:
+    loop_var: npm_package
+  become: yes

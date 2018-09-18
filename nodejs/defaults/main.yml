@@ -1,2 +1,6 @@
 ---
-nodejs_version: 6.9.0
+base_spec:
+  version: 6.9.0
+  npm: []
+
+spec: '{{ base_spec | combine(role_spec, recursive=True) }}'

@@ -1,11 +1,10 @@
-# NOTE: to test with dev-servers config/deploy
 ---
 - name: Install ember
   npm:
     name: ember-cli
     global: yes
   become: yes
-  # when: apps|length == 0
+  when: spec.install
 
 - name: Insert aliases
   include_role:
@@ -60,12 +59,12 @@
       alias edep='ember install ember-cli-dotenv ember-cli-deploy ember-cli-deploy-build ember-cli-deploy-s3 ember-cli-deploy-revision-data ember-cli-deploy-display-revisions ember-cli-deploy-s3-index'
 
       alias es='ember serve'
-  # when: apps|length == 0
 
-# TODO: bower doesn't work from ansible for some reason
 - name: Install ember project dependencies
+  # TODO: bower doesn't work from ansible for some reason
   shell: . /etc/profile && npm install # && bower install
   args:
-    chdir: '{{ item.dir }}/{{ item.name }}'
-  with_items: '{{ apps }}'
-  # when: apps|length > 0
+    chdir: "{{ project.value.path | default(spec.project_dir + '/' + project.key) }}"
+  with_dict: '{{ spec.projects }}'
+  loop_control:
+    loop_var: project
