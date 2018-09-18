@@ -1,6 +1,6 @@
 # DO NOT EDIT {{ ansible_managed }}
 # Ansible EC2 external inventory script settings
-{%- set environment = aws_inventory_environments[item] %}
+{%- set environment = spec.inventory_environment %}
 
 [ec2]
 
@@ -104,7 +104,7 @@ all_elasticache_nodes = False
 # will be written to this directory:
 #   - ansible-ec2.cache
 #   - ansible-ec2.index
-cache_path = ~/.ansible/tmp/{{ environment.boto_profile | default(aws_inventory_boto_profile) }}/{{ item }}
+cache_path = ~/.ansible/tmp/{{ environment.boto_profile | default(aws_inventory_boto_profile) }}/{{ spec.inventory_name }}
 
 # The number of seconds a cache file is considered valid. After this many
 # seconds, a new API call will be made, and the cache file will be updated.
@@ -154,7 +154,7 @@ group_by_elasticache_replication_group = False
 # a list separated by commas. See examples below.
 
 # Retrieve only instances with (key=value) env=staging tag
-instance_filters = tag:Environment={{ item }}
+instance_filters = tag:Environment={{ spec.inventory_name }}
 
 # Retrieve only instances with role=webservers OR role=dbservers tag
 # instance_filters = tag:role=webservers,tag:role=dbservers

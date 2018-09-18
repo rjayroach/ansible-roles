@@ -1,0 +1,18 @@
+---
+- name: "Create {{ inventory_dir.split('/')[0:-1] | join('/') }}/{{ inv.key }}"
+  file:
+    path: "{{ inventory_dir.split('/')[0:-1] | join('/') }}/{{ inv.key }}"
+    state: directory
+
+- name: "Include the provider's inventory role"
+  include_role:
+    name: 'prepd/{{ provider }}/inventory'
+  vars:
+    spec:
+      base_inventory_dir: "{{ inventory_dir.split('/')[0:-1] | join('/') }}"
+      inventory_dir: "{{ inventory_dir.split('/')[0:-1] | join('/') }}/{{ inv.key }}"
+      inventory_environment: '{{ inv.value[provider] }}'
+      inventory_name: '{{ inv.key }}'
+  with_list: '{{ inv.value.keys() }}'
+  loop_control:
+    loop_var: provider

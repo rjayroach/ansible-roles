@@ -1,30 +1,17 @@
-### Setup ec2.py and ec2.ini files in each inventory directory
 ---
-- debug:
-    var: aws_inventory_environments
-    verbosity: 1
-
-- name: Copy the ec2.py file into playbook_dir/inventory directory
-  copy:
-    src: '{{ role_path }}/files/ec2.py'
-    dest: '{{ playbook_dir }}/inventory/ec2.py'
+- name: Download the inventory script into playbook_dir/inventory directory
+  get_url:
+    url: 'https://raw.githubusercontent.com/ansible/ansible/stable-{{ ansible_version.major }}.{{ ansible_version.minor }}/contrib/inventory/ec2.py'
+    dest: '{{ spec.base_inventory_dir }}/ec2.py'
     mode: u=rwx,g=r,o=r
 
-- name: Ensure inventory directories exists
-  file:
-    path: '{{ playbook_dir }}/inventory/{{ item }}'
-    state: directory
-  with_items: '{{ aws_inventory_environments }}'
-
-- name: Softlink the ec2.py file into each environment
+- name: Softlink the inventory script into the environment
   file:
     src: '../ec2.py'
-    dest: '{{ playbook_dir }}/inventory/{{ item }}/ec2.py'
+    dest: '{{ spec.inventory_dir }}/ec2.py'
     state: link
-  with_items: '{{ aws_inventory_environments }}'
 
-- name: Template an ec2.ini for each environment
+- name: Template an ini file for each environment
   template:
     src: ec2.ini.j2
-    dest: '{{ playbook_dir }}/inventory/{{ item }}/ec2.ini'
-  with_items: '{{ aws_inventory_environments }}'
+    dest: '{{ spec.inventory_dir }}/ec2.ini'

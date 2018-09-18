@@ -1,0 +1,8 @@
+---
+- debug: var=prepd_cli
+- debug: var=spec
+
+- include_tasks: inv.yml
+  with_dict: '{{ spec }}'
+  loop_control:
+    loop_var: inv

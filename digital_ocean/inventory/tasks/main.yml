@@ -1,0 +1,18 @@
+---
+- name: Download the inventory script into playbook_dir/inventory directory
+  get_url:
+    url: 'https://raw.githubusercontent.com/ansible/ansible/stable-{{ ansible_version.major }}.{{ ansible_version.minor }}/contrib/inventory/digital_ocean.py'
+    dest: '{{ spec.base_inventory_dir }}/digital_ocean.py'
+    mode: u=rwx,g=r,o=r
+
+- name: Softlink the inventory script into the environment
+  file:
+    src: '../digital_ocean.py'
+    dest: '{{ spec.inventory_dir }}/digital_ocean.py'
+    state: link
+
+- name: Template an ini file to the base_inventory_dir
+  template:
+    src: digital_ocean.ini.j2
+    dest: '{{ spec.base_inventory_dir }}/digital_ocean.ini'
+    force: no
