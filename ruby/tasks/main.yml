@@ -1,7 +1,6 @@
 ---
-- import_tasks: system-install.yml
-  become: yes
-  when: ansible_distribution == 'Debian'
+- name: 'Install on detected OS ({{ ansible_os_family }})'
+  include_tasks: '{{ ansible_os_family | lower }}.yml'
 
 - name: Clone rbenv ruby-build
   git:
@@ -35,6 +34,16 @@
     src: bundle_config.j2
     dest: '{{ spec.bundle_dir }}/config'
     force: no
+
+- name: Insert rbenv code into profile
+  include_role:
+    name: prepd/aliases
+  vars:
+    type: profile
+    aliases_marker: ruby
+    aliases_block: |
+      export PATH="$HOME/.rbenv/bin:$PATH"
+      eval "$(rbenv init -)"
 
 - name: Insert aliases
   include_role:

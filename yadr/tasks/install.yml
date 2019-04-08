@@ -1,10 +1,7 @@
 ---
 - name: Install Debian packages
   apt:
-    name: '{{ package }}'
-  with_items: [rake, git, zsh, vim-nox]
-  loop_control:
-    loop_var: package
+    name: [rake, git, zsh, vim-nox]
   become: yes
   when: ansible_pkg_mgr == 'apt'
 

@@ -14,6 +14,12 @@
       '/usr/local/bin/zsh': '.zsh.after/aliases.zsh',
       '/bin/bash': '.bash_aliases'
     }
+    profile_file: {
+      '/bin/zsh': '.zshenv',
+      '/usr/bin/zsh': '.zshenv',
+      '/usr/local/bin/zsh': '.zshenv',
+      '/bin/bash': '.profile'
+    }
 
 - name: Insert aliases
   blockinfile:
@@ -21,3 +27,12 @@
     dest: "{{ ansible_env.HOME }}/{{ aliases_file[shell.stdout] | default('/tmp/test') }}"
     marker: '# {mark} ANSIBLE MANAGED BLOCK ({{ aliases_marker }})'
     block: '{{ aliases_block }}'
+  when: type == 'aliases'
+
+- name: Insert profile
+  blockinfile:
+    create: yes
+    dest: "{{ ansible_env.HOME }}/{{ profile_file[shell.stdout] | default('/tmp/test') }}"
+    marker: '# {mark} ANSIBLE MANAGED BLOCK ({{ aliases_marker }})'
+    block: '{{ aliases_block }}'
+  when: type == 'profile'

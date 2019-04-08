@@ -1,13 +1,10 @@
 ---
-- debug: var=spec
-
-- import_tasks: install.yml
-  become: yes
+- name: 'Install on detected OS ({{ ansible_os_family }})'
+  include_tasks: '{{ ansible_os_family | lower }}.yml'
 
 - import_tasks: create.yml
   become: yes
   become_user: postgres
-  # when: spec.users | length > 0 or spec.databases 
 
 - include_role:
     name: prepd/aliases

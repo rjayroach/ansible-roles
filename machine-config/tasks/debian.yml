@@ -1,13 +1,10 @@
 ---
 - name: Install common and debian specific packages
   apt:
-    name: '{{ package }}'
+    name: '{{ spec.packages + spec.dist_packages }}'
     state: present
     update_cache: yes
     cache_valid_time: '{{ spec.cache_valid_time }}'
-  with_items: '{{ spec.packages + spec.dist_packages }}'
-  loop_control:
-    loop_var: package
   become: yes
 
 - name: Set time zone

@@ -6,12 +6,9 @@
 
 - name: Install dependencies
   apt:
-    name: '{{ package }}'
+    name: [apt-transport-https, ca-certificates, wget, software-properties-common, bash-completion]
     state: present
     update_cache: yes
-  with_items: [apt-transport-https, ca-certificates, wget, software-properties-common, bash-completion]
-  loop_control:
-    loop_var: package
 
 - name: Install docker debian gpg key
   apt_key:
@@ -27,12 +24,11 @@
     name: docker-ce
     state: present
 
-- name: Add ansible_user to docker group
+- name: Add ansible_env.USER to docker group
   user:
-    name: '{{ ansible_user }}'
+    name: '{{ ansible_env.USER }}'
     groups: docker
     append: yes
-  when: ansible_user is defined
 
 - name: Make sure docker service is running
   systemd:
@@ -41,11 +37,8 @@
 
 - name: Install docker python libs
   pip:
-    name: '{{ package }}'
+    name: [docker, docker-compose]
     state: present
-  with_items: [docker, docker-compose]
-  loop_control:
-    loop_var: package
 
 - name: Install bash completion for docker
   get_url:

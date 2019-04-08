@@ -1,0 +1,12 @@
+---
+- name: Add repository
+  shell: "curl -sL https://deb.nodesource.com/setup_11.x | bash -"
+  args:
+    warn: no
+  become: yes
+
+- name: Install dependencies
+  package:
+    name: [xz-utils, nodejs]
+    state: present
+  become: yes

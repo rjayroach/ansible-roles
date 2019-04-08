@@ -1,42 +1,19 @@
 ---
 - name: Check if node is installed
-  stat:
-    path: /usr/local/bin/node
+  shell: command -v node >/dev/null 2>&1
   register: node
+  ignore_errors: yes
+  changed_when: false
 
-- package:
-   name: xz-utils
-   state: present
-  when: ansible_os_family == 'Debian'
+- name: 'Install on detected OS ({{ ansible_os_family }})'
+  include_tasks: '{{ ansible_os_family | lower }}.yml'
+  when: node == 1
 
-- name: Get nodejs
-  get_url:
-    url: 'https://nodejs.org/dist/v{{ spec.version }}/node-v{{ spec.version }}-linux-x64.tar.gz'
-    dest: '/tmp/node-v{{ spec.version }}-linux-x64.tar.gz'
-  register: new_archive
-  when: ansible_os_family == 'Debian' and node.stat.exists == false
-
-- name: Install nodesjs
-  command: 'tar -C /usr/local --strip-components 1 -xf /tmp/node-v{{ spec.version }}-linux-x64.tar.gz'
-  args:
-    warn: no
-  become: yes
-  when: ansible_os_family == 'Debian' and new_archive is changed
-
-- name: Install Node via Homebrew
-  homebrew:
+- name: Install npm packages
+  npm:
     name: '{{ package }}'
-    state: present
-  with_items:
-    - npm
+    global: yes
+  with_items: '{{ spec.packages }}'
   loop_control:
     loop_var: package
-  when: ansible_os_family == 'Darwin'
-
-- npm:
-    name: '{{ npm_package }}'
-    global: yes
-  with_items: '{{ spec.npm }}'
-  loop_control:
-    loop_var: npm_package
   become: yes

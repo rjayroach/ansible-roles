@@ -16,7 +16,7 @@
     dest: '{{ spec.project_dir }}/{{ repo.value.name | default(repo.key) }}'
     accept_hostkey: yes
     update: no
-    # version: "{{ repo.value.branch | default('HEAD') }}"
+    version: "{{ repo.value.version | default('master') }}"
   with_dict: '{{ spec.repositories }}'
   loop_control:
     loop_var: repo
